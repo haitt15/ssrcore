@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ssrcore.Models;
 using ssrcore.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace ssrcore.Mapper
     {
         public UserMapper()
         {
-            
+            CreateMap<RegisterModel, Users>();
         }
     }
 }

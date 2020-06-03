@@ -7,6 +7,7 @@ namespace ssrcore.ViewModels
 {
     public class RoleModel : BaseModel
     {
-        public string Role{ get; set; }
+        public string RoleId { get; set; }
+        public string RoleNm { get; set; }
     }
 }

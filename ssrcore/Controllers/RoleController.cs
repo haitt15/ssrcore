@@ -10,32 +10,27 @@ using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
     {
-        //private RoleManager<Roles> _roleManager;
+        private IRoleRepository _roleRepository;
 
-        //public RoleController(RoleManager<Roles> roleManager)
-        //{
-        //    _roleManager = roleManager;
-        //}
+        public RoleController(IRoleRepository roleRepository)
+        {
+            _roleRepository = roleRepository;
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateRole([FromBody] RoleModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var role = new Roles { Name = model.Role};
-        //        var result = await _roleManager.CreateAsync(role);
-
-        //        if (result.Succeeded)
-        //        {
-        //            return new JsonResult("Create successfully");
-        //        }
-        //        return new JsonResult(result.Errors);
-        //    }
-        //    return BadRequest();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> CreateRole([FromBody] RoleModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+            var result = await _roleRepository.CreateRole(model);
+            await _roleRepository.Save();
+            return Created("", result);
+        }
     }
 }

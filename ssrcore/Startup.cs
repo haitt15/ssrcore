@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +20,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using ssrcore.Models;
 using ssrcore.Repositories;
 
 namespace ssrcore
@@ -36,50 +40,37 @@ namespace ssrcore
         {
             services.AddControllers();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Student Service Request", Version = "v1" });
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("C:/Users/Thanh Hai/Downloads/ssrcore-firebase-adminsdk-9g1dt-aa4a102461.json"),
+            });
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    //var firebaseProjectName = Configuration["FirebaseProjectName"];
-                    options.Authority = "https://securetoken.google.com/" + "project-897954566224";
+                    options.Authority = "https://securetoken.google.com/ssrcore";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = "https://securetoken.google.com/" + "project-897954566224",
+                        ValidIssuer = "https://securetoken.google.com/ssrcore",
                         ValidateAudience = true,
                         ValidAudience = "ssrcore",
                         ValidateLifetime = true
                     };
                 });
 
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped<IRoleRepository, RoleRepository>();
-
-            var tokenValue = Configuration.GetSection("AppSettings:Token").Value;
-            var url = Configuration.GetSection("AppSettings:Url").Value;
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //   .AddJwtBearer(options =>
-            //   {
-            //       options.SaveToken = true;
-            //       options.RequireHttpsMetadata = false;
-            //       options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-            //       {
-            //           ValidateIssuer = true,
-            //           ValidateAudience = true,
-            //           ValidAudience = url,
-            //           ValidIssuer = url,
-            //           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenValue))
-            //       };
-            //   });
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
         }
 
@@ -90,6 +81,13 @@ namespace ssrcore
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student Service Request V1");
+            });
 
             app.UseHttpsRedirection();
 

@@ -47,10 +47,10 @@ namespace ssrcore
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            FirebaseApp.Create(new AppOptions()
-            {
-                Credential = GoogleCredential.FromFile("C:/Users/Thanh Hai/Downloads/ssrcore-firebase-adminsdk-9g1dt-aa4a102461.json"),
-            });
+            //FirebaseApp.Create(new AppOptions()
+            //{
+            //    Credential = GoogleCredential.FromFile("./ssrcore-firebase-adminsdk-9g1dt-aa4a102461.json"),
+            //});
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

@@ -30,7 +30,7 @@ namespace ssrcore
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Student Service Request", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FPTU - Student Service Request", Version = "v1" });
             });
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

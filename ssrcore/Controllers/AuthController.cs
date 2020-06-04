@@ -110,9 +110,9 @@ namespace ssrcore.Controllers
                         RoleId = Constants.Roles.ROLE_STUDENT,
                         Email = user_firebase.Email,
                         Phonenumber = user_firebase.PhoneNumber,
-                        UserNo = "",
-                        FirstName =  "",
-                        LastName = "",
+                        UserNo = GetUserNo(user_firebase.Email),
+                        FirstName =  GetFirstName(user_firebase.DisplayName),
+                        LastName = GetLastName(user_firebase.DisplayName),
                         Address = "",
                         DelFlg = false,
                         Photo = user_firebase.PhotoUrl,
@@ -132,6 +132,19 @@ namespace ssrcore.Controllers
             }
 
             return BadRequest();
+        }
+
+        private String GetUserNo(String email)
+        {
+            return "";
+        }
+        private String GetFirstName(String FullName)
+        {
+            return "";
+        }
+        private String GetLastName(String FullName)
+        {
+            return "";
         }
 
     }

@@ -39,10 +39,7 @@ namespace ssrcore
 
             services.AddControllers();
 
-            FirebaseApp.Create(new AppOptions
-            {
-                Credential = GoogleCredential.FromFile("./ssrcore-firebase-adminsdk-9g1dt-aa4a102461.json")
-            });
+            FirebaseApp.Create();
 
             services.AddSwaggerGen(c =>
             {

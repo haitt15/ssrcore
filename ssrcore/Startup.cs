@@ -1,5 +1,7 @@
 using System;
 using AutoMapper;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +39,11 @@ namespace ssrcore
 
             services.AddControllers();
 
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromFile("./ssrcore-firebase-adminsdk-9g1dt-aa4a102461.json")
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FPTU - Student Service Request", Version = "v1" });
@@ -47,13 +54,14 @@ namespace ssrcore
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://securetoken.google.com/ssrcore";
+                    var firebaseProject = Configuration.GetSection("AppSettings:FirebaseProject").Value;
+                    options.Authority = "https://securetoken.google.com/" + firebaseProject;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = "https://securetoken.google.com/ssrcore",
+                        ValidIssuer = "https://securetoken.google.com/" + firebaseProject,
                         ValidateAudience = true,
-                        ValidAudience = "ssrcore",
+                        ValidAudience = firebaseProject,
                         ValidateLifetime = true
                     };
                 });

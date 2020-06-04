@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -51,7 +53,7 @@ namespace ssrcore.Controllers
             }
         }
 
-        [HttpPost("Auth")]
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userRepository.FindByUsername(model.Username);
@@ -89,7 +91,7 @@ namespace ssrcore.Controllers
         }
 
 
-        [HttpPost("Auth/Google")]
+        [HttpPost("Google")]
         public async Task<IActionResult> VerifyToken(LoginRequest request)
         {
             var auth = FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance;
@@ -98,8 +100,35 @@ namespace ssrcore.Controllers
             if (decodeToken != null)
             {
                 string uid = decodeToken.Uid;
-                string token = await auth.CreateCustomTokenAsync(uid);
-                return Accepted(token);
+                var user = await _userRepository.FindByUid(uid);
+                UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+                if (user == null)
+                {
+                    var user_info = new Users
+                    {
+                        Uid = uid,
+                        RoleId = Constants.Roles.ROLE_STUDENT,
+                        Email = user_firebase.Email,
+                        Phonenumber = user_firebase.PhoneNumber,
+                        UserNo = "",
+                        FirstName =  "",
+                        LastName = "",
+                        Address = "",
+                        DelFlg = false,
+                        Photo = user_firebase.PhotoUrl,
+                        InsBy = "admin",
+                        InsDatetime = DateTime.Now,
+                        UpdBy = "admin",
+                        UpdDatetime = DateTime.Now
+                    };
+                    await _userRepository.Create(user_info, Constants.Users.PASSWORD);
+                }
+
+                string jwt_token = await auth.CreateCustomTokenAsync(uid);
+                return Ok(new { 
+                    token = jwt_token,
+                    role = Constants.Roles.ROLE_STUDENT
+                });
             }
 
             return BadRequest();

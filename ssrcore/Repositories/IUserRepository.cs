@@ -9,7 +9,7 @@ namespace ssrcore.Repositories
         Task<Users> Create(Users user, string password);
         Task<bool> CheckPassword(string username, string password);
         Task<Users> FindByUsername(string username);
-        Task<Users> FindByEmail(string email);
+        Task<Users> FindByUid(string email);
         Task<IEnumerable<Users>> GetUsers();
         Task<bool> Save();
 

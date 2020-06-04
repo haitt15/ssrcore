@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using AutoMapper;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -39,8 +40,11 @@ namespace ssrcore
 
             services.AddControllers();
 
-            FirebaseApp.Create();
-
+            var pathToKey = Path.Combine(Directory.GetCurrentDirectory(), "keys", "fir-project-b2181-firebase-adminsdk-davlo-0d49a85adc.json");
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromFile(pathToKey)
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FPTU - Student Service Request", Version = "v1" });

@@ -100,34 +100,38 @@ namespace ssrcore.Controllers
             if (decodeToken != null)
             {
                 string uid = decodeToken.Uid;
-                var user = await _userRepository.FindByUid(uid);
                 UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+                var user = await _userRepository.FindByUid(uid);
                 if (user == null)
                 {
                     var user_info = new Users
                     {
                         Uid = uid,
+                        Username = RandomString(8,true),
                         RoleId = Constants.Roles.ROLE_STUDENT,
                         Email = user_firebase.Email,
                         Phonenumber = user_firebase.PhoneNumber,
-                        UserNo = GetUserNo(user_firebase.Email),
+                        UserNo = RandomString(8, true),
                         FirstName =  GetFirstName(user_firebase.DisplayName),
                         LastName = GetLastName(user_firebase.DisplayName),
                         Address = "",
                         DelFlg = false,
                         Photo = user_firebase.PhotoUrl,
-                        InsBy = "admin",
+                        InsBy = "Admin",
                         InsDatetime = DateTime.Now,
-                        UpdBy = "admin",
+                        UpdBy = "Admin",
                         UpdDatetime = DateTime.Now
                     };
                     await _userRepository.Create(user_info, Constants.Users.PASSWORD);
+                    await _userRepository.Save();
                 }
 
                 string jwt_token = await auth.CreateCustomTokenAsync(uid);
                 return Ok(new { 
                     token = jwt_token,
-                    role = Constants.Roles.ROLE_STUDENT
+                    role = Constants.Roles.ROLE_STUDENT,
+                    email = user_firebase.Email,
+                    fullName = user_firebase.DisplayName
                 });
             }
 
@@ -147,5 +151,19 @@ namespace ssrcore.Controllers
             return "";
         }
 
+        private string RandomString(int size, bool lowerCase)
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+            if (lowerCase)
+                return builder.ToString().ToLower();
+            return builder.ToString();
+        }
     }
 }

@@ -113,28 +113,10 @@ namespace ssrcore.Repositories
             return await _context.Users.FindAsync(email);
         }
 
-        //public async Task<bool> AddUserLogin(Users user, UserLoginInfo info)
-        //{
-        //    var userLogin = new UserLogin
-        //    {
-        //        LoginProvider = info.Provider,
-        //        ProviderKey = info.Key,
-        //        ProviderDisplayName = info.ProviderDisplayName,
-        //        Username = user.Username
-        //    };
+        public async Task<IEnumerable<Users>> GetUsers()
+        {
+            return await _context.Users.ToListAsync();
+        }
 
-        //    await _context.UserLogin.AddAsync(userLogin);
-        //    return true;
-        //}
-
-        //public async Task<Users> FindByLogin(string provider, string key)
-        //{
-        //    var user = await _context.UserLogin.Where(x => (x.LoginProvider == provider) && (x.ProviderKey == key))
-        //                                       .Select(s => new Users
-        //                                       {
-        //                                           Username = s.Username
-        //                                       }).FirstOrDefaultAsync();
-        //    return user;
-        //}
     }
 }

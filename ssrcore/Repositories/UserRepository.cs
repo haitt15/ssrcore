@@ -108,9 +108,9 @@ namespace ssrcore.Repositories
             return await _context.Users.Where(x => x.Username == username).SingleOrDefaultAsync();
         }
 
-        public async Task<Users> FindByEmail(string email)
+        public async Task<Users> FindByUid(string uid)
         {
-            return await _context.Users.FindAsync(email);
+            return await _context.Users.Where(x => x.Uid == uid).SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Users>> GetUsers()

@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using FirebaseAdmin.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -24,8 +19,8 @@ namespace ssrcore.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IUserRepository _userRepository;
-        private IRoleRepository _roleRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
@@ -69,7 +64,7 @@ namespace ssrcore.Controllers
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                     new Claim(ClaimTypes.NameIdentifier, user.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("roles", role)
+                    new Claim("role", role)
                 };
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -85,7 +80,7 @@ namespace ssrcore.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    roles = role,
+                    role = role,
                     username = user.Username,
                     expiration = token.ValidTo
                 });

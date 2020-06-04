@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Repositories;
 using ssrcore.ViewModels;
@@ -12,11 +9,11 @@ namespace ssrcore.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RolesController : ControllerBase
     {
-        private IRoleRepository _roleRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public RoleController(IRoleRepository roleRepository)
+        public RolesController(IRoleRepository roleRepository)
         {
             _roleRepository = roleRepository;
         }

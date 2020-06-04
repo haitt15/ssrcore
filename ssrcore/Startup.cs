@@ -69,7 +69,7 @@ namespace ssrcore
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student Service Request V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FPTU - Student Service Request V1");
             });
 
             app.UseHttpsRedirection();

@@ -48,35 +48,35 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['Login', 'Register']
-  const ManagerPages = ['Home', 'About', 'Admin']
-  const StaffPages = ['Home', 'About', 'Staff']
-  const StudentPages = ['Home', 'About', 'Student']
-  const authRequired = !publicPages.includes(to.name)
-  const user = JSON.parse(localStorage.getItem('UserInfo'))
-  console.log('this.user', user)
-  // trying to access a restricted page + not logged in
-  // redirect to login page
-  if (user === null) {
-    // chưa đăng nhập
-    if (authRequired) {
-      next('/login')
-    } else {
-      next()
-    }
-  } else {
-    // đã đăng nhập
-    if (user.roles === 'Manager' && ManagerPages.includes(to.name)) {
-      next()
-    } else if (user.roles === 'Staff' && StaffPages.includes(to.name)) {
-      next()
-    } else if (user.roles === 'Student' && StudentPages.includes(to.name)) {
-      next()
-    } else {
-      next('/home')
-    }
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['Login', 'Register']
+//   const ManagerPages = ['Home', 'About', 'Admin']
+//   const StaffPages = ['Home', 'About', 'Staff']
+//   const StudentPages = ['Home', 'About', 'Student']
+//   const authRequired = !publicPages.includes(to.name)
+//   const user = JSON.parse(localStorage.getItem('UserInfo'))
+//   console.log('this.user', user)
+//   // trying to access a restricted page + not logged in
+//   // redirect to login page
+//   if (user === null) {
+//     // chưa đăng nhập
+//     if (authRequired) {
+//       next('/login')
+//     } else {
+//       next()
+//     }
+//   } else {
+//     // đã đăng nhập
+//     if (user.roles === 'Manager' && ManagerPages.includes(to.name)) {
+//       next()
+//     } else if (user.roles === 'Staff' && StaffPages.includes(to.name)) {
+//       next()
+//     } else if (user.roles === 'Student' && StudentPages.includes(to.name)) {
+//       next()
+//     } else {
+//       next('/home')
+//     }
+//   }
+// })
 
 export default router

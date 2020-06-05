@@ -95,51 +95,63 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> VerifyToken(LoginRequest request)
         {
             var auth = FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance;
-
             var decodeToken = await auth.VerifyIdTokenAsync(request.IdToken);
             if (decodeToken != null)
             {
+                
                 string uid = decodeToken.Uid;
                 UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
-                var user = await _userRepository.FindByUid(uid);
-                if (user == null)
+                int indexEmail = user_firebase.Email.LastIndexOf("@fpt.edu.vn");
+                if (indexEmail > 0)
                 {
-                    var user_info = new Users
+                    var user = await _userRepository.FindByUid(uid);
+                    if (user == null)
                     {
-                        Uid = uid,
-                        Username = RandomString(8,true),
-                        RoleId = Constants.Roles.ROLE_STUDENT,
-                        Email = user_firebase.Email,
-                        Phonenumber = user_firebase.PhoneNumber,
-                        UserNo = RandomString(8, true),
-                        FullName = user_firebase.DisplayName,
-                        Address = "",
-                        DelFlg = false,
-                        Photo = user_firebase.PhotoUrl,
-                        InsBy = "Admin",
-                        InsDatetime = DateTime.Now,
-                        UpdBy = "Admin",
-                        UpdDatetime = DateTime.Now
-                    };
-                    await _userRepository.Create(user_info, Constants.Users.PASSWORD);
-                    await _userRepository.Save();
+                        var user_info = new Users
+                        {
+                            Uid = uid,
+                            Username = RandomString(8, true),
+                            RoleId = Constants.Roles.ROLE_STUDENT,
+                            Email = user_firebase.Email,
+                            Phonenumber = user_firebase.PhoneNumber,
+                            UserNo = GetUserNo(user_firebase.Email, user_firebase.DisplayName),
+                            FullName = user_firebase.DisplayName,
+                            Address = "",
+                            DelFlg = false,
+                            Photo = user_firebase.PhotoUrl,
+                            InsBy = "Admin",
+                            InsDatetime = DateTime.Now,
+                            UpdBy = "Admin",
+                            UpdDatetime = DateTime.Now
+                        };
+                        await _userRepository.Create(user_info, Constants.Users.PASSWORD);
+                        await _userRepository.Save();
+                    }
+                    string jwt_token = await auth.CreateCustomTokenAsync(uid);
+                    return Ok(new
+                    {
+                        token = jwt_token,
+                        role = Constants.Roles.ROLE_STUDENT,
+                        email = user_firebase.Email,
+                        fullName = user_firebase.DisplayName
+                    });
                 }
-
-                string jwt_token = await auth.CreateCustomTokenAsync(uid);
-                return Ok(new { 
-                    token = jwt_token,
-                    role = Constants.Roles.ROLE_STUDENT,
-                    email = user_firebase.Email,
-                    fullName = user_firebase.DisplayName
-                });
             }
 
             return BadRequest();
         }
 
-        private String GetUserNo(String email)
+        private string GetUserNo(String email, String displayName)
         {
-            return "";
+            int lastIndex = displayName.LastIndexOf("(");  //lastIndexOf(" ");
+            string fullname = displayName.Substring(0, lastIndex).Trim();
+            string[] arr = fullname.Split(" ");
+            string username = arr[arr.Length - 1];
+            int lengthPre = username.Length - 1 + arr.Length;
+            email = email.Substring(lengthPre);
+            int indexEmail = email.LastIndexOf("@fpt.edu.vn");
+            string result = email.Substring(0, indexEmail);
+            return result.ToUpper();
         }
         private String GetFirstName(String FullName)
         {

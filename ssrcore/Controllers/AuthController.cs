@@ -124,7 +124,7 @@ namespace ssrcore.Controllers
                             UpdBy = "Admin",
                             UpdDatetime = DateTime.Now
                         };
-                        await _userRepository.Create(user_info, Constants.Users.PASSWORD);
+                        user = await _userRepository.Create(user_info, Constants.Users.PASSWORD);
                         await _userRepository.Save();
                     }
                     string jwt_token = await auth.CreateCustomTokenAsync(uid);
@@ -132,9 +132,12 @@ namespace ssrcore.Controllers
                     {
                         token = jwt_token,
                         role = Constants.Roles.ROLE_STUDENT,
-                        email = user_firebase.Email,
-                        fullName = user_firebase.DisplayName
-                    });
+                        email = user.Email != null ? user.Email : "",
+                        fullName = user.FullName != null ? user.FullName : "",
+                        photo = user.Photo != null ? user.Photo : "",
+                        phoneNumber = user.Phonenumber != null ? user.Phonenumber : "",
+                        address = user.Address != null ? user.Address : ""
+                    });;
                 }
             }
 

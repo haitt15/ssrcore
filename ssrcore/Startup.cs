@@ -40,7 +40,7 @@ namespace ssrcore
 
             services.AddControllers();
 
-            var pathToKey = Path.Combine(Directory.GetCurrentDirectory(), "keys", "fir-project-b2181-firebase-adminsdk-davlo-0d49a85adc.json");
+            var pathToKey = Path.Combine(Directory.GetCurrentDirectory(), "keys", "student-service-request-app-firebase-adminsdk-yorvw-887b73c227.json");
             FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.FromFile(pathToKey)

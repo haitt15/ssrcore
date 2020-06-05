@@ -33,11 +33,8 @@ namespace ssrcore.Models
         [StringLength(11)]
         public string UserNo { get; set; }
         [Required]
-        [StringLength(50)]
-        public string FirstName { get; set; }
-        [Required]
-        [StringLength(50)]
-        public string LastName { get; set; }
+        [StringLength(100)]
+        public string FullName { get; set; }
         [StringLength(11)]
         public string Phonenumber { get; set; }
         [StringLength(450)]

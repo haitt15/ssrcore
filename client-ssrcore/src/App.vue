@@ -7,7 +7,7 @@
   <v-content v-if="!['Login', 'Register'].includes($route.name)">
     <!-- Provides the application the proper gutter -->
     <v-container fluid>
-      <breadcrumbs ></breadcrumbs>
+      <breadcrumbs :items="_getBreadcrumbs" ></breadcrumbs>
       <!-- If using vue-router -->
       <router-view></router-view>
     </v-container>
@@ -22,13 +22,30 @@
 import navigation from './components/Navigation'
 import breadcrumbs from './components/Breadcrumbs'
 
+import { mapGetters, mapMutations } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters(['_getBreadcrumbs'])
+  },
   components: {
     navigation,
     breadcrumbs
   },
   data () {
     return {
+    }
+  },
+  mounted () {
+    this.initApp()
+  },
+  methods: {
+    ...mapMutations(['_addBreadcrubs']),
+    initApp () {
+      this._addBreadcrubs({
+        text: 'Dashboard',
+        disabled: false,
+        href: '#/student'
+      })
     }
   }
 }
@@ -45,7 +62,7 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-        -webkit-text-fill-color: #000000;
+  -webkit-text-fill-color: #000000;
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
   transition: background-color 5000s ease-in-out 0s;
 }

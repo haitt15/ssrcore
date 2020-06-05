@@ -1,4 +1,4 @@
-# client-ssrapi
+# client-ssrcore
 
 ## Project setup
 ```

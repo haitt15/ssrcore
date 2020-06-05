@@ -35,14 +35,14 @@
           {{ message}}
           <div class="container-login100-form-btn m-t-17">
             <span class="w-full text-center txt2 p-b-20">OR SIGN IN WITH</span>
-            <a href="#" class="btn-face m-b-20" style="color: #ffff">
+            <div class="btn-face m-b-20" style="color: #ffff; margin-right:1.2vw">
               <i class="fab fa-facebook"></i> Facebook
-            </a>
+            </div>
 
-            <a href="#" class="btn-google m-b-20" style="margin-left: 1.2vw">
+            <div class="btn-google m-b-20" @click="signInWithGoogle()">
               <img src="../images/icons/icon-google.png" />
               Google
-            </a>
+            </div>
           </div>
 
           <div class="w-full text-center p-t-5">
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import firebase from 'firebase/app'
 import { mapActions } from 'vuex'
 export default {
   data () {
@@ -67,29 +68,29 @@ export default {
       },
       usernameRules: [
         v => !!v || 'Username is required',
+        // v => (v && v.length >= 8) || 'Username must be more than 8 characters',
         v => (v && v.length < 50) || 'Username must be less than 50 characters'
       ],
-      passwordRules: [v => !!v || 'Password is required'],
+      passwordRules: [v => !!v || 'Password is required',
+        v => (v && v.length >= 8) || 'Username must be more than 8 characters'
+      ],
       message: ''
     }
   },
   mounted () {
-    console.log('this.user', this.user)
-    // this.$refs.form.focus()
+    // console.log('this.user', this.user)
   },
   methods: {
-    ...mapActions('auth', ['login']),
+    ...mapActions('auth', ['_login', '_loginWithGoogle']),
     doLogin () {
       const valid = this.$refs.form.validate()
-      console.log('this.x', valid)
       if (valid) {
         if (this.user.username && this.user.password) {
-          this.login(this.user).then(
-            () => {
+          this._login(this.user).then(
+            response => {
               this.$router.push('home')
             },
             error => {
-              // this.message = + error;
               this.user.username = ''
               this.user.password = ''
               this.message = 'username or password invalid!'
@@ -98,6 +99,37 @@ export default {
           )
         } // end this.user.username && this.user.password
       } // end valid
+    },
+    signInWithGoogle () {
+      const self = this
+      const provider = new firebase.auth.GoogleAuthProvider()
+      console.log(provider)
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(result => {
+          firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+            console.log('this.token', idToken)
+
+            // Send token to your backend via HTTPS
+            self._loginWithGoogle(idToken).then(
+              response => {
+                console.log('this.result', result)
+                self.$router.push('admin')
+              },
+              error => {
+                console.log('error', error)
+              }
+            )
+            // ...
+          }).catch(function (error) {
+            // Handle error
+            console.log('error: ', error)
+          })
+        })
+        .catch(err => {
+          console.log('this.err', err)
+        })
     }
   }
 }

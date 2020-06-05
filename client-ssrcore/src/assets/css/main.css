@@ -260,9 +260,11 @@ iframe {
 
 .btn-face:hover {
   color: #ffffff !important;
+  cursor: pointer;
 }
 .btn-google:hover {
   color: #1976d2 !important;
+  cursor: pointer;
 }
 
 

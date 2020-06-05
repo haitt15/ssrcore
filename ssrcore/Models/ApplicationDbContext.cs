@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ssrcore.Models
 {
@@ -60,11 +62,11 @@ namespace ssrcore.Models
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.HasIndex(e => e.ManagerId)
-                    .HasName("UQ__Departme__3BA2AAE063D5616E")
+                    .HasName("UQ__Departme__3BA2AAE0AE0235C0")
                     .IsUnique();
 
                 entity.HasIndex(e => e.RoomNum)
-                    .HasName("UQ__Departme__BD7F63D5F60EE806")
+                    .HasName("UQ__Departme__BD7F63D5A230A485")
                     .IsUnique();
 
                 entity.Property(e => e.DepartmentId).IsUnicode(false);
@@ -184,7 +186,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<ServiceRequest>(entity =>
             {
                 entity.HasKey(e => e.TicketId)
-                    .HasName("PK__ServiceR__712CC6072471144C");
+                    .HasName("PK__ServiceR__712CC60728EEB860");
 
                 entity.Property(e => e.TicketId).IsUnicode(false);
 
@@ -248,10 +250,8 @@ namespace ssrcore.Models
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => e.UserNo)
-                    .HasName("UQ__Users__1788955E937C61F0")
+                    .HasName("UQ__Users__1788955E0013F901")
                     .IsUnique();
-
-                entity.Property(e => e.Address).IsUnicode(false);
 
                 entity.Property(e => e.Email).IsUnicode(false);
 

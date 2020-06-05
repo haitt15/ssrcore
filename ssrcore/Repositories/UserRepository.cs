@@ -110,7 +110,7 @@ namespace ssrcore.Repositories
 
         public async Task<Users> FindByUid(string uid)
         {
-            return await _context.Users.Where(x => x.Uid == uid).SingleOrDefaultAsync();
+            return await _context.Users.Where(x => x.Uid == uid && x.DelFlg == false).SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Users>> GetUsers()

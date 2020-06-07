@@ -29,7 +29,7 @@ namespace ssrcore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:se130022.database.windows.net,1433;Initial Catalog=SSR_DB;Persist Security Info=False;User ID=thanhhai;Password=Petronas@217;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+             optionsBuilder.UseSqlServer("Server=tcp:sonmap.database.windows.net,1433;Initial Catalog=SSR_DB;Persist Security Info=False;User ID=sonmap;Password=Sonheo123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -62,11 +62,11 @@ namespace ssrcore.Models
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.HasIndex(e => e.ManagerId)
-                    .HasName("UQ__Departme__3BA2AAE0AE0235C0")
+                    .HasName("UQ__Departme__3BA2AAE0DD452EBB")
                     .IsUnique();
 
                 entity.HasIndex(e => e.RoomNum)
-                    .HasName("UQ__Departme__BD7F63D5A230A485")
+                    .HasName("UQ__Departme__BD7F63D5CAC7177F")
                     .IsUnique();
 
                 entity.Property(e => e.DepartmentId).IsUnicode(false);
@@ -186,7 +186,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<ServiceRequest>(entity =>
             {
                 entity.HasKey(e => e.TicketId)
-                    .HasName("PK__ServiceR__712CC60728EEB860");
+                    .HasName("PK__ServiceR__712CC6070C5EC52C");
 
                 entity.Property(e => e.TicketId).IsUnicode(false);
 
@@ -250,7 +250,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => e.UserNo)
-                    .HasName("UQ__Users__1788955E0013F901")
+                    .HasName("UQ__Users__1788955E82EA5FF0")
                     .IsUnique();
 
                 entity.Property(e => e.Email).IsUnicode(false);

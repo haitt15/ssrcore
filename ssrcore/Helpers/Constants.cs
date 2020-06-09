@@ -7,6 +7,11 @@ namespace ssrcore.Helpers
 {
     public class Constants
     {
+        public struct Admin
+        {
+            public const string ADMIN = "Admin";
+        }
+
         public struct Users
         {
             public const string PASSWORD = "ThisIsMyPassword";

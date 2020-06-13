@@ -7,19 +7,20 @@ namespace ssrcore.ViewModels
 {
     public class ResourceParameters
     {
-        private const int maxPageCount = 20;
+        private const int MaxSize = 20;
         public int Page { get; set; } = 1;
-        private int _pageCount = maxPageCount;
-        public int PageCount
+        private int _size = MaxSize;
+        public int Size
         {
-            get { return _pageCount; }
-            set { _pageCount = (value > maxPageCount) ? maxPageCount : value; }
+            get { return _size; }
+            set { _size = (value > MaxSize) ? MaxSize : value; }
         }
-        public string SortBy { get; set; }
-        public string OrderBy { get; set; }
+       // public string SortName { get; set; }
+        public int SortBy { get; set; }
+        public string Fields { get; set; }
         internal double GetTotalPages(int count)
         {
-            return Math.Ceiling(count / (double)PageCount);
+            return Math.Ceiling(count / (double)Size);
         }
     }
 }

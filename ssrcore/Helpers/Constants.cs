@@ -22,5 +22,11 @@ namespace ssrcore.Helpers
             public const string ROLE_STAFF = "role01";
             public const string ROLE_STUDENT = "role02";
         }
+
+        public struct SortBy
+        {
+            public const int SORT_NAME_ASC = 0;
+            public const int SORT_NAME_DES = 1;
+        }
     }
 }

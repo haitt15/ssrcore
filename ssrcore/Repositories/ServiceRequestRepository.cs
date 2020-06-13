@@ -4,6 +4,7 @@ using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<bool> Create(ServiceRequestModel model)
+        public async Task<ServiceRequest> Create(ServiceRequestModel model)
         {
             try
             {
@@ -33,13 +34,13 @@ namespace ssrcore.Repositories
 
                 await _context.ServiceRequest.AddAsync(serviceRequest);
                 await _context.SaveChangesAsync();
+                return serviceRequest;
             }
             catch(Exception ex)
             {
                 throw ex;
             }
 
-            return true;
         }
 
         public async Task<PagedList<ServiceRequestModel>> GetAllServiceRequests(SearchServiceRequestModel model)
@@ -50,22 +51,40 @@ namespace ssrcore.Repositories
                                                .Select(t => new ServiceRequestModel
                                                {
                                                    TicketId = t.TicketId,
+                                                   UserId = t.UserId,
                                                    User = t.User.FullName,
                                                    Content = t.Content,
+                                                   ServiceId = t.ServiceId,
                                                    ServiceNm = t.Service.ServiceNm,
+                                                   StaffId = t.StaffId,
                                                    Staff = t.Staff.StaffNavigation.FullName,
                                                    Status = t.Status,
-                                                   DueDateTime = t.DueDateTime
+                                                   DueDateTime = t.DueDateTime,
+                                                   DelFlg = t.DelFlg,
+                                                   InsBy = t.InsBy,
+                                                   InsDatetime = t.InsDatetime,
+                                                   UpdBy = t.UpdBy,
+                                                   UpdDatetime = t.UpdDatetime
                                                });
 
             var totalCount = await _context.ServiceRequest.CountAsync();
-            var result = await query
-                    .OrderBy(t => t.ServiceNm)
-                    .Skip(model.PageCount * (model.Page - 1))
-                    .Take(model.PageCount)
-                    .ToListAsync();
+            List<ServiceRequestModel> result = null;
 
-            return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.PageCount);
+            if (model.SortBy == Constants.SortBy.SORT_NAME_ASC)
+            {
+                query = query.OrderBy(t => t.ServiceNm);
+            }
+            else if (model.SortBy == Constants.SortBy.SORT_NAME_DES)
+            {
+                query = query.OrderByDescending(t => t.ServiceNm);
+            }
+
+            result = await query.Skip(model.Size * (model.Page - 1))
+            .Take(model.Size)
+            .ToListAsync();
+
+
+            return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
         public async Task<ServiceRequest> GetServiceRequest(string ticketId)

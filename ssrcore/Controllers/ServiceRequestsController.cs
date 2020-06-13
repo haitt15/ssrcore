@@ -24,13 +24,66 @@ namespace ssrcore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllServiceRequest(SearchServiceRequestModel model)
+        public async Task<IActionResult> GetAllServiceRequest([FromQuery]SearchServiceRequestModel model)
         {
             var serviceRequests = await _serviceRequestRepository.GetAllServiceRequests(model);
+            dynamic result;
+
+            List<Dictionary<string, object>> listModel = new List<Dictionary<string, object>>();
+            if (!string.IsNullOrEmpty(model.Fields))
+            {
+                string[] filter = model.Fields.Split(",");
+                foreach (var s in serviceRequests)
+                {
+                    Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                    for (int i = 0; i < filter.Length; i++)
+                    {
+                        switch (filter[i].Trim())
+                        {
+                            case "TicketId":
+                                dictionary.Add("TicketId", s.TicketId);
+                                break;
+                            case "User":
+                                dictionary.Add("User", s.User);
+                                break;
+                            case "UserId":
+                                dictionary.Add("UserId", s.UserId);
+                                break;
+                            case "ServiceId":
+                                dictionary.Add("ServiceId", s.ServiceId);
+                                break;
+                            case "ServiceNm":
+                                dictionary.Add("Service Name", s.ServiceNm);
+                                break;
+                            case "StaffId":
+                                dictionary.Add("StaffId", s.StaffId);
+                                break;
+                            case "StaffNm":
+                                dictionary.Add("Staff Name", s.Staff);
+                                break;
+                            case "Content":
+                                dictionary.Add("Content", s.Content);
+                                break;
+                            case "DueDateTime":
+                                dictionary.Add("Due DateTime", s.DueDateTime);
+                                break;
+                            case "Status":
+                                dictionary.Add("Status", s.Status);
+                                break;
+                        }
+                    }
+                    listModel.Add(dictionary);
+                }
+                result = listModel;
+            }
+            else
+            {
+                result = serviceRequests;
+            }
             return Ok(
                 new
                 {
-                    data = serviceRequests,
+                    data = result,
                     totalCount = serviceRequests.TotalCount,
                     totalPages = serviceRequests.TotalPages
                 });
@@ -45,6 +98,18 @@ namespace ssrcore.Controllers
                 return NotFound();
             }
             return Ok(serivceRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestModel model)
+        {
+            var result = await _serviceRequestRepository.Create(model);
+            if (result != null)
+            {
+                return Created("", result);
+            }
+
+            return BadRequest();
         }
 
         [HttpPut]

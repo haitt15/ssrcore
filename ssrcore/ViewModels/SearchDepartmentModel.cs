@@ -7,7 +7,6 @@ namespace ssrcore.ViewModels
 {
     public class SearchDepartmentModel : ResourceParameters
     {
-        public string DepartmentId { get; set; }
         public string DepartmentNm { get; set; }
     }
 }

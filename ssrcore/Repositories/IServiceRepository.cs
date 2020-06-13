@@ -9,7 +9,7 @@ namespace ssrcore.Repositories
     {
         Task<PagedList<ServiceModel>> GetAllServices(SearchServicModel model);
         Task<Service> GetService(string serviceId);
-        Task<bool> Create(ServiceModel model);
+        Task<Service> Create(ServiceModel model);
         void Update(ServiceModel model);
         Task<bool> Remove(string serviceId);
     }

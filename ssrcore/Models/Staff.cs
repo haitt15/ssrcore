@@ -9,6 +9,7 @@ namespace ssrcore.Models
     {
         public Staff()
         {
+            Department = new HashSet<Department>();
             RequestHistoryFromStaffNavigation = new HashSet<RequestHistory>();
             RequestHistoryToStaffNavigation = new HashSet<RequestHistory>();
             ServiceRequest = new HashSet<ServiceRequest>();
@@ -38,7 +39,7 @@ namespace ssrcore.Models
         [InverseProperty(nameof(Users.Staff))]
         public virtual Users StaffNavigation { get; set; }
         [InverseProperty("Manager")]
-        public virtual Department Department { get; set; }
+        public virtual ICollection<Department> Department { get; set; }
         [InverseProperty(nameof(RequestHistory.FromStaffNavigation))]
         public virtual ICollection<RequestHistory> RequestHistoryFromStaffNavigation { get; set; }
         [InverseProperty(nameof(RequestHistory.ToStaffNavigation))]

@@ -23,19 +23,18 @@ namespace ssrcore.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IFcmTokenRepository _fcmTokenRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
-
-        public AuthController(IUserRepository userRepository, IRoleRepository roleRepository,
-                                      IMapper mapper, IConfiguration config)
+        public AuthController(IUserRepository userRepository, IRoleRepository roleRepository, IFcmTokenRepository fcmTokenRepository, IMapper mapper, IConfiguration config)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _fcmTokenRepository = fcmTokenRepository;
             _mapper = mapper;
             _config = config;
         }
-
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -98,23 +97,23 @@ namespace ssrcore.Controllers
             var decodeToken = await auth.VerifyIdTokenAsync(request.IdToken);
             if (decodeToken != null)
             {
-                
                 string uid = decodeToken.Uid;
                 UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
                 int indexEmail = user_firebase.Email.LastIndexOf("@fpt.edu.vn");
                 if (indexEmail > 0)
                 {
-                    var user = await _userRepository.FindByUid(uid);
-                    if (user == null)
+                    var currentUser = await _userRepository.FindByUid(uid);
+                   
+                    if (currentUser == null)
                     {
                         var user_info = new Users
                         {
                             Uid = uid,
-                            Username = RandomString(8, true),
+                            Username = Utils.RandomString(8, true),
                             RoleId = Constants.Roles.ROLE_STUDENT,
                             Email = user_firebase.Email,
                             Phonenumber = user_firebase.PhoneNumber,
-                            UserNo = GetUserNo(user_firebase.Email, user_firebase.DisplayName),
+                            UserNo = Utils.GetUserNo(user_firebase.Email, user_firebase.DisplayName),
                             FullName = user_firebase.DisplayName,
                             Address = "",
                             DelFlg = false,
@@ -124,16 +123,22 @@ namespace ssrcore.Controllers
                             UpdBy = "Admin",
                             UpdDatetime = DateTime.Now
                         };
-                        await _userRepository.Create(user_info, Constants.Users.PASSWORD);
+                        currentUser = await _userRepository.Create(user_info, Constants.Users.PASSWORD);
                         await _userRepository.Save();
                     }
-                    string jwt_token = await auth.CreateCustomTokenAsync(uid);
+                    await _fcmTokenRepository.Create(currentUser.Id, request.FcmToken);
+
+                    IDictionary<string, object> developerClaims = new Dictionary<string, object>();
+                    developerClaims.Add("role", Constants.Roles.ROLE_STUDENT);
+                    string jwt_token = await auth.CreateCustomTokenAsync(uid,developerClaims);
+
                     return Ok(new
                     {
                         token = jwt_token,
                         role = Constants.Roles.ROLE_STUDENT,
-                        email = user_firebase.Email,
-                        fullName = user_firebase.DisplayName
+                        email = currentUser.Email,
+                        fullName = currentUser.FullName,
+                        uid = currentUser.Uid
                     });
                 }
             }
@@ -141,40 +146,7 @@ namespace ssrcore.Controllers
             return BadRequest();
         }
 
-        private string GetUserNo(String email, String displayName)
-        {
-            int lastIndex = displayName.LastIndexOf("(");  //lastIndexOf(" ");
-            string fullname = displayName.Substring(0, lastIndex).Trim();
-            string[] arr = fullname.Split(" ");
-            string username = arr[arr.Length - 1];
-            int lengthPre = username.Length - 1 + arr.Length;
-            email = email.Substring(lengthPre);
-            int indexEmail = email.LastIndexOf("@fpt.edu.vn");
-            string result = email.Substring(0, indexEmail);
-            return result.ToUpper();
-        }
-        private String GetFirstName(String FullName)
-        {
-            return "";
-        }
-        private String GetLastName(String FullName)
-        {
-            return "";
-        }
 
-        private string RandomString(int size, bool lowerCase)
-        {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < size; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            if (lowerCase)
-                return builder.ToString().ToLower();
-            return builder.ToString();
-        }
+
     }
 }

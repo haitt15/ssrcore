@@ -1,12 +1,10 @@
-﻿using Google.Apis.Util;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace ssrcore.Repositories
@@ -18,7 +16,7 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<bool> Create(ServiceModel model)
+        public async Task<Service> Create(ServiceModel model)
         {
             try
             {
@@ -40,13 +38,12 @@ namespace ssrcore.Repositories
 
                 await _context.Service.AddAsync(service);
                 await _context.SaveChangesAsync();
+                return service;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
-            return true;
         }
 
         public async Task<PagedList<ServiceModel>> GetAllServices(SearchServicModel model)
@@ -63,17 +60,32 @@ namespace ssrcore.Repositories
                             DepartmentNm = t.Department.DepartmentNm,
                             FormLink = t.FormLink,
                             SheetLink = t.SheetLink,
-                            ProcessMaxDay = t.ProcessMaxDay
+                            ProcessMaxDay = t.ProcessMaxDay,
+                            DelFlg = t.DelFlg,
+                            InsBy = t.InsBy,
+                            InsDatetime = t.InsDatetime,
+                            UpdBy = t.UpdBy,
+                            UpdDatetime = t.UpdDatetime
                         });
 
             var totalCount = await query.CountAsync();
-            var result = await query
-                .OrderBy(t => t.ServiceNm)
-                .Skip(model.PageCount - (model.Page - 1))
-                .Take(model.PageCount)
-                .ToListAsync();
 
-            return PagedList<ServiceModel>.ToPagedList(result, totalCount, model.Page, model.PageCount);
+            List<ServiceModel> result = null;
+
+            if (model.SortBy == Constants.SortBy.SORT_NAME_ASC)
+            {
+                query = query.OrderBy(t => t.ServiceNm);
+            }
+            else if (model.SortBy == Constants.SortBy.SORT_NAME_DES)
+            {
+                query = query.OrderByDescending(t => t.ServiceNm);
+            }
+
+            result = await query.Skip(model.Size * (model.Page - 1))
+            .Take(model.Size)
+            .ToListAsync();
+
+            return PagedList<ServiceModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
         public async Task<Service> GetService(string serviceId)

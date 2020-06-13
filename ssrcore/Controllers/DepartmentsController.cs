@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Repositories;
@@ -11,7 +15,7 @@ namespace ssrcore.Controllers
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
 
         public DepartmentsController(IDepartmentRepository departmentRepository, IMapper mapper)
         {
@@ -21,15 +25,56 @@ namespace ssrcore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDepartments([FromBody] SearchDepartmentModel model)
+        public async Task<IActionResult> GetAllDepartments([FromQuery] SearchDepartmentModel model)
         {
+            dynamic result;
             var departments = await _departmentRepository.GetAllDepartments(model);
-            return Ok(
-                new
+     
+            List<Dictionary<string, object>> listModel = new List<Dictionary<string, object>>();
+            if (!string.IsNullOrEmpty(model.Fields))
+            {
+                string[] filter = model.Fields.Split(",");
+                foreach (var m in departments)
                 {
-                    data = departments,
+                    Dictionary<string, object> dictionnary = new Dictionary<string, object>();
+                    for (int i = 0; i < filter.Length; i++)
+                    {
+                        switch (filter[i].Trim())
+                        {
+                            case "DepartmentId":
+                                dictionnary.Add("DepartmentId", m.DepartmentId);
+                                break;
+                            case "DepartmentNm":
+                                dictionnary.Add("DepartmentNm", m.DepartmentNm);
+                                break;
+                            case "Hotline":
+                                dictionnary.Add("Hotline", m.Hotline);
+                                break;
+                            case "ManagerId":
+                                dictionnary.Add("ManagerId", m.ManagerId);
+                                break;
+                            case "Manager":
+                                dictionnary.Add("Manager", m.Manager);
+                                break;
+                            case "RoomNum":
+                                dictionnary.Add("RoomNum", m.RoomNum);
+                                break;
+                        }
+                    }
+                    listModel.Add(dictionnary);
+                }
+                result = listModel;
+            }
+            else
+            {
+                result = departments;
+            }
+            return Ok(
+                new 
+                {
+                    data = result,
                     totalCount = departments.TotalCount,
-                    totalPages = departments.TotalPages 
+                    totalPages = departments.TotalPages
                 });
         }
 
@@ -37,7 +82,7 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetDepartment([FromQuery] string departmentId)
         {
             var department = await _departmentRepository.GetDepartment(departmentId);
-            if(departmentId == null)
+            if (departmentId == null)
             {
                 return BadRequest();
             }
@@ -49,9 +94,9 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentModel model)
         {
             var result = await _departmentRepository.Create(model);
-            if (result)
+            if (result != null)
             {
-                return CreatedAtRoute("GetAllDepartments", new { departmemtId = model.DepartmentId }, model);
+                return Created("", result);
             }
 
             return BadRequest();
@@ -61,7 +106,7 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> UpdateDepartment([FromQuery] string departmentId, [FromBody] DepartmentModel model)
         {
             var department = await _departmentRepository.GetDepartment(departmentId);
-            if(department == null)
+            if (department == null)
             {
                 return NotFound();
             }

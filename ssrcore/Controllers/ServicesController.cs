@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Repositories;
@@ -20,13 +21,60 @@ namespace ssrcore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllServices([FromBody] SearchServicModel model)
+        public async Task<IActionResult> GetAllServices([FromQuery] SearchServicModel model)
         {
             var services = await _serviceRepository.GetAllServices(model);
+            dynamic result;
+
+            List<Dictionary<string, object>> listModel = new List<Dictionary<string, object>>();
+            if (!string.IsNullOrEmpty(model.Fields))
+            {
+                string[] filter = model.Fields.Split(",");
+                foreach (var s in services)
+                {
+                    Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                    for (int i = 0; i < filter.Length; i++)
+                    {
+                        switch (filter[i].Trim())
+                        {
+                            case "ServiceId":
+                                dictionary.Add("ServiceId", s.ServiceId);
+                                break;
+                            case "ServiceNm":
+                                dictionary.Add("ServiceNm", s.ServiceNm);
+                                break;
+                            case "DescriptionService":
+                                dictionary.Add("Description Service", s.DescriptionService);
+                                break;
+                            case "FormLink":
+                                dictionary.Add("FormLink", s.FormLink);
+                                break;
+                            case "SheetLink":
+                                dictionary.Add("RoomNum", s.SheetLink);
+                                break;
+                            case "ProcessMaxDay":
+                                dictionary.Add("Process Max Day", s.ProcessMaxDay);
+                                break;
+                            case "DepartmentId":
+                                dictionary.Add("DepartmentId", s.DepartmentId);
+                                break;
+                            case "DepartmentNm":
+                                dictionary.Add("Department Name", s.DepartmentNm);
+                                break;
+                        }
+                    }
+                    listModel.Add(dictionary);
+                }
+                result = listModel;
+            }
+            else
+            {
+                result = services;
+            }
             return Ok(
                 new
                 {
-                    data = services,
+                    data = result,
                     totalCount = services.TotalCount,
                     totalPages = services.TotalPages
                 });
@@ -36,11 +84,23 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetService(string serviceId)
         {
             var serivce = await _serviceRepository.GetService(serviceId);
-            if(serivce == null)
+            if (serivce == null)
             {
                 return NotFound();
             }
             return Ok(serivce);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateService([FromBody] ServiceModel model)
+        {
+            var result = await _serviceRepository.Create(model);
+            if (result != null)
+            {
+                return Created("", result);
+            }
+
+            return BadRequest();
         }
 
         [HttpPut]

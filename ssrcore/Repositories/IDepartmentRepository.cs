@@ -12,7 +12,7 @@ namespace ssrcore.Repositories
     {
         Task<PagedList<DepartmentModel>> GetAllDepartments(SearchDepartmentModel model);
         Task<Department> GetDepartment(string departmentId);
-        Task<bool> Create(DepartmentModel model);
+        Task<Department> Create(DepartmentModel model);
         void UpdateDepartment(DepartmentModel model);
         Task<bool> Remove(string departmentId);
     }

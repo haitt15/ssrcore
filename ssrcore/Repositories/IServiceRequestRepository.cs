@@ -10,7 +10,7 @@ namespace ssrcore.Repositories
     {
         Task<PagedList<ServiceRequestModel>> GetAllServiceRequests(SearchServiceRequestModel model);
         Task<ServiceRequest> GetServiceRequest(string userId);
-        Task<bool> Create(ServiceRequestModel model);
+        Task<ServiceRequest> Create(ServiceRequestModel model);
         void Update(ServiceRequestModel model);
         Task<bool> Remove(string ticketId);
 

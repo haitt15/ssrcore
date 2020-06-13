@@ -71,6 +71,7 @@ namespace ssrcore
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFcmTokenRepository, FcmTokenRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IServiceRepository, ServiceRepository>();

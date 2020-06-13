@@ -10,6 +10,7 @@ namespace ssrcore.Models
         public Users()
         {
             Comment = new HashSet<Comment>();
+            FcmToken = new HashSet<FcmToken>();
             NotificationFromUserNavigation = new HashSet<Notification>();
             NotificationToUserNavigation = new HashSet<Notification>();
             ServiceRequest = new HashSet<ServiceRequest>();
@@ -62,6 +63,8 @@ namespace ssrcore.Models
         public virtual Staff Staff { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Comment> Comment { get; set; }
+        [InverseProperty("User")]
+        public virtual ICollection<FcmToken> FcmToken { get; set; }
         [InverseProperty(nameof(Notification.FromUserNavigation))]
         public virtual ICollection<Notification> NotificationFromUserNavigation { get; set; }
         [InverseProperty(nameof(Notification.ToUserNavigation))]

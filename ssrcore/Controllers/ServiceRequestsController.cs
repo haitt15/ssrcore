@@ -53,19 +53,19 @@ namespace ssrcore.Controllers
                                 dictionary.Add("ServiceId", s.ServiceId);
                                 break;
                             case "ServiceNm":
-                                dictionary.Add("Service Name", s.ServiceNm);
+                                dictionary.Add("ServiceNm", s.ServiceNm);
                                 break;
                             case "StaffId":
                                 dictionary.Add("StaffId", s.StaffId);
                                 break;
                             case "StaffNm":
-                                dictionary.Add("Staff Name", s.Staff);
+                                dictionary.Add("StaffNm", s.Staff);
                                 break;
                             case "Content":
                                 dictionary.Add("Content", s.Content);
                                 break;
                             case "DueDateTime":
-                                dictionary.Add("Due DateTime", s.DueDateTime);
+                                dictionary.Add("DueDateTime", s.DueDateTime);
                                 break;
                             case "Status":
                                 dictionary.Add("Status", s.Status);

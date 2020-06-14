@@ -44,7 +44,7 @@ namespace ssrcore.Controllers
                                 dictionary.Add("ServiceNm", s.ServiceNm);
                                 break;
                             case "DescriptionService":
-                                dictionary.Add("Description Service", s.DescriptionService);
+                                dictionary.Add("DescriptionService", s.DescriptionService);
                                 break;
                             case "FormLink":
                                 dictionary.Add("FormLink", s.FormLink);
@@ -53,13 +53,13 @@ namespace ssrcore.Controllers
                                 dictionary.Add("RoomNum", s.SheetLink);
                                 break;
                             case "ProcessMaxDay":
-                                dictionary.Add("Process Max Day", s.ProcessMaxDay);
+                                dictionary.Add("ProcessMaxDay", s.ProcessMaxDay);
                                 break;
                             case "DepartmentId":
                                 dictionary.Add("DepartmentId", s.DepartmentId);
                                 break;
                             case "DepartmentNm":
-                                dictionary.Add("Department Name", s.DepartmentNm);
+                                dictionary.Add("DepartmentNm", s.DepartmentNm);
                                 break;
                         }
                     }

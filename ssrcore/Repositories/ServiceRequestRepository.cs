@@ -29,7 +29,12 @@ namespace ssrcore.Repositories
                     StaffId = model.StaffId,
                     Content = model.Content,
                     DueDateTime = model.DueDateTime,
-                    Status = model.Status
+                    Status = model.Status,
+                    DelFlg = false,
+                    InsBy = Constants.Admin.ADMIN,
+                    InsDatetime = DateTime.Now,
+                    UpdBy = Constants.Admin.ADMIN,
+                    UpdDatetime = DateTime.Now
                 };
 
                 await _context.ServiceRequest.AddAsync(serviceRequest);

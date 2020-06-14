@@ -50,7 +50,7 @@ namespace ssrcore.Repositories
         {
             var query = _context.Service.Where(t => (t.DelFlg == false)
                                                    && (model.ServiceNm == null || t.ServiceNm.Contains(model.ServiceNm))
-                                                   && (model.DepartmentId == null || t.DepartmentId == model.DepartmentId))
+                                                   && (model.DepartmentNm == null || t.Department.DepartmentNm == model.DepartmentNm))
                         .Select(t => new ServiceModel
                         {
                             ServiceId = t.ServiceId,

@@ -28,7 +28,7 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userRepository.GetUsers();
-            var currentUser = await _userRepository.FindByUid("R1gFldbUSWMP45wFOifDwFs6r2A3");
+            var currentUser = await _userRepository.FindByUid("JcNIdM8KXYglFppYcWnIIXTbyqg2");
             int UserId = currentUser.Id;
             List<string> ListFcmToken = _fcmTokenRepository.GetFcmToken(UserId);
             foreach (string FcmToken in ListFcmToken)

@@ -30,7 +30,7 @@ namespace ssrcore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:sonmap.database.windows.net,1433;Initial Catalog=SSR_DB;Persist Security Info=False;User ID=sonmap;Password=Sonheo123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=tcp:tungduong.database.windows.net,1433;Initial Catalog=SSR_DB;Persist Security Info=False;User ID=tungduong;Password=Sonheo123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -62,6 +62,10 @@ namespace ssrcore.Models
 
             modelBuilder.Entity<Department>(entity =>
             {
+                entity.HasIndex(e => e.RoomNum)
+                    .HasName("UQ__Departme__BD7F63D5EE0A8CAA")
+                    .IsUnique();
+
                 entity.Property(e => e.DepartmentId).IsUnicode(false);
 
                 entity.Property(e => e.Hotline).IsUnicode(false);
@@ -190,7 +194,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<ServiceRequest>(entity =>
             {
                 entity.HasKey(e => e.TicketId)
-                    .HasName("PK__ServiceR__712CC6070C5EC52C");
+                    .HasName("PK__ServiceR__712CC6079D327BE8");
 
                 entity.Property(e => e.TicketId).IsUnicode(false);
 
@@ -254,7 +258,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => e.UserNo)
-                    .HasName("UQ__Users__1788955E82EA5FF0")
+                    .HasName("UQ__Users__1788955EA586BCB5")
                     .IsUnique();
 
                 entity.Property(e => e.Email).IsUnicode(false);

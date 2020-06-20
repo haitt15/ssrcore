@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using AutoMapper;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -52,10 +53,17 @@ namespace ssrcore
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            var tokenValue = Configuration.GetSection("AppSettings:Token").Value;
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
                 {
                     var firebaseProject = Configuration.GetSection("AppSettings:FirebaseProject").Value;
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
                     options.Authority = "https://securetoken.google.com/" + firebaseProject;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -63,7 +71,8 @@ namespace ssrcore
                         ValidIssuer = "https://securetoken.google.com/" + firebaseProject,
                         ValidateAudience = true,
                         ValidAudience = firebaseProject,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenValue))
                     };
                 });
 

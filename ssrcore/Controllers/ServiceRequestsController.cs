@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Helpers;
 using ssrcore.Repositories;
 using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
-{
+{   
     [Route("api/v1/[controller]")]
     [ApiController]
     public class ServiceRequestsController : ControllerBase
@@ -94,6 +93,7 @@ namespace ssrcore.Controllers
         }
 
         [HttpGet("{ticketId}", Name = "GetServiceRequest")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetServiceRequest(string ticketId)
         {
             var serivceRequest = await _serviceRequestRepository.GetServiceRequestModel(ticketId);
@@ -105,6 +105,7 @@ namespace ssrcore.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestModel model)
         {
             var result = await _serviceRequestRepository.Create(model);

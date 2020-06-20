@@ -65,14 +65,15 @@ namespace ssrcore.Controllers
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                     new Claim(ClaimTypes.NameIdentifier, user.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("role", role)
+                    new Claim(ClaimTypes.Role, role)
                 };
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
                 var apiUrl = _config.GetSection("AppSettings:Url").Value;
+                var firebaseProject = _config.GetSection("AppSettings:FirebaseProject").Value;
                 var token = new JwtSecurityToken(
-                    issuer: apiUrl,
-                    audience: apiUrl,
+                    issuer: "https://securetoken.google.com/" + firebaseProject,
+                    audience: firebaseProject,
                     expires: DateTime.Now.AddYears(13),
                     claims: authClaims,
                     signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
@@ -103,7 +104,7 @@ namespace ssrcore.Controllers
                 if (indexEmail > 0)
                 {
                     var currentUser = await _userRepository.FindByUid(uid);
-                   
+
                     if (currentUser == null)
                     {
                         var user_info = new Users
@@ -128,14 +129,36 @@ namespace ssrcore.Controllers
                     }
                     await _fcmTokenRepository.Create(currentUser.Id, request.FcmToken);
 
-                    IDictionary<string, object> developerClaims = new Dictionary<string, object>();
-                    developerClaims.Add("role", Constants.Roles.ROLE_STUDENT);
-                    string jwt_token = await auth.CreateCustomTokenAsync(uid,developerClaims);
+
+
+                    //IDictionary<string, object> developerClaims = new Dictionary<string, object>();
+                    //developerClaims.Add(ClaimTypes.Role, role);
+                    //string jwt_token = await auth.CreateCustomTokenAsync(uid, developerClaims);
+
+                    var role = _roleRepository.FindRole(currentUser);
+
+                    var authClaims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, currentUser.Username),
+                    new Claim(ClaimTypes.NameIdentifier, currentUser.Username),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Role, role)
+                };
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+                    var firebaseProject = _config.GetSection("AppSettings:FirebaseProject").Value;
+                    var token = new JwtSecurityToken(
+                        issuer: "https://securetoken.google.com/" + firebaseProject,
+                        audience: firebaseProject,
+                        expires: DateTime.Now.AddYears(13),
+                        claims: authClaims,
+                        signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
+                        );
 
                     return Ok(new
                     {
-                        token = jwt_token,
-                        role = Constants.Roles.ROLE_STUDENT,
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        role = role,
                         email = currentUser.Email,
                         fullName = currentUser.FullName,
                         uid = currentUser.Uid

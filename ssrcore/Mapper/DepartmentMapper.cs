@@ -13,6 +13,7 @@ namespace ssrcore.Mapper
         public DepartmentMapper()
         {
             CreateMap<Department, DepartmentModel>();
+            CreateMap<DepartmentModel, Department>();
         }
     }
 }

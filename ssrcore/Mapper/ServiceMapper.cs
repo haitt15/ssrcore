@@ -13,6 +13,7 @@ namespace ssrcore.Mapper
         public ServiceMapper()
         {
             CreateMap<Service, ServiceModel>();
+            CreateMap<ServiceModel, Service>();
         }
     }
 }

@@ -127,7 +127,10 @@ namespace ssrcore.Controllers
                         currentUser = await _userRepository.Create(user_info, Constants.Users.PASSWORD);
                         await _userRepository.Save();
                     }
-                    await _fcmTokenRepository.Create(currentUser.Id, request.FcmToken);
+                    if (request.FcmToken != null)
+                    {
+                        await _fcmTokenRepository.Create(currentUser.Id, request.FcmToken);
+                    }
 
 
 

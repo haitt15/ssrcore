@@ -1,6 +1,6 @@
 // import axios from 'axios'
 import SSRCore from '../../service/SSRCore'
-const API_URL = 'https://localhost:44312/api/v1/Auth'
+const API_URL = '/api/v1/Auth'
 
 const user = JSON.parse(localStorage.getItem('UserInfo'))
 const initialState = user
@@ -42,7 +42,7 @@ export const auth = {
   },
   actions: {
     _login (context, user) {
-      return SSRCore.post('/api/v1/Auth', {
+      return SSRCore.post(API_URL, {
         username: user.username,
         password: user.password
       })
@@ -61,7 +61,7 @@ export const auth = {
     },
     _loginWithGoogle (context, idToken) {
       return SSRCore.post(API_URL + '/Google', {
-        IdToken: idToken
+        idToken: idToken
       })
         .then(response => {
           if (response.data.token) {

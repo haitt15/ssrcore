@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace ssrcore.Repositories
 {
-    public class ServiceRequestRepository :BaseRepository, IServiceRequestRepository
+    public class ServiceRequestRepository : BaseRepository, IServiceRequestRepository
     {
-        public ServiceRequestRepository(ApplicationDbContext context) :base(context)
+        public ServiceRequestRepository(ApplicationDbContext context) : base(context)
         {
 
         }
 
-        public async Task<ServiceRequest> Create(ServiceRequestModel model)
+        public async Task<ServiceRequestModel> Create(ServiceRequestModel model)
         {
             try
             {
@@ -39,9 +39,9 @@ namespace ssrcore.Repositories
 
                 await _context.ServiceRequest.AddAsync(serviceRequest);
                 await _context.SaveChangesAsync();
-                return serviceRequest;
+                return await GetServiceRequestModel(serviceRequest.TicketId);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -57,7 +57,8 @@ namespace ssrcore.Repositories
                                                {
                                                    TicketId = t.TicketId,
                                                    UserId = t.UserId,
-                                                   User = t.User.FullName,
+                                                   Student = t.User.FullName,
+                                                   Department = t.Service.Department.DepartmentNm,
                                                    Content = t.Content,
                                                    ServiceId = t.ServiceId,
                                                    ServiceNm = t.Service.ServiceNm,
@@ -92,15 +93,34 @@ namespace ssrcore.Repositories
             return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<ServiceRequest> GetServiceRequest(string ticketId)
+        public async Task<ServiceRequestModel> GetServiceRequestModel(string ticketId)
         {
-            return await _context.ServiceRequest.FindAsync(ticketId);
+            var result = await _context.ServiceRequest.Where(s => s.TicketId == ticketId).Select(t => new ServiceRequestModel
+            {
+                TicketId = t.TicketId,
+                UserId = t.UserId,
+                Student = t.User.FullName,
+                Department = t.Service.Department.DepartmentNm,
+                Content = t.Content,
+                ServiceId = t.ServiceId,
+                ServiceNm = t.Service.ServiceNm,
+                StaffId = t.StaffId,
+                Staff = t.Staff.StaffNavigation.FullName,
+                Status = t.Status,
+                DueDateTime = t.DueDateTime,
+                DelFlg = t.DelFlg,
+                InsBy = t.InsBy,
+                InsDatetime = t.InsDatetime,
+                UpdBy = t.UpdBy,
+                UpdDatetime = t.UpdDatetime
+            }).FirstOrDefaultAsync();
+            return result;
         }
 
         public async Task<bool> Remove(string ticketId)
         {
             var serviceRequest = await _context.ServiceRequest.FindAsync(ticketId);
-            if(serviceRequest != null)
+            if (serviceRequest != null)
             {
                 serviceRequest.DelFlg = true;
                 await _context.SaveChangesAsync();
@@ -109,9 +129,19 @@ namespace ssrcore.Repositories
             return false;
         }
 
-        public void Update(ServiceRequestModel model)
+        public async Task<ServiceRequestModel> Update(string ticketId, ServiceRequestModel model)
         {
+            var serivceRequest = await GetServiceRequest(ticketId);
+            if (serivceRequest == null)
+            {
+                return null;
+            }
+            serivceRequest.StaffId = model.StaffId != null ? model.StaffId : serivceRequest.StaffId;
+            serivceRequest.Content = model.Content != null ? model.Content : serivceRequest.Content;
+            serivceRequest.Status = model.Status != null ? model.Status : serivceRequest.Status;
+            serivceRequest.DueDateTime = model.DueDateTime.Year >= 1753 ? model.DueDateTime : serivceRequest.DueDateTime;
             _context.SaveChanges();
+            return await GetServiceRequestModel(ticketId);
         }
 
         public string GenerateTicketId()
@@ -125,6 +155,10 @@ namespace ssrcore.Repositories
             }
             while (sericeRequest != null);
             return ticketId;
+        }
+        public async Task<ServiceRequest> GetServiceRequest(string ticketId)
+        {
+            return await _context.ServiceRequest.FindAsync(ticketId);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ssrcore.Helpers;
 using ssrcore.Repositories;
 using ssrcore.ViewModels;
 
@@ -43,8 +44,11 @@ namespace ssrcore.Controllers
                             case "TicketId":
                                 dictionary.Add("TicketId", s.TicketId);
                                 break;
-                            case "User":
-                                dictionary.Add("User", s.User);
+                            case "Student":
+                                dictionary.Add("Student", s.Student);
+                                break;
+                            case "Department":
+                                dictionary.Add("Department", s.Department);
                                 break;
                             case "UserId":
                                 dictionary.Add("UserId", s.UserId);
@@ -92,7 +96,7 @@ namespace ssrcore.Controllers
         [HttpGet("{ticketId}", Name = "GetServiceRequest")]
         public async Task<IActionResult> GetServiceRequest(string ticketId)
         {
-            var serivceRequest = await _serviceRequestRepository.GetServiceRequest(ticketId);
+            var serivceRequest = await _serviceRequestRepository.GetServiceRequestModel(ticketId);
             if (serivceRequest == null)
             {
                 return NotFound();
@@ -106,6 +110,7 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestRepository.Create(model);
             if (result != null)
             {
+                RequestSheetUtils.Add(result);
                 return Created("", result);
             }
 
@@ -115,16 +120,14 @@ namespace ssrcore.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateServiceRequest(string ticketId, ServiceRequestModel model)
         {
-            var serivceRequest = await _serviceRequestRepository.GetServiceRequest(ticketId);
-            if (serivceRequest == null)
-            {
+           
+            //_mapper.Map(model, serivceRequest);
+            var result = await _serviceRequestRepository.Update(ticketId, model);
+            if(result == null) {
                 return NotFound();
             }
-
-            _mapper.Map(model, serivceRequest);
-            _serviceRequestRepository.Update(model);
-
-            return NoContent();
+            RequestSheetUtils.Update(result);
+            return Ok(result);
         }
 
         [HttpDelete]
@@ -133,9 +136,9 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestRepository.Remove(ticketId);
             if (result)
             {
+                RequestSheetUtils.Delete(ticketId);
                 return NoContent();
             }
-
             return BadRequest();
         }
 

@@ -1,16 +1,14 @@
 ﻿using FirebaseAdmin.Messaging;
-using ssrcore.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Notification = FirebaseAdmin.Messaging.Notification;
 
 namespace ssrcore.Helpers
 {
     public class Utils
     {
-
+       
 
         public static string RandomString(int size, bool lowerCase)
         {
@@ -56,5 +54,6 @@ namespace ssrcore.Helpers
             var result = await messaging.SendAsync(message);
             return result;
         }
-    }
+
+}
 }

@@ -12,8 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ssrcore.AutoMapper;
 using ssrcore.Models;
 using ssrcore.Repositories;
+using ssrcore.Services;
+using ssrcore.UnitOfWork;
 
 namespace ssrcore
 {
@@ -70,12 +73,14 @@ namespace ssrcore
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IFcmTokenRepository, FcmTokenRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IServiceRepository, ServiceRepository>();
-            services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IServiceRequestService, ServiceRequestService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFcmTokenService, FcmTokenService>();
+            services.AddScoped<IRoleService, RoleService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
         }
 

@@ -2,17 +2,19 @@
 using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.ViewModels;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ssrcore.Repositories
 {
     public interface IServiceRequestRepository
     {
-        Task<PagedList<ServiceRequestModel>> GetAllServiceRequests(SearchServiceRequestModel model);
-        Task<ServiceRequest> GetServiceRequest(string userId);
-        Task<ServiceRequest> Create(ServiceRequestModel model);
-        void Update(ServiceRequestModel model);
-        Task<bool> Remove(string ticketId);
+        Task<PagedList<ServiceRequestModel>> GetAll(SearchServiceRequestModel model);
+        Task<ServiceRequestModel> GetById(string ticketId);
+        Task<IEnumerable<ServiceRequest>> GetByUserId(int userId);
+        Task Create(ServiceRequest serviceRequest);
+        void Update(ServiceRequest serviceRequest);
+        void Delete(ServiceRequest serviceRequest);
 
     }
 }

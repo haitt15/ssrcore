@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Repositories;
+using ssrcore.Services;
 using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
@@ -11,79 +13,26 @@ namespace ssrcore.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceService _serviceService;
         private readonly IMapper _mapper;
 
-        public ServicesController(IServiceRepository serviceRepository, IMapper mapper)
+        public ServicesController(IServiceService serviceService, IMapper mapper)
         {
-            _serviceRepository = serviceRepository;
+            _serviceService = serviceService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllServices([FromQuery] SearchServicModel model)
         {
-            var services = await _serviceRepository.GetAllServices(model);
-            dynamic result;
-
-            List<Dictionary<string, object>> listModel = new List<Dictionary<string, object>>();
-            if (!string.IsNullOrEmpty(model.Fields))
-            {
-                string[] filter = model.Fields.Split(",");
-                foreach (var s in services)
-                {
-                    Dictionary<string, object> dictionary = new Dictionary<string, object>();
-                    for (int i = 0; i < filter.Length; i++)
-                    {
-                        switch (filter[i].Trim())
-                        {
-                            case "ServiceId":
-                                dictionary.Add("ServiceId", s.ServiceId);
-                                break;
-                            case "ServiceNm":
-                                dictionary.Add("ServiceNm", s.ServiceNm);
-                                break;
-                            case "DescriptionService":
-                                dictionary.Add("DescriptionService", s.DescriptionService);
-                                break;
-                            case "FormLink":
-                                dictionary.Add("FormLink", s.FormLink);
-                                break;
-                            case "SheetLink":
-                                dictionary.Add("RoomNum", s.SheetLink);
-                                break;
-                            case "ProcessMaxDay":
-                                dictionary.Add("ProcessMaxDay", s.ProcessMaxDay);
-                                break;
-                            case "DepartmentId":
-                                dictionary.Add("DepartmentId", s.DepartmentId);
-                                break;
-                            case "DepartmentNm":
-                                dictionary.Add("DepartmentNm", s.DepartmentNm);
-                                break;
-                        }
-                    }
-                    listModel.Add(dictionary);
-                }
-                result = listModel;
-            }
-            else
-            {
-                result = services;
-            }
-            return Ok(
-                new
-                {
-                    data = result,
-                    totalCount = services.TotalCount,
-                    totalPages = services.TotalPages
-                });
+            var result = await _serviceService.GetAllService(model);
+            return Ok(result);
         }
 
         [HttpGet("{serviceId}", Name = "GetService")]
         public async Task<IActionResult> GetService(string serviceId)
         {
-            var serivce = await _serviceRepository.GetService(serviceId);
+            var serivce = await _serviceService.GetService(serviceId);
             if (serivce == null)
             {
                 return NotFound();
@@ -94,7 +43,7 @@ namespace ssrcore.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateService([FromBody] ServiceModel model)
         {
-            var result = await _serviceRepository.Create(model);
+            var result = await _serviceService.CreateService(model);
             if (result != null)
             {
                 return Created("", result);
@@ -103,30 +52,31 @@ namespace ssrcore.Controllers
             return BadRequest();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateService(string serviceId, ServiceModel model)
+        [HttpPut("{serviceId}")]
+        public async Task<IActionResult> UpdateService(string serviceId, [FromBody] ServiceModel model)
         {
-            var service = await _serviceRepository.GetService(serviceId);
+            var service = await _serviceService.GetService(serviceId);
             if (service == null)
             {
                 return NotFound();
             }
 
-            _mapper.Map(model, service);
-            _serviceRepository.Update(model);
-
-            return NoContent();
+            if (ModelState.IsValid)
+            {
+                var result = await _serviceService.UpdateService(serviceId, model);
+                return Ok(result);
+            }
+            return BadRequest();
         }
-
-        [HttpDelete]
-        public async Task<IActionResult> RemoveService(string serviceId)
+        
+        [HttpDelete("{serviceId}")]
+        public async Task<IActionResult> DeleteService(string serviceId)
         {
-            var result = await _serviceRepository.Remove(serviceId);
+            var result = await _serviceService.DeleteService(serviceId);
             if (result)
             {
                 return NoContent();
             }
-
             return BadRequest();
         }
     }

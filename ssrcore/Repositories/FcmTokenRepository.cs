@@ -1,4 +1,5 @@
-﻿using ssrcore.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ssrcore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,31 +14,24 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task Create(int UserId, string FcmToken)
+        public async Task Create(int userId, string fcmtoken)
         {
-            var token = _context.FcmToken.SingleOrDefault(s => s.FcmToken1 == FcmToken);
+            var token = await _context.FcmToken.SingleOrDefaultAsync(s => s.FcmToken1 == fcmtoken);
             if (token == null)
             {
-                try
+                var fcmToken = new FcmToken
                 {
-                    var fcmToken = new FcmToken
-                    {
-                        UserId = UserId,
-                        FcmToken1 = FcmToken
-                    };
-                    await _context.AddAsync(fcmToken);
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                    UserId = userId,
+                    FcmToken1 = fcmtoken
+                };
+                await _context.AddAsync(fcmToken);
             }
         }
 
-        public List<string> GetFcmToken(int UserId)
+        public async Task<List<string>> Get(int userId)
         {
-            var query = _context.FcmToken.Where(s => s.UserId == UserId).Select(s => s.FcmToken1).ToList();
+            var query = await _context.FcmToken.Where(s => s.UserId == userId)
+                                               .Select(s => s.FcmToken1).ToListAsync();
             return query;
         }
     }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Repositories;
+using ssrcore.Services;
 using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
@@ -11,23 +12,22 @@ namespace ssrcore.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleService _roleService;
 
-        public RolesController(IRoleRepository roleRepository)
+        public RolesController(IRoleService roleService)
         {
-            _roleRepository = roleRepository;
+            _roleService = roleService;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] RoleModel model)
         {
-            if (model == null)
+            var result = await _roleService.CreateRole(model);
+            if (result != null)
             {
-                return BadRequest();
+                return Created("", result);
             }
-            var result = await _roleRepository.CreateRole(model);
-            await _roleRepository.Save();
-            return Created("", result);
+            return BadRequest();
         }
     }
 }

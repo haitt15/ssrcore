@@ -10,10 +10,10 @@ namespace ssrcore.Repositories
 {
     public interface IDepartmentRepository
     {
-        Task<PagedList<DepartmentModel>> GetAllDepartments(SearchDepartmentModel model);
-        Task<Department> GetDepartment(string departmentId);
-        Task<Department> Create(DepartmentModel model);
-        void UpdateDepartment(DepartmentModel model);
-        Task<bool> Remove(string departmentId);
+        Task<PagedList<DepartmentModel>> Get(SearchDepartmentModel model);
+        Task<DepartmentModel> GetById(string departmentId);
+        Task Create(Department department);
+        void Update(Department department);
+        void Delete(Department department);
     }
 }

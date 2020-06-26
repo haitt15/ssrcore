@@ -18,10 +18,8 @@ namespace ssrcore.Models
 
         [Key]
         public int Id { get; set; }
-        [StringLength(450)]
-        public string Uid { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Username { get; set; }
         [Required]
         public byte[] PasswordHash { get; set; }

@@ -1,4 +1,5 @@
-﻿using ssrcore.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ssrcore.Models;
 using ssrcore.ViewModels;
 using System;
 using System.Linq;
@@ -12,32 +13,19 @@ namespace ssrcore.Repositories
         {
 
         }
-        public async Task<Role> CreateRole(RoleModel model)
+        public async Task Create(Role role)
         {
-            var role = new Role
-            {
-                RoleId = model.RoleId,
-                RoleNm = model.RoleNm,
-                DelFlg = false,
-                InsBy = "Admin",
-                InsDatetime = DateTime.Now,
-                UpdBy = "Admin",
-                UpdDatetime = DateTime.Now
-            };
             await _context.Role.AddAsync(role);
+        }
+
+        public Role GetRole(Users user)
+        {
+            //string role = await _context.Users.Where(u => u.Username == user.Username)
+            //                         .Select(s => s.Role.RoleNm).SingleOrDefaultAsync();
+            //return role;
+            var role =  _context.Role.Where(u => u.RoleId == user.RoleId).SingleOrDefault();
             return role;
         }
 
-        public string FindRole(Users user)
-        {
-            string role = _context.Users.Where(u => u.Username == user.Username)
-                                     .Select(s => s.Role.RoleNm).SingleOrDefault();
-            return role;
-        }
-
-        public async Task<bool> Save()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
     }
 }

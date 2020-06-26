@@ -80,6 +80,7 @@ namespace ssrcore.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _serviceRequestService.UpdateServiceRequest(ticketId, model);
+                RequestSheetUtils.Update(result);
                 return Ok(result);
             }
             return BadRequest();

@@ -24,15 +24,17 @@ namespace ssrcore.Services
             var entity = _mapper.Map<Service>(service);
             await _unitOfWork.ServiceRepository.Create(entity);
             await _unitOfWork.Commit();
-            return _mapper.Map<ServiceModel>(entity);
+            var modelToReturn = await _unitOfWork.ServiceRepository.GetById(entity.ServiceId);
+            return modelToReturn;
         }
 
         public async Task<bool> DeleteService(string serviceId)
         {
             var service = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            var entity = _mapper.Map<Service>(service);
             if (service != null)
             {
-                _unitOfWork.ServiceRepository.Delete(service);
+                _unitOfWork.ServiceRepository.Delete(entity);
                 await _unitOfWork.Commit();
                 return true;
             }
@@ -100,12 +102,12 @@ namespace ssrcore.Services
 
         public async Task<ServiceModel> GetService(string serviceId)
         {
-            var entity = await _unitOfWork.ServiceRepository.GetById(serviceId);
-            if (entity == null)
+            var service = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            if (service == null)
             {
                 throw new AppException("Cannot find " + serviceId);
             }
-            return _mapper.Map<ServiceModel>(entity);
+            return service;
         }
 
         public async Task<ServiceModel> UpdateService(string serviceId, ServiceModel service)
@@ -123,7 +125,8 @@ namespace ssrcore.Services
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            return _mapper.Map<ServiceModel>(entity);
+            var modelToReturn = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            return modelToReturn;
         }
     }
 }

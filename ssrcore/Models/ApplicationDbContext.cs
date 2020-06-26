@@ -30,7 +30,7 @@ namespace ssrcore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:tungduong.database.windows.net,1433;Initial Catalog=SSR_DB;Persist Security Info=False;User ID=tungduong;Password=Sonheo123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=tcp:tranthanhhai.database.windows.net,1433;Initial Catalog=StudentServiceRequest_Database;Persist Security Info=False;User ID=thanhhai;Password=Matkhau12999;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -63,7 +63,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.HasIndex(e => e.RoomNum)
-                    .HasName("UQ__Departme__BD7F63D5EE0A8CAA")
+                    .HasName("UQ__Departme__BD7F63D58EAD97DB")
                     .IsUnique();
 
                 entity.Property(e => e.DepartmentId).IsUnicode(false);
@@ -194,7 +194,7 @@ namespace ssrcore.Models
             modelBuilder.Entity<ServiceRequest>(entity =>
             {
                 entity.HasKey(e => e.TicketId)
-                    .HasName("PK__ServiceR__712CC6079D327BE8");
+                    .HasName("PK__ServiceR__712CC607076D3012");
 
                 entity.Property(e => e.TicketId).IsUnicode(false);
 
@@ -258,7 +258,11 @@ namespace ssrcore.Models
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => e.UserNo)
-                    .HasName("UQ__Users__1788955EA586BCB5")
+                    .HasName("UQ__Users__1788955E7601B125")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Username)
+                    .HasName("UQ__Users__536C85E489A6E405")
                     .IsUnique();
 
                 entity.Property(e => e.Email).IsUnicode(false);
@@ -272,8 +276,6 @@ namespace ssrcore.Models
                 entity.Property(e => e.Photo).IsUnicode(false);
 
                 entity.Property(e => e.RoleId).IsUnicode(false);
-
-                entity.Property(e => e.Uid).IsUnicode(false);
 
                 entity.Property(e => e.UpdBy).IsUnicode(false);
 

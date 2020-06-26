@@ -4,6 +4,7 @@ using ssrcore.Models;
 using ssrcore.UnitOfWork;
 using ssrcore.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ssrcore.Services
@@ -38,17 +39,16 @@ namespace ssrcore.Services
             return false;
         }
 
-        public async Task<UserModel> CreateUser(RegisterModel model)
+        public async Task<Users> CreateUser(Users user , string password)
         {
-            var entity = _mapper.Map<Users>(model);
-            await _unitOfWork.UserRepository.Create(entity, model.Password);
+            await _unitOfWork.UserRepository.Create(user, password);
             await _unitOfWork.Commit();
-            return _mapper.Map<UserModel>(entity);
+            return user;
         }
 
-        public async Task<bool> DeleteUser(string uid)
+        public async Task<bool> DeleteUser(string username)
         {
-            var entity = await _unitOfWork.UserRepository.GetByUid(uid);
+            var entity = await _unitOfWork.UserRepository.GetByUsername(username);
             if(entity != null)
             {
                 _unitOfWork.UserRepository.Delete(entity);
@@ -58,34 +58,41 @@ namespace ssrcore.Services
             return false;
         }
 
-        public Task<object> GetAllUsers(SearchUserModel model)
+        public async Task<IEnumerable<Users>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            var users = await _unitOfWork.UserRepository.GetAll();
+            return users;
         }
 
-        public async Task<UserModel> GetByUserId(string uid)
+        public async Task<Users> GetByUserId(string username)
         {
-            var entity = await _unitOfWork.UserRepository.GetByUid(uid);
+            var entity = await _unitOfWork.UserRepository.GetByUsername(username);
             if(entity == null)
             {
-                throw new AppException("Cannot find " + uid);
+                throw new AppException("Cannot find " + username);
             }
-            return _mapper.Map<UserModel>(entity);
+            return entity;
         }
 
-        public async Task<UserModel> GetByUserName(string username)
+        public async Task<Users> GetByUserName(string username)
         {
             var entity = await _unitOfWork.UserRepository.GetByUsername(username);
             if (entity == null)
             {
                 throw new AppException("Cannot find " + username);
             }
-            return _mapper.Map<UserModel>(entity);
+            return entity;
         }
 
-        public Task<UserModel> UpdateUser(string uid, UserModel user)
+        public async Task<UserModel> UpdateUser(string username, UserModel user)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.UserRepository.GetByUsername(username);
+            entity.FullName = user.FullName != null ? user.FullName : entity.FullName;
+            entity.Phonenumber = user.Phonenumber != null ? user.Phonenumber : entity.Phonenumber;
+            entity.Photo = user.Photo != null ? user.Photo : entity.Photo;
+            entity.DelFlg = true;
+            entity.UpdDatetime = DateTime.Now;
+            return _mapper.Map<UserModel>(entity);
         }
 
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)

@@ -19,7 +19,7 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task Create(Users user, string password)
+        public async Task<Users> Create(Users user, string password)
         {
             if (string.IsNullOrWhiteSpace(password))
             {
@@ -44,6 +44,7 @@ namespace ssrcore.Repositories
             user.UpdDatetime = DateTime.Now;
 
             await _context.Users.AddAsync(user);
+            return user;
 
         }
 
@@ -65,10 +66,10 @@ namespace ssrcore.Repositories
             return await _context.Users.Where(x => x.Username == username).SingleOrDefaultAsync();
         }
 
-        public async Task<Users> GetByUid(string uid)
-        {
-            return await _context.Users.Where(x => x.Uid == uid && x.DelFlg == false).SingleOrDefaultAsync();
-        }
+        //public async Task<Users> GetByUid(string uid)
+        //{
+        //    return await _context.Users.Where(x => x. == uid && x.DelFlg == false).SingleOrDefaultAsync();
+        //}
 
         public async Task<IEnumerable<Users>> GetAll()
         {
@@ -77,7 +78,7 @@ namespace ssrcore.Repositories
 
         public void Update(Users user)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Delete(Users user)

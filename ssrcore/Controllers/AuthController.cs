@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.Repositories;
+using ssrcore.Services;
 using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
@@ -21,17 +22,17 @@ namespace ssrcore.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly IFcmTokenRepository _fcmTokenRepository;
+        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
+        private readonly IFcmTokenService _fcmTokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
-        public AuthController(IUserRepository userRepository, IRoleRepository roleRepository, IFcmTokenRepository fcmTokenRepository, IMapper mapper, IConfiguration config)
+        public AuthController(IUserService userService, IRoleService roleService, IFcmTokenService fcmTokenService, IMapper mapper, IConfiguration config)
         {
-            _userRepository = userRepository;
-            _roleRepository = roleRepository;
-            _fcmTokenRepository = fcmTokenRepository;
+            _userService = userService;
+            _roleService = roleService;
+            _fcmTokenService = fcmTokenService;
             _mapper = mapper;
             _config = config;
         }
@@ -40,32 +41,29 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var user = _mapper.Map<Users>(model);
-            try
+            var result = await _userService.CreateUser(user, model.Password);
+            if(result != null)
             {
-                var result = await _userRepository.Create(user, model.Password);
-                await _userRepository.Save();
                 return Created("", result);
             }
-            catch (AppException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+
+            return BadRequest();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userRepository.FindByUsername(model.Username);
-            var result = await _userRepository.CheckPassword(model.Username, model.Password);
+            var user = await _userService.GetByUserName(model.Username);
+            var result = await _userService.CheckPassWord(model.Username, model.Password);
             if (user != null && result)
             {
-                var role = _roleRepository.FindRole(user);
+                var role = _roleService.GetRole(user);
                 var authClaims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                     new Claim(ClaimTypes.NameIdentifier, user.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("role", role)
+                    new Claim(ClaimTypes.Role, role)
                 };
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -102,14 +100,13 @@ namespace ssrcore.Controllers
                 int indexEmail = user_firebase.Email.LastIndexOf("@fpt.edu.vn");
                 if (indexEmail > 0)
                 {
-                    var currentUser = await _userRepository.FindByUid(uid);
-                   
+                    var currentUser = await _userService.GetByUserId(uid);
+
                     if (currentUser == null)
                     {
                         var user_info = new Users
                         {
-                            Uid = uid,
-                            Username = Utils.RandomString(8, true),
+                            Username = uid,
                             RoleId = Constants.Roles.ROLE_STUDENT,
                             Email = user_firebase.Email,
                             Phonenumber = user_firebase.PhoneNumber,
@@ -123,14 +120,14 @@ namespace ssrcore.Controllers
                             UpdBy = "Admin",
                             UpdDatetime = DateTime.Now
                         };
-                        currentUser = await _userRepository.Create(user_info, Constants.Users.PASSWORD);
-                        await _userRepository.Save();
+                        currentUser = await _userService.CreateUser(user_info, Constants.Users.PASSWORD);
+
                     }
-                    await _fcmTokenRepository.Create(currentUser.Id, request.FcmToken);
+                    await _fcmTokenService.CreateFcmToken(currentUser.Id, request.FcmToken);
 
                     IDictionary<string, object> developerClaims = new Dictionary<string, object>();
                     developerClaims.Add("role", Constants.Roles.ROLE_STUDENT);
-                    string jwt_token = await auth.CreateCustomTokenAsync(uid,developerClaims);
+                    string jwt_token = await auth.CreateCustomTokenAsync(uid, developerClaims);
 
                     return Ok(new
                     {
@@ -138,7 +135,7 @@ namespace ssrcore.Controllers
                         role = Constants.Roles.ROLE_STUDENT,
                         email = currentUser.Email,
                         fullName = currentUser.FullName,
-                        uid = currentUser.Uid
+                        uid = currentUser.Username
                     });
                 }
             }

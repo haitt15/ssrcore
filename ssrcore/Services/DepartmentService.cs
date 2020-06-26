@@ -24,15 +24,17 @@ namespace ssrcore.Services
             var entity = _mapper.Map<Department>(department);
             await _unitOfWork.DepartmentRepository.Create(entity);
             await _unitOfWork.Commit();
-            return _mapper.Map<DepartmentModel>(entity);
+            var modelToReturn = await _unitOfWork.DepartmentRepository.GetById(entity.DepartmentId);
+            return modelToReturn;
         }
 
         public async Task<bool> DeleteDepartment(string departmentId)
         {
             var department = await _unitOfWork.DepartmentRepository.GetById(departmentId);
-            if(department != null)
+            var entity = _mapper.Map<Department>(department);
+            if (department != null)
             {
-                _unitOfWork.DepartmentRepository.Delete(department);
+                _unitOfWork.DepartmentRepository.Delete(entity);
                 await _unitOfWork.Commit();
                 return true;
             }
@@ -99,7 +101,7 @@ namespace ssrcore.Services
             {
                 throw new AppException("Cannot find " + departmentId);
             }
-            return _mapper.Map<DepartmentModel>(entity);
+            return entity;
         }
 
 
@@ -113,7 +115,8 @@ namespace ssrcore.Services
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            return _mapper.Map<DepartmentModel>(entity);
+            var modelToReturn = await _unitOfWork.DepartmentRepository.GetById(departmentId);
+            return modelToReturn;
         }
     }
 }

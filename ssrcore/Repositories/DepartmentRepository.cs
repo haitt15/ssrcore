@@ -64,9 +64,23 @@ namespace ssrcore.Repositories
             return PagedList<DepartmentModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<Department> GetById(string departmentId)
+        public async Task<DepartmentModel> GetById(string departmentId)
         {
-            return await _context.Department.FindAsync(departmentId);
+            var result = await _context.Department.Where(t => t.DepartmentId == departmentId && t.DelFlg == false)
+                                                .Select(s => new DepartmentModel
+                                                {
+                                                    DepartmentId = s.DepartmentId,
+                                                    DepartmentNm = s.DepartmentNm,
+                                                    Hotline = s.Hotline,
+                                                    RoomNum = s.RoomNum,
+                                                    Manager = s.Manager.StaffNavigation.FullName,
+                                                    DelFlg = s.DelFlg,
+                                                    InsBy = s.InsBy,
+                                                    InsDatetime = s.InsDatetime,
+                                                    UpdBy = s.UpdBy,
+                                                    UpdDatetime = s.UpdDatetime
+                                                }).SingleOrDefaultAsync();
+            return result;
         }
 
         public void Delete(Department department)

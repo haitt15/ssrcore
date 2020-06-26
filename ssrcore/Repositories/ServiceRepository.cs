@@ -68,9 +68,25 @@ namespace ssrcore.Repositories
             return PagedList<ServiceModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<Service> GetById(string serviceId)
+        public async Task<ServiceModel> GetById(string serviceId)
         {
-            return await _context.Service.FindAsync(serviceId);
+            var result = await  _context.Service.Where(t => t.ServiceId == serviceId && t.DelFlg == false)
+                                                .Select(t => new ServiceModel {
+                                                    ServiceId = t.ServiceId,
+                                                    ServiceNm = t.ServiceNm,
+                                                    DescriptionService = t.DescriptionService,
+                                                    DepartmentId = t.DepartmentId,
+                                                    DepartmentNm = t.Department.DepartmentNm,
+                                                    FormLink = t.FormLink,
+                                                    SheetLink = t.SheetLink,
+                                                    ProcessMaxDay = t.ProcessMaxDay,
+                                                    DelFlg = t.DelFlg,
+                                                    InsBy = t.InsBy,
+                                                    InsDatetime = t.InsDatetime,
+                                                    UpdBy = t.UpdBy,
+                                                    UpdDatetime = t.UpdDatetime
+                                                }).SingleOrDefaultAsync();
+            return result;
         }
 
         public void Delete(Service service)

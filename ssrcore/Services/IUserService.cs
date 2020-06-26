@@ -1,4 +1,5 @@
 ﻿using ssrcore.Helpers;
+using ssrcore.Models;
 using ssrcore.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,12 @@ namespace ssrcore.Services
 {
     public interface IUserService
     {
-        Task<object> GetAllUsers(SearchUserModel model);
-        Task<UserModel> GetByUserName(string username);
-        Task<UserModel> GetByUserId(string uid);
-        Task<UserModel> CreateUser(RegisterModel model);
+        Task<IEnumerable<Users>> GetAllUsers();
+        Task<Users> GetByUserName(string username);
+        Task<Users> GetByUserId(string uid);
+        Task<Users> CreateUser(Users user, string password);
         Task<bool> CheckPassWord(string username, string password);
         Task<UserModel> UpdateUser(string uid, UserModel user);
-        Task<bool> DeleteUser(string uid);
+        Task<bool> DeleteUser(string username);
     }
 }

@@ -23,18 +23,22 @@ namespace ssrcore.Services
 
         public async Task<ServiceRequestModel> CreateServiceRequest(ServiceRequestModel serviceRequest)
         {
+            var user = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.Username);
+            serviceRequest.UserId = user.Id;
             var entity = _mapper.Map<ServiceRequest>(serviceRequest);
             await _unitOfWork.ServiceRequestRepository.Create(entity);
             await _unitOfWork.Commit();
-            return _mapper.Map<ServiceRequestModel>(entity);
+            var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetById(entity.TicketId);
+            return modelToReturn;
         }
 
         public async Task<bool> DeleteServiceRequest(string ticketId)
         {
             var serviceRequest = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
+            var entity = _mapper.Map<ServiceRequest>(serviceRequest);
             if (serviceRequest != null)
             {
-                _unitOfWork.ServiceRequestRepository.Delete(serviceRequest);
+                _unitOfWork.ServiceRequestRepository.Delete(entity);
                 await _unitOfWork.Commit();
                 return true;
             }
@@ -60,8 +64,11 @@ namespace ssrcore.Services
                             case "TicketId":
                                 dictionary.Add("TicketId", s.TicketId);
                                 break;
-                            case "User":
-                                dictionary.Add("User", s.User);
+                            case "Username":
+                                dictionary.Add("Username", s.Username);
+                                break;
+                            case "FullName":
+                                dictionary.Add("FullName", s.FullName);
                                 break;
                             case "UserId":
                                 dictionary.Add("UserId", s.UserId);
@@ -112,7 +119,7 @@ namespace ssrcore.Services
             {
                 throw new AppException("Cannot find " + ticketId);
             }
-            return _mapper.Map<ServiceRequestModel>(entity);
+            return entity;
         }
 
         public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
@@ -140,7 +147,8 @@ namespace ssrcore.Services
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            return _mapper.Map<ServiceRequestModel>(entity);
+            var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
+            return modelToReturn;
         }
     }
 }

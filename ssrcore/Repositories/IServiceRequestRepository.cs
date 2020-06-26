@@ -10,7 +10,7 @@ namespace ssrcore.Repositories
     public interface IServiceRequestRepository
     {
         Task<PagedList<ServiceRequestModel>> GetAll(SearchServiceRequestModel model);
-        Task<ServiceRequest> GetById(string ticketId);
+        Task<ServiceRequestModel> GetById(string ticketId);
         Task<IEnumerable<ServiceRequest>> GetByUserId(int userId);
         Task Create(ServiceRequest serviceRequest);
         void Update(ServiceRequest serviceRequest);

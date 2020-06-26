@@ -11,7 +11,7 @@ namespace ssrcore.Repositories
     public interface IDepartmentRepository
     {
         Task<PagedList<DepartmentModel>> Get(SearchDepartmentModel model);
-        Task<Department> GetById(string departmentId);
+        Task<DepartmentModel> GetById(string departmentId);
         Task Create(Department department);
         void Update(Department department);
         void Delete(Department department);

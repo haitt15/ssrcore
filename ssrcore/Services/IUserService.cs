@@ -12,7 +12,6 @@ namespace ssrcore.Services
     {
         Task<IEnumerable<Users>> GetAllUsers();
         Task<Users> GetByUserName(string username);
-        Task<Users> GetByUserId(string uid);
         Task<Users> CreateUser(Users user, string password);
         Task<bool> CheckPassWord(string username, string password);
         Task<UserModel> UpdateUser(string uid, UserModel user);

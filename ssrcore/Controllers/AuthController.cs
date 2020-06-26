@@ -81,6 +81,8 @@ namespace ssrcore.Controllers
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     role = role,
+                    email = user.Email,
+                    fullName = user.FullName,
                     username = user.Username,
                     expiration = token.ValidTo
                 });
@@ -101,7 +103,7 @@ namespace ssrcore.Controllers
                 int indexEmail = user_firebase.Email.LastIndexOf("@fpt.edu.vn");
                 if (indexEmail > 0)
                 {
-                    var currentUser = await _userService.GetByUserId(uid);
+                    var currentUser = await _userService.GetByUserName(uid);
 
                     if (currentUser == null)
                     {
@@ -126,9 +128,25 @@ namespace ssrcore.Controllers
                     }
                     await _fcmTokenService.CreateFcmToken(currentUser.Id, request.FcmToken);
 
-                    IDictionary<string, object> developerClaims = new Dictionary<string, object>();
-                    developerClaims.Add("role", Constants.Roles.ROLE_STUDENT);
-                    string jwt_token = await auth.CreateCustomTokenAsync(uid, developerClaims);
+                    var role = _roleService.GetRole(currentUser);
+                    var authClaims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, currentUser.Username),
+                    new Claim(ClaimTypes.NameIdentifier, currentUser.Username),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Role, role)
+                };
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+                    var apiUrl = _config.GetSection("AppSettings:Url").Value;
+                    var firebaseProject = _config.GetSection("AppSettings:FirebaseProject").Value;
+                    var token = new JwtSecurityToken(
+                        issuer: "https://securetoken.google.com/" + firebaseProject,
+                        audience: firebaseProject,
+                        expires: DateTime.Now.AddYears(13),
+                        claims: authClaims,
+                        signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
+                        );
 
                     return Ok(new
                     {
@@ -136,7 +154,8 @@ namespace ssrcore.Controllers
                         role = role,
                         email = currentUser.Email,
                         fullName = currentUser.FullName,
-                        uid = currentUser.Username
+                        username = currentUser.Username,
+                        expiration = token.ValidTo
                     });
                 }
             }

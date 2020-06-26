@@ -74,7 +74,7 @@ namespace ssrcore.Helpers
             var valueRange = new ValueRange();
             // Data for another Student...
 
-            var oblist = new List<object>() { requestModel.TicketId,requestModel.Student, requestModel.ServiceNm, requestModel.Status,
+            var oblist = new List<object>() { requestModel.TicketId,requestModel.FullName, requestModel.ServiceNm, requestModel.Status,
                 requestModel.Staff, requestModel.Department
             };
             valueRange.Values = new List<IList<object>> { oblist };
@@ -119,7 +119,7 @@ namespace ssrcore.Helpers
 
             var range2 = $"{sheet}!A{rowID}:F{rowID}";
             var valueRange = new ValueRange();
-            var oblist = new List<object>() { requestModel.TicketId,requestModel.Student, requestModel.ServiceNm, requestModel.Status,
+            var oblist = new List<object>() { requestModel.TicketId,requestModel.FullName, requestModel.ServiceNm, requestModel.Status,
                 requestModel.Staff, requestModel.Department
             };
             valueRange.Values = new List<IList<object>> { oblist };

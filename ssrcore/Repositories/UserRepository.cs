@@ -19,7 +19,7 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<Users> Create(Users user, string password)
+        public async Task Create(Users user, string password)
         {
             if (string.IsNullOrWhiteSpace(password))
             {
@@ -45,14 +45,8 @@ namespace ssrcore.Repositories
 
             await _context.Users.AddAsync(user);
 
-            return user;
         }
 
-
-        public async Task<bool> Save()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -66,57 +60,29 @@ namespace ssrcore.Repositories
             }
         }
 
-        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
-        {
-            if (password == null) throw new ArgumentNullException("password");
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
-            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++)
-                {
-                    if (computedHash[i] != storedHash[i]) return false;
-                }
-            }
-
-            return true;
-        }
-
-        public async Task<bool> CheckPassword(string username, string password)
-        {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return false;
-
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == username);
-
-            if (user != null)
-            {
-                if (VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public async Task<Users> FindByUsername(string username)
+        public async Task<Users> GetByUsername(string username)
         {
             return await _context.Users.Where(x => x.Username == username).SingleOrDefaultAsync();
         }
 
-        public async Task<Users> FindByUid(string uid)
+        public async Task<Users> GetByUid(string uid)
         {
             return await _context.Users.Where(x => x.Uid == uid && x.DelFlg == false).SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Users>> GetUsers()
+        public async Task<IEnumerable<Users>> GetAll()
         {
             return await _context.Users.ToListAsync();
         }
 
+        public void Update(Users user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(Users user)
+        {
+            user.DelFlg = true;
+        }
     }
 }

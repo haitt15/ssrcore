@@ -16,34 +16,17 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<Department> Create(DepartmentModel model)
+        public async Task Create(Department department)
         {
-            try
-            {
-                var department = new Department
-                {
-                    DepartmentId = model.DepartmentId,
-                    DepartmentNm = model.DepartmentNm,
-                    Hotline = model.Hotline,
-                    ManagerId = model.ManagerId,
-                    RoomNum = model.RoomNum,
-                    InsBy = Constants.Admin.ADMIN,
-                    InsDatetime = DateTime.Now,
-                    UpdBy = Constants.Admin.ADMIN,
-                    UpdDatetime = DateTime.Now
-                };
-
-                await _context.AddAsync(department);
-                await _context.SaveChangesAsync();
-                return department;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            department.DelFlg = false;
+            department.InsBy = Constants.Admin.ADMIN;
+            department.InsDatetime = DateTime.Now;
+            department.UpdBy = Constants.Admin.ADMIN;
+            department.UpdDatetime = DateTime.Now;
+            await _context.AddAsync(department);
         }
 
-        public async Task<PagedList<DepartmentModel>> GetAllDepartments(SearchDepartmentModel model)
+        public async Task<PagedList<DepartmentModel>> Get(SearchDepartmentModel model)
         {
             var query = _context.Department.Where(d => (d.DelFlg == false)
                         && (model.DepartmentNm == null || d.DepartmentNm.Contains(model.DepartmentNm)))
@@ -68,7 +51,8 @@ namespace ssrcore.Repositories
             if (model.SortBy == Constants.SortBy.SORT_NAME_ASC)
             {
                 query = query.OrderBy(t => t.DepartmentNm);
-            } else if (model.SortBy == Constants.SortBy.SORT_NAME_DES)
+            }
+            else if (model.SortBy == Constants.SortBy.SORT_NAME_DES)
             {
                 query = query.OrderByDescending(t => t.DepartmentNm);
             }
@@ -80,27 +64,20 @@ namespace ssrcore.Repositories
             return PagedList<DepartmentModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<Department> GetDepartment(string departmentId)
+        public async Task<Department> GetById(string departmentId)
         {
             return await _context.Department.FindAsync(departmentId);
         }
 
-        public async Task<bool> Remove(string departmentId)
+        public void Delete(Department department)
         {
-            var department = await _context.Department.FindAsync(departmentId);
-            if (department != null)
-            {
-                department.DelFlg = true;
-                await _context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
+            department.DelFlg = true;
         }
 
-        public void UpdateDepartment(DepartmentModel model)
+
+        public void Update(Department department)
         {
-            _context.SaveChanges();
+           // var entity = _context.Department.Find(department.DepartmentId);
         }
     }
 }

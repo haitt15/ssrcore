@@ -2,7 +2,7 @@
 using ssrcore.Models;
 using ssrcore.ViewModels;
 
-namespace ssrcore.Mapper
+namespace ssrcore.AutoMapper
 {
     public class UserMapper: Profile
     {

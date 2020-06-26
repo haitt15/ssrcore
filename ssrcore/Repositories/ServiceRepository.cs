@@ -16,37 +16,17 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<Service> Create(ServiceModel model)
+        public async Task Create(Service service)
         {
-            try
-            {
-                var service = new Service
-                {
-                    ServiceId = model.ServiceId,
-                    ServiceNm = model.ServiceNm,
-                    DescriptionService = model.DescriptionService,
-                    FormLink = model.FormLink,
-                    SheetLink = model.SheetLink,
-                    ProcessMaxDay = model.ProcessMaxDay,
-                    DepartmentId = model.DepartmentId,
-                    DelFlg = false,
-                    InsBy = Constants.Admin.ADMIN,
-                    InsDatetime = DateTime.Now,
-                    UpdBy = Constants.Admin.ADMIN,
-                    UpdDatetime = DateTime.Now
-                };
-
-                await _context.Service.AddAsync(service);
-                await _context.SaveChangesAsync();
-                return service;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            service.DelFlg = false;
+            service.InsBy = Constants.Admin.ADMIN;
+            service.InsDatetime = DateTime.Now;
+            service.UpdBy = Constants.Admin.ADMIN;
+            service.UpdDatetime = DateTime.Now;
+            await _context.Service.AddAsync(service);
         }
 
-        public async Task<PagedList<ServiceModel>> GetAllServices(SearchServicModel model)
+        public async Task<PagedList<ServiceModel>> GetAll(SearchServicModel model)
         {
             var query = _context.Service.Where(t => (t.DelFlg == false)
                                                    && (model.ServiceNm == null || t.ServiceNm.Contains(model.ServiceNm))
@@ -88,27 +68,35 @@ namespace ssrcore.Repositories
             return PagedList<ServiceModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<Service> GetService(string serviceId)
+        public async Task<ServiceModel> GetById(string serviceId)
         {
-            return await _context.Service.FindAsync(serviceId);
+            var result = await  _context.Service.Where(t => t.ServiceId == serviceId && t.DelFlg == false)
+                                                .Select(t => new ServiceModel {
+                                                    ServiceId = t.ServiceId,
+                                                    ServiceNm = t.ServiceNm,
+                                                    DescriptionService = t.DescriptionService,
+                                                    DepartmentId = t.DepartmentId,
+                                                    DepartmentNm = t.Department.DepartmentNm,
+                                                    FormLink = t.FormLink,
+                                                    SheetLink = t.SheetLink,
+                                                    ProcessMaxDay = t.ProcessMaxDay,
+                                                    DelFlg = t.DelFlg,
+                                                    InsBy = t.InsBy,
+                                                    InsDatetime = t.InsDatetime,
+                                                    UpdBy = t.UpdBy,
+                                                    UpdDatetime = t.UpdDatetime
+                                                }).SingleOrDefaultAsync();
+            return result;
         }
 
-        public async Task<bool> Remove(string serviceId)
+        public void Delete(Service service)
         {
-            var service = await _context.Service.FindAsync(serviceId);
-            if (service != null)
-            {
-                service.DelFlg = true;
-                await _context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
+            service.DelFlg = true;
         }
 
-        public void Update(ServiceModel model)
+        public void Update(Service service)
         {
-            _context.SaveChanges();
+ 
         }
     }
 }

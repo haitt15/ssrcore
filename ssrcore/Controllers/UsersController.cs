@@ -8,6 +8,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.Repositories;
+using ssrcore.Services;
 
 namespace ssrcore.Controllers
 {
@@ -15,22 +16,22 @@ namespace ssrcore.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IFcmTokenRepository _fcmTokenRepository;
+        private readonly IUserService _userService;
+        private readonly IFcmTokenService _fcmTokenService;
 
-        public UsersController(IUserRepository userRepository, IFcmTokenRepository fcmTokenRepository)
+        public UsersController(IUserService userService, IFcmTokenService fcmTokenService)
         {
-            _userRepository = userRepository;
-            _fcmTokenRepository = fcmTokenRepository;
+            _userService = userService;
+            _fcmTokenService = fcmTokenService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userRepository.GetUsers();
-            var currentUser = await _userRepository.FindByUid("JcNIdM8KXYglFppYcWnIIXTbyqg2");
+            var users = await _userService.GetAllUsers();
+            var currentUser = await _userService.GetByUserId("JcNIdM8KXYglFppYcWnIIXTbyqg2");
             int UserId = currentUser.Id;
-            List<string> ListFcmToken = _fcmTokenRepository.GetFcmToken(UserId);
+            List<string> ListFcmToken = await _fcmTokenService.GetAllFcmToken(UserId);
             foreach (string FcmToken in ListFcmToken)
             {
                 await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");

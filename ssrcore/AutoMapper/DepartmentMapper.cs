@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ssrcore.Mapper
+namespace ssrcore.AutoMapper
 {
     public class DepartmentMapper : Profile
     {

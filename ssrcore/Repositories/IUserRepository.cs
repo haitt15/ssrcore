@@ -6,12 +6,11 @@ namespace ssrcore.Repositories
 {
     public interface IUserRepository
     {
+        Task<IEnumerable<Users>> GetAll();
+        Task<Users> GetByUsername(string username);
+        //Task<Users> GetByUid(string uid);
         Task<Users> Create(Users user, string password);
-        Task<bool> CheckPassword(string username, string password);
-        Task<Users> FindByUsername(string username);
-        Task<Users> FindByUid(string email);
-        Task<IEnumerable<Users>> GetUsers();
-        Task<bool> Save();
-
+        void Update(Users user);
+        void Delete(Users user);
     }
 }

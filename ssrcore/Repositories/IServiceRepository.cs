@@ -7,10 +7,10 @@ namespace ssrcore.Repositories
 {
     public interface IServiceRepository
     {
-        Task<PagedList<ServiceModel>> GetAllServices(SearchServicModel model);
-        Task<Service> GetService(string serviceId);
-        Task<Service> Create(ServiceModel model);
-        void Update(ServiceModel model);
-        Task<bool> Remove(string serviceId);
+        Task<PagedList<ServiceModel>> GetAll(SearchServicModel model);
+        Task<ServiceModel> GetById(string serviceId);
+        Task Create(Service service);
+        void Update(Service service);
+        void Delete(Service service);
     }
 }

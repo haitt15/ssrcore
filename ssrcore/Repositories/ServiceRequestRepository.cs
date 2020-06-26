@@ -17,38 +17,18 @@ namespace ssrcore.Repositories
 
         }
 
-        public async Task<ServiceRequestModel> Create(ServiceRequestModel model)
+        public async Task Create(ServiceRequest serviceRequest)
         {
-            try
-            {
-                var serviceRequest = new ServiceRequest
-                {
-                    TicketId = GenerateTicketId(),
-                    UserId = model.UserId,
-                    ServiceId = model.ServiceId,
-                    StaffId = model.StaffId,
-                    Content = model.Content,
-                    DueDateTime = model.DueDateTime,
-                    Status = model.Status,
-                    DelFlg = false,
-                    InsBy = Constants.Admin.ADMIN,
-                    InsDatetime = DateTime.Now,
-                    UpdBy = Constants.Admin.ADMIN,
-                    UpdDatetime = DateTime.Now
-                };
-
-                await _context.ServiceRequest.AddAsync(serviceRequest);
-                await _context.SaveChangesAsync();
-                return await GetServiceRequestModel(serviceRequest.TicketId);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
+            serviceRequest.TicketId = GenerateTicketId();
+            serviceRequest.DelFlg = false;
+            serviceRequest.InsBy = Constants.Admin.ADMIN;
+            serviceRequest.InsDatetime = DateTime.Now;
+            serviceRequest.UpdBy = Constants.Admin.ADMIN;
+            serviceRequest.UpdDatetime = DateTime.Now;
+            await _context.ServiceRequest.AddAsync(serviceRequest);
         }
 
-        public async Task<PagedList<ServiceRequestModel>> GetAllServiceRequests(SearchServiceRequestModel model)
+        public async Task<PagedList<ServiceRequestModel>> GetAll(SearchServiceRequestModel model)
         {
             var query = _context.ServiceRequest.Where(t => (t.DelFlg == false)
                                                             && (model.Student == null || t.User.FullName.Contains(model.Student))
@@ -57,8 +37,8 @@ namespace ssrcore.Repositories
                                                {
                                                    TicketId = t.TicketId,
                                                    UserId = t.UserId,
-                                                   Student = t.User.FullName,
-                                                   Department = t.Service.Department.DepartmentNm,
+                                                   Username = t.User.Username,
+                                                   FullName = t.User.FullName,
                                                    Content = t.Content,
                                                    ServiceId = t.ServiceId,
                                                    ServiceNm = t.Service.ServiceNm,
@@ -93,60 +73,44 @@ namespace ssrcore.Repositories
             return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<ServiceRequestModel> GetServiceRequestModel(string ticketId)
+        public async Task<ServiceRequestModel> GetById(string ticketId)
         {
-            var result = await _context.ServiceRequest.Where(s => s.TicketId == ticketId).Select(t => new ServiceRequestModel
-            {
-                TicketId = t.TicketId,
-                UserId = t.UserId,
-                Student = t.User.FullName,
-                Department = t.Service.Department.DepartmentNm,
-                Content = t.Content,
-                ServiceId = t.ServiceId,
-                ServiceNm = t.Service.ServiceNm,
-                StaffId = t.StaffId,
-                Staff = t.Staff.StaffNavigation.FullName,
-                Status = t.Status,
-                DueDateTime = t.DueDateTime,
-                DelFlg = t.DelFlg,
-                InsBy = t.InsBy,
-                InsDatetime = t.InsDatetime,
-                UpdBy = t.UpdBy,
-                UpdDatetime = t.UpdDatetime
-            }).FirstOrDefaultAsync();
+            var result = await _context.ServiceRequest.Where(t => t.TicketId == ticketId && t.DelFlg == false)
+                                                .Select(t => new ServiceRequestModel
+                                                {
+                                                    TicketId = t.TicketId,
+                                                    UserId = t.UserId,
+                                                    Username = t.User.Username,
+                                                    FullName = t.User.FullName,
+                                                    Content = t.Content,
+                                                    ServiceId = t.ServiceId,
+                                                    ServiceNm = t.Service.ServiceNm,
+                                                    StaffId = t.StaffId,
+                                                    Staff = t.Staff.StaffNavigation.FullName,
+                                                    Status = t.Status,
+                                                    DueDateTime = t.DueDateTime,
+                                                    DelFlg = t.DelFlg,
+                                                    InsBy = t.InsBy,
+                                                    InsDatetime = t.InsDatetime,
+                                                    UpdBy = t.UpdBy,
+                                                    UpdDatetime = t.UpdDatetime
+                                                }).SingleOrDefaultAsync();
             return result;
         }
 
-        public async Task<bool> Remove(string ticketId)
+        public void Delete(ServiceRequest serviceRequest)
         {
-            var serviceRequest = await _context.ServiceRequest.FindAsync(ticketId);
-            if (serviceRequest != null)
-            {
-                serviceRequest.DelFlg = true;
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            serviceRequest.DelFlg = true;
         }
 
-        public async Task<ServiceRequestModel> Update(string ticketId, ServiceRequestModel model)
+        public void Update(ServiceRequest serviceRequest)
         {
-            var serivceRequest = await GetServiceRequest(ticketId);
-            if (serivceRequest == null)
-            {
-                return null;
-            }
-            serivceRequest.StaffId = model.StaffId != null ? model.StaffId : serivceRequest.StaffId;
-            serivceRequest.Content = model.Content != null ? model.Content : serivceRequest.Content;
-            serivceRequest.Status = model.Status != null ? model.Status : serivceRequest.Status;
-            serivceRequest.DueDateTime = model.DueDateTime.Year >= 1753 ? model.DueDateTime : serivceRequest.DueDateTime;
-            _context.SaveChanges();
-            return await GetServiceRequestModel(ticketId);
+
         }
 
         public string GenerateTicketId()
         {
-            ServiceRequest sericeRequest = null;
+            ServiceRequest sericeRequest;
             string ticketId;
             do
             {
@@ -156,9 +120,11 @@ namespace ssrcore.Repositories
             while (sericeRequest != null);
             return ticketId;
         }
-        public async Task<ServiceRequest> GetServiceRequest(string ticketId)
+
+        public async Task<IEnumerable<ServiceRequest>> GetByUserId(int userId)
         {
-            return await _context.ServiceRequest.FindAsync(ticketId);
+            var serviceRequests = await _context.ServiceRequest.Where(t => t.UserId == userId).ToListAsync();
+            return serviceRequests;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ssrcore.Repositories
 {
     public interface IFcmTokenRepository
     {
-        public List<string> GetFcmToken(int UserId);
-        Task Create(int UserId, string FcmToken);
+        Task<List<string>> Get(int userId);
+        Task Create(int userId, string fcmtoken);
     }
 }

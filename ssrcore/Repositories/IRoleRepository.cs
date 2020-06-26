@@ -6,8 +6,7 @@ namespace ssrcore.Repositories
 {
     public interface IRoleRepository
     {
-        Task<Role> CreateRole(RoleModel model);
-        string FindRole(Users user);
-        Task<bool> Save();
+        Task Create(Role role);
+        Role GetRole(Users user);
     }
 }

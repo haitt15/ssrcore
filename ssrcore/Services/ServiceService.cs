@@ -24,15 +24,14 @@ namespace ssrcore.Services
             var entity = _mapper.Map<Service>(service);
             await _unitOfWork.ServiceRepository.Create(entity);
             await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.ServiceRepository.GetById(entity.ServiceId);
+            var modelToReturn = await _unitOfWork.ServiceRepository.GetByIdToModel(entity.ServiceId);
             return modelToReturn;
         }
 
         public async Task<bool> DeleteService(string serviceId)
         {
-            var service = await _unitOfWork.ServiceRepository.GetById(serviceId);
-            var entity = _mapper.Map<Service>(service);
-            if (service != null)
+            var entity = await _unitOfWork.ServiceRepository.GetByIdToEntity(serviceId);
+            if (entity != null)
             {
                 _unitOfWork.ServiceRepository.Delete(entity);
                 await _unitOfWork.Commit();
@@ -102,7 +101,7 @@ namespace ssrcore.Services
 
         public async Task<ServiceModel> GetService(string serviceId)
         {
-            var service = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            var service = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceId);
             if (service == null)
             {
                 throw new AppException("Cannot find " + serviceId);
@@ -112,7 +111,7 @@ namespace ssrcore.Services
 
         public async Task<ServiceModel> UpdateService(string serviceId, ServiceModel service)
         {
-            var entity = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            var entity = await _unitOfWork.ServiceRepository.GetByIdToEntity(serviceId);
             entity.ServiceNm = service.ServiceNm != null ? service.ServiceNm : entity.ServiceNm;
             entity.DepartmentId = service.DepartmentId != null ? service.DepartmentId : entity.DepartmentId;
             entity.DescriptionService = service.DescriptionService != null ? service.DescriptionService : entity.DescriptionService;
@@ -125,7 +124,7 @@ namespace ssrcore.Services
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.ServiceRepository.GetById(serviceId);
+            var modelToReturn = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceId);
             return modelToReturn;
         }
     }

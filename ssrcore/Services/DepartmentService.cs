@@ -24,15 +24,14 @@ namespace ssrcore.Services
             var entity = _mapper.Map<Department>(department);
             await _unitOfWork.DepartmentRepository.Create(entity);
             await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.DepartmentRepository.GetById(entity.DepartmentId);
+            var modelToReturn = await _unitOfWork.DepartmentRepository.GetByIdToModel(entity.DepartmentId);
             return modelToReturn;
         }
 
         public async Task<bool> DeleteDepartment(string departmentId)
         {
-            var department = await _unitOfWork.DepartmentRepository.GetById(departmentId);
-            var entity = _mapper.Map<Department>(department);
-            if (department != null)
+            var entity = await _unitOfWork.DepartmentRepository.GetByIdToEntity(departmentId);
+            if (entity != null)
             {
                 _unitOfWork.DepartmentRepository.Delete(entity);
                 await _unitOfWork.Commit();
@@ -96,18 +95,18 @@ namespace ssrcore.Services
 
         public async Task<DepartmentModel> GetDepartment(string departmentId)
         {
-            var entity = await _unitOfWork.DepartmentRepository.GetById(departmentId);
-            if(entity == null)
+            var department = await _unitOfWork.DepartmentRepository.GetByIdToModel(departmentId);
+            if (department == null)
             {
                 throw new AppException("Cannot find " + departmentId);
             }
-            return entity;
+            return department;
         }
 
 
         public async Task<DepartmentModel> UpdateDepartment(string departmentId, DepartmentModel department)
         {
-            var entity = await _unitOfWork.DepartmentRepository.GetById(departmentId);
+            var entity = await _unitOfWork.DepartmentRepository.GetByIdToEntity(departmentId);
             entity.DepartmentNm = department.DepartmentNm != null ? department.DepartmentNm : entity.DepartmentNm;
             entity.Hotline = department.Hotline != null ? department.Hotline : entity.Hotline;
             entity.RoomNum = department.RoomNum != null ? department.RoomNum : entity.RoomNum;
@@ -115,7 +114,7 @@ namespace ssrcore.Services
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.DepartmentRepository.GetById(departmentId);
+            var modelToReturn = await _unitOfWork.DepartmentRepository.GetByIdToModel(departmentId);
             return modelToReturn;
         }
     }

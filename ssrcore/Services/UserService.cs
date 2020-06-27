@@ -39,7 +39,7 @@ namespace ssrcore.Services
             return false;
         }
 
-        public async Task<Users> CreateUser(Users user , string password)
+        public async Task<Users> CreateUser(Users user, string password)
         {
             await _unitOfWork.UserRepository.Create(user, password);
             await _unitOfWork.Commit();
@@ -49,7 +49,7 @@ namespace ssrcore.Services
         public async Task<bool> DeleteUser(string username)
         {
             var entity = await _unitOfWork.UserRepository.GetByUsername(username);
-            if(entity != null)
+            if (entity != null)
             {
                 _unitOfWork.UserRepository.Delete(entity);
                 await _unitOfWork.Commit();
@@ -77,12 +77,16 @@ namespace ssrcore.Services
         public async Task<UserModel> UpdateUser(string username, UserModel user)
         {
             var entity = await _unitOfWork.UserRepository.GetByUsername(username);
-            entity.FullName = user.FullName != null ? user.FullName : entity.FullName;
-            entity.Phonenumber = user.Phonenumber != null ? user.Phonenumber : entity.Phonenumber;
-            entity.Photo = user.Photo != null ? user.Photo : entity.Photo;
-            entity.DelFlg = true;
-            entity.UpdDatetime = DateTime.Now;
-            return _mapper.Map<UserModel>(entity);
+            if (entity != null)
+            {
+                entity.FullName = user.FullName != null ? user.FullName : entity.FullName;
+                entity.Phonenumber = user.Phonenumber != null ? user.Phonenumber : entity.Phonenumber;
+                entity.Photo = user.Photo != null ? user.Photo : entity.Photo;
+                entity.DelFlg = true;
+                entity.UpdDatetime = DateTime.Now;
+                return _mapper.Map<UserModel>(entity);
+            }
+            return null;
         }
 
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)

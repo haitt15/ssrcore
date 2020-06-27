@@ -8,5 +8,6 @@ namespace ssrcore.ViewModels
     public class SearchDepartmentModel : ResourceParameters
     {
         public string DepartmentNm { get; set; }
+        public string Username { get; set; }
     }
 }

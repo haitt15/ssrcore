@@ -66,11 +66,6 @@ namespace ssrcore.Repositories
             return await _context.Users.Where(x => x.Username == username).SingleOrDefaultAsync();
         }
 
-        //public async Task<Users> GetByUid(string uid)
-        //{
-        //    return await _context.Users.Where(x => x. == uid && x.DelFlg == false).SingleOrDefaultAsync();
-        //}
-
         public async Task<IEnumerable<Users>> GetAll()
         {
             return await _context.Users.ToListAsync();

@@ -68,7 +68,7 @@ namespace ssrcore.Repositories
             return PagedList<ServiceModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<ServiceModel> GetById(string serviceId)
+        public async Task<ServiceModel> GetByIdToModel(string serviceId)
         {
             var result = await  _context.Service.Where(t => t.ServiceId == serviceId && t.DelFlg == false)
                                                 .Select(t => new ServiceModel {
@@ -97,6 +97,12 @@ namespace ssrcore.Repositories
         public void Update(Service service)
         {
  
+        }
+
+        public async Task<Service> GetByIdToEntity(string serviceId)
+        {
+            var service = await _context.Service.FindAsync(serviceId);
+            return service;
         }
     }
 }

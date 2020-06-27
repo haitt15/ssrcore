@@ -15,6 +15,7 @@ namespace ssrcore.UnitOfWork
         IUserRepository UserRepository { get; }
         IRoleRepository RoleRepository { get; }
         IFcmTokenRepository FcmTokenRepository { get; }
+        ICommentRepository CommentRepository { get; }
         Task Commit();
     }
 }

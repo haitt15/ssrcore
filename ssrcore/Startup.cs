@@ -88,6 +88,7 @@ namespace ssrcore
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFcmTokenService, FcmTokenService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

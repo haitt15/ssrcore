@@ -71,8 +71,8 @@ export default {
         // v => (v && v.length >= 8) || 'Username must be more than 8 characters',
         v => (v && v.length < 50) || 'Username must be less than 50 characters'
       ],
-      passwordRules: [v => !!v || 'Password is required',
-        v => (v && v.length >= 8) || 'Username must be more than 8 characters'
+      passwordRules: [v => !!v || 'Password is required'
+        // v => (v && v.length >= 8) || 'Username must be more than 8 characters'
       ],
       message: ''
     }
@@ -110,7 +110,6 @@ export default {
         .then(result => {
           firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
             console.log('this.token', idToken)
-
             // Send token to your backend via HTTPS
             self._loginWithGoogle(idToken).then(
               response => {

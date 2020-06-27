@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import AdminPage from '../views/AdminPage.vue'
 import StaffPage from '../views/StaffPage.vue'
 import StudentPage from '../views/StudentPage.vue'
+import RequestDetails from '../views/RequestDetails.vue'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
     path: '/student',
     name: 'Student',
     component: StudentPage
+  },
+  {
+    path: '/request',
+    name: 'RequestDetails',
+    component: RequestDetails
   }
 ]
 const router = new VueRouter({

@@ -7,7 +7,7 @@
   <v-content v-if="!['Login', 'Register'].includes($route.name)">
     <!-- Provides the application the proper gutter -->
     <v-container fluid>
-      <breadcrumbs :items="_getBreadcrumbs" ></breadcrumbs>
+      <!-- <breadcrumbs :items="_getBreadcrumbs" ></breadcrumbs> -->
       <!-- If using vue-router -->
       <router-view></router-view>
     </v-container>
@@ -20,33 +20,33 @@
 </template>
 <script>
 import navigation from './components/Navigation'
-import breadcrumbs from './components/Breadcrumbs'
+// import breadcrumbs from './components/Breadcrumbs'
 
-import { mapGetters, mapMutations } from 'vuex'
+// import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
-    ...mapGetters(['_getBreadcrumbs'])
+    // ...mapGetters(['_getBreadcrumbs'])
   },
   components: {
-    navigation,
-    breadcrumbs
+    navigation
+    // breadcrumbs
   },
   data () {
     return {
     }
   },
   mounted () {
-    this.initApp()
+    // this.initApp()
   },
   methods: {
-    ...mapMutations(['_addBreadcrubs']),
-    initApp () {
-      this._addBreadcrubs({
-        text: 'Dashboard',
-        disabled: false,
-        href: '#/student'
-      })
-    }
+    // ...mapMutations(['_addBreadcrubs']),
+    // initApp () {
+    //   this._addBreadcrubs({
+    //     text: 'Dashboard',
+    //     disabled: false,
+    //     href: '#/student'
+    //   })
+    // }
   }
 }
 </script>

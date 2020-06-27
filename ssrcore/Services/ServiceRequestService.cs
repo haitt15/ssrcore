@@ -24,19 +24,22 @@ namespace ssrcore.Services
         public async Task<ServiceRequestModel> CreateServiceRequest(ServiceRequestModel serviceRequest)
         {
             var user = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.Username);
-            serviceRequest.UserId = user.Id;
-            var entity = _mapper.Map<ServiceRequest>(serviceRequest);
-            await _unitOfWork.ServiceRequestRepository.Create(entity);
-            await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetById(entity.TicketId);
-            return modelToReturn;
+            if (user != null)
+            {
+                serviceRequest.UserId = user.Id;
+                var entity = _mapper.Map<ServiceRequest>(serviceRequest);
+                await _unitOfWork.ServiceRequestRepository.Create(entity);
+                await _unitOfWork.Commit();
+                var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(entity.TicketId);
+                return modelToReturn;
+            }
+            return null;
         }
 
         public async Task<bool> DeleteServiceRequest(string ticketId)
         {
-            var serviceRequest = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
-            var entity = _mapper.Map<ServiceRequest>(serviceRequest);
-            if (serviceRequest != null)
+            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
+            if (entity != null)
             {
                 _unitOfWork.ServiceRequestRepository.Delete(entity);
                 await _unitOfWork.Commit();
@@ -114,12 +117,12 @@ namespace ssrcore.Services
 
         public async Task<ServiceRequestModel> GetServiceRequest(string ticketId)
         {
-            var entity = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
-            if (entity == null)
+            var serviceRequest = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(ticketId);
+            if (serviceRequest == null)
             {
                 throw new AppException("Cannot find " + ticketId);
             }
-            return entity;
+            return serviceRequest;
         }
 
         public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
@@ -134,7 +137,7 @@ namespace ssrcore.Services
 
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
-            var entity = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
+            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
             if(string.IsNullOrEmpty(serviceRequest.UserId.ToString()))
             {
                 entity.UserId = serviceRequest.UserId;
@@ -142,12 +145,12 @@ namespace ssrcore.Services
             entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
             entity.StaffId = serviceRequest.StaffId != null ? serviceRequest.StaffId : entity.StaffId;
             entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
-            entity.DueDateTime = serviceRequest.DueDateTime != null ? serviceRequest.DueDateTime : entity.DueDateTime;
+            entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
             entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
             entity.DelFlg = false;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
-            var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetById(ticketId);
+            var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(ticketId);
             return modelToReturn;
         }
     }

@@ -64,7 +64,7 @@ namespace ssrcore.Repositories
             return PagedList<DepartmentModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<DepartmentModel> GetById(string departmentId)
+        public async Task<DepartmentModel> GetByIdToModel(string departmentId)
         {
             var result = await _context.Department.Where(t => t.DepartmentId == departmentId && t.DelFlg == false)
                                                 .Select(s => new DepartmentModel
@@ -92,6 +92,12 @@ namespace ssrcore.Repositories
         public void Update(Department department)
         {
            // var entity = _context.Department.Find(department.DepartmentId);
+        }
+
+        public async Task<Department> GetByIdToEntity(string departmentId)
+        {
+            var entity = await _context.Department.FindAsync(departmentId);
+            return entity;
         }
     }
 }

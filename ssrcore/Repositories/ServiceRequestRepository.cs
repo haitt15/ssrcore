@@ -73,7 +73,7 @@ namespace ssrcore.Repositories
             return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }
 
-        public async Task<ServiceRequestModel> GetById(string ticketId)
+        public async Task<ServiceRequestModel> GetByIdToModel(string ticketId)
         {
             var result = await _context.ServiceRequest.Where(t => t.TicketId == ticketId && t.DelFlg == false)
                                                 .Select(t => new ServiceRequestModel
@@ -125,6 +125,12 @@ namespace ssrcore.Repositories
         {
             var serviceRequests = await _context.ServiceRequest.Where(t => t.UserId == userId).ToListAsync();
             return serviceRequests;
+        }
+
+        public async Task<ServiceRequest> GetByIdToEntity(string ticketId)
+        {
+            var result = await _context.ServiceRequest.FindAsync(ticketId);
+            return result;
         }
     }
 }

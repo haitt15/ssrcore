@@ -29,13 +29,13 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetAllUsers();
-            var currentUser = await _userService.GetByUserName("JcNIdM8KXYglFppYcWnIIXTbyqg2");
-            int UserId = currentUser.Id;
-            List<string> ListFcmToken = await _fcmTokenService.GetAllFcmToken(UserId);
-            foreach (string FcmToken in ListFcmToken)
-            {
-                await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
-            }
+            //var currentUser = await _userService.GetByUserName("JcNIdM8KXYglFppYcWnIIXTbyqg2");
+            //int UserId = currentUser.Id;
+            //List<string> ListFcmToken = await _fcmTokenService.GetAllFcmToken(UserId);
+            //foreach (string FcmToken in ListFcmToken)
+            //{
+            //    await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
+            //}
             return Ok(users);
         }
     }

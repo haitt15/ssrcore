@@ -115,6 +115,7 @@ namespace ssrcore.Services
             entity.ServiceNm = service.ServiceNm != null ? service.ServiceNm : entity.ServiceNm;
             entity.DepartmentId = service.DepartmentId != null ? service.DepartmentId : entity.DepartmentId;
             entity.DescriptionService = service.DescriptionService != null ? service.DescriptionService : entity.DescriptionService;
+            entity.ProcessMaxDay = service.ProcessMaxDay > 0 ? service.ProcessMaxDay : entity.ProcessMaxDay;
             entity.FormLink = service.FormLink != null ? service.FormLink : entity.FormLink;
             entity.SheetLink = service.SheetLink != null ? service.SheetLink : entity.SheetLink;
             if (string.IsNullOrEmpty(service.ProcessMaxDay.ToString()))

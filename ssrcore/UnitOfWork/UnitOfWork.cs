@@ -16,6 +16,7 @@ namespace ssrcore.UnitOfWork
         private IUserRepository _user;
         private IRoleRepository _role;
         private IFcmTokenRepository _fcmToken;
+        private ICommentRepository _comment;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -68,6 +69,15 @@ namespace ssrcore.UnitOfWork
                 return _fcmToken = _fcmToken ?? new FcmTokenRepository(_context);
             }
         }
+
+        public ICommentRepository CommentRepository
+        {
+            get
+            {
+                return _comment = _comment ?? new CommentRepository(_context);
+            }
+        }
+
         public async Task Commit()
         {
             await _context.SaveChangesAsync();

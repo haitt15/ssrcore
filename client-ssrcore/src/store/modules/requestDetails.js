@@ -19,10 +19,10 @@ export const requestDetails = {
     }
   },
   actions: {
-    _getRequestService (context, obj) {
-      return SSRCore.get(API_URL, obj).then(
+    _getRequestService (context, ticketId) {
+      return SSRCore.get(API_URL + '/' + ticketId).then(
         response => {
-          context.commit('_setRequestService', response.data.data)
+          context.commit('_setRequestService', response.data)
           return response.data
         },
         error => {
@@ -31,9 +31,9 @@ export const requestDetails = {
       )
     },
     _updateRequestService (context, obj) {
-      return SSRCore.put(API_URL, obj).then(
+      return SSRCore.put(API_URL + '/' + obj.ticketId, obj).then(
         response => {
-          context.commit('_updateRequestServiceMutations', response.data)
+          context.commit('_setRequestService', response.data)
           return response.data
         },
         error => {

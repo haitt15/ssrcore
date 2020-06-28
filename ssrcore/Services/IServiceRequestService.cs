@@ -10,7 +10,6 @@ namespace ssrcore.Services
     {
         Task<object> GetAllServiceRequest(SearchServiceRequestModel model);
         Task<ServiceRequestModel> GetServiceRequest(string ticketId);
-        Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId);
         Task<ServiceRequestModel> CreateServiceRequest(ServiceRequestModel serviceRequest);
         Task<bool> DeleteServiceRequest(string ticketId);
         Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest);

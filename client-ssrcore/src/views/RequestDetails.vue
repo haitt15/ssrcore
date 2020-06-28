@@ -2,29 +2,30 @@
   <div class="request_page">
     <div class="request_main">
       <div class="request_header">
+        Ticket ID:
         <router-link :to="{ name: 'Student'}">
-          <span style="font-weight: bold">{{ requestService.ticketId }}</span>
+          <span style="font-weight: bold">{{ _requestService.ticketId }}</span>
         </router-link>
-        <h2>{{requestService.requestTitle}}</h2>
+        <h2>{{_requestService.serviceNm}}</h2>
       </div>
       <v-divider></v-divider>
       <div class="request_body">
         <v-row class="row-text" no-gutters>
-          <v-col :cols="4">
+          <v-col :cols="6">
             <span class="request_title">Service:</span>
           </v-col>
-          <v-col :cols="4" :offset="4">
+          <v-col :cols="4" :offset="2">
             <span class="request_title">Status:</span>
           </v-col>
-          <v-col :cols="4">
-            <span class="request_text">{{ requestService.service}}</span>
+          <v-col :cols="6">
+            <span class="request_text">{{ _requestService.serviceNm}}</span>
           </v-col>
-          <v-col :cols="4" :offset="4">
+          <v-col :cols="4" :offset="2">
             <span
-              :class="{  Waiting : requestService.status === 'Waiting',InProgress : requestService.status === 'In Progress',
-              Accepted : requestService.status === 'Accepted',Rejected : requestService.status === 'Rejected',
-              Expired: requestService.status === 'Expired'}"
-            >{{requestService.status}}</span>
+              :class="{  Waiting : _requestService.status === 'Waiting',InProgress : _requestService.status === 'In Progress',
+              Accepted : _requestService.status === 'Accepted',Rejected : _requestService.status === 'Rejected',
+              Expired: _requestService.status === 'Expired'}"
+            >{{_requestService.status}}</span>
             <v-icon @click="clickToEditStatus" class="pen-edit">mdi-pencil-outline</v-icon>
             <v-dialog v-model="editStatusDialog" max-width="500px">
               <v-card>
@@ -39,24 +40,24 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-btn color="primary" text @click="editStatusDialog = false">Close</v-btn>
-                  <v-btn color="primary" text @click="clickToChooseStatus">Update</v-btn>
+                  <v-btn color="primary" text @click="clickToChooseStatus" :loading="loading">Update</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-col>
         </v-row>
         <v-row class="row-text" no-gutters>
-          <v-col :cols="4">
+          <v-col :cols="6">
             <span class="request_title">Department:</span>
           </v-col>
-          <v-col :cols="4" :offset="4">
+          <v-col :cols="4" :offset="2">
             <span class="request_title">Expired Date:</span>
           </v-col>
-          <v-col :cols="4">
-            <span class="request_text">{{requestService.department}}</span>
+          <v-col :cols="6">
+            <span class="request_text">{{_requestService.departmentNm}}</span>
           </v-col>
-          <v-col :cols="4" :offset="4">
-            <span>{{requestService.expiredDate}}</span>
+          <v-col :cols="4" :offset="2">
+            <span>{{_requestService.dueDateTime | formatDatetime}}</span>
             <v-menu
               ref="menu"
               v-model="menu"
@@ -79,8 +80,11 @@
                 v-model="date"
                 :show-current="false"
                 :min="minDate"
-                @click:date="clickToChooseDate"
-              ></v-date-picker>
+              >
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="chooseDate = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="clickToChooseDate" :loading="loading">Update</v-btn>
+              </v-date-picker>
             </v-menu>
           </v-col>
         </v-row>
@@ -89,7 +93,7 @@
             <span class="request_title">Description:</span>
           </v-col>
           <v-col :cols="12">
-            <span class="request_text">{{requestService.description}}</span>
+            <span class="request_text">{{_requestService.content}}</span>
           </v-col>
         </v-row>
         <v-divider></v-divider>
@@ -128,12 +132,14 @@
         </v-col>
         <v-autocomplete
           v-model="asignee"
-          :items="people"
-          item-text="name"
-          item-value="name"
+          :items="_staffList"
+          item-text="username"
+          item-value="username"
           @focus="onKeyPress"
           @keypress="onKeyPress"
           @blur="onBlur"
+          @change="changeStaff"
+          :loading="loading"
         >
           <template v-slot:selection="data">
             <v-chip
@@ -143,9 +149,9 @@
               color="white"
             >
               <v-avatar left>
-                <v-img :src="data.item.avatar"></v-img>
+                <v-img :src="data.item.photo !== null ? data.item.photo : avatarDefault"></v-img>
               </v-avatar>
-              {{ data.item.name }}
+              {{ `${data.item.fullName} (${data.item.username})` }}
             </v-chip>
           </template>
           <template v-slot:item="data">
@@ -154,11 +160,10 @@
             </template>
             <template v-else>
               <v-list-item-avatar>
-                <img :src="data.item.avatar" />
+                <img :src="data.item.photo !== null ? data.item.photo : avatarDefault" />
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
+                <v-list-item-title v-html="`${data.item.fullName} (${data.item.username})`"></v-list-item-title>
               </v-list-item-content>
             </template>
           </template>
@@ -172,9 +177,11 @@
           <template slot="prepend-inner">
             <v-chip color="white">
               <v-avatar left>
-                <v-img :src="reporter.avatar"></v-img>
+                <v-img
+                  :src="_requestService.studentPhoto !== null ? _requestService.studentPhoto : avatarDefault"
+                ></v-img>
               </v-avatar>
-              {{ reporter.name }}
+              {{ `${_requestService.fullName} (${_requestService.username})` }}
             </v-chip>
           </template>
         </v-text-field>
@@ -193,7 +200,16 @@ export default {
   },
   computed: {
     ...mapState('requestDetails', ['_requestService']),
-    ...mapState('comment', ['_commentList'])
+    ...mapState('comment', ['_commentList']),
+    ...mapState('staff', ['_staffList'])
+  },
+  filters: {
+    formatDatetime (val) {
+      if (val) {
+        return moment(val.substr(0, 10)).format('DD/MM/YYYY')
+      }
+      return ''
+    }
   },
   data () {
     const srcs = {
@@ -204,6 +220,10 @@ export default {
       5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'
     }
     return {
+      loading: false,
+      avatarDefault:
+        'https://thumbs.dreamstime.com/b/bearded-man-s-face-hipster-character-fashion-silhouette-avata-avatar-emblem-icon-label-vector-illustration-105106714.jpg',
+      ticketId: 'upchhnwr',
       commentRules: [
         v => !!v || 'Comment is required',
         v =>
@@ -247,7 +267,6 @@ export default {
       minDate: '',
       date: '2020-5-5',
       comment: '',
-      loading: false,
       items: [],
       search: null,
       staffs: ['Son Map', 'Tung Duong', 'Hoang Duy', 'Thanh Hai', 'Hai Nam'],
@@ -268,14 +287,31 @@ export default {
     }
   },
   mounted () {
+    // this.ticketId = this.$router.params.ticketId
     this.minDate = moment().format('YYYY-MM-DD')
-    this.date = moment(this.requestService.expiredDate, 'DD/MM/YYYY').format(
-      'YYYY-MM-DD'
-    )
+    this._getRequestService(this.ticketId)
+      .then(res => {
+        this.date = moment(
+          this._requestService.dueDateTime.substr(0, 10)
+        ).format('YYYY-MM-DD')
+        this.asignee = this._requestService.staffUsername
+      })
+      .then(res => {
+        this._getStaffList({ departmentId: this._requestService.departmentId })
+      })
   },
   methods: {
-    ...mapActions('requestDetails', ['_getRequestService', '_updateRequestService']),
-    ...mapActions('comment', ['_getCommentList', '_addComment', '_updateComment', '_deleteComment']),
+    ...mapActions('requestDetails', [
+      '_getRequestService',
+      '_updateRequestService'
+    ]),
+    ...mapActions('comment', [
+      '_getCommentList',
+      '_addComment',
+      '_updateComment',
+      '_deleteComment'
+    ]),
+    ...mapActions('staff', ['_getStaffList']),
     onKeyPress () {
       if (this.asignee !== null && this.asignee !== '') {
         this.temp = this.asignee
@@ -300,18 +336,39 @@ export default {
     },
     clickToEditStatus () {
       this.editStatusDialog = true
-      this.selectedStatus = this.requestService.status
+      this.selectedStatus = this._requestService.status
     },
     clickToChooseStatus () {
-      this.editStatusDialog = false
-      this.requestService.status = this.selectedStatus
+      this.loading = true
+      this._updateRequestService({
+        ticketId: this._requestService.ticketId,
+        status: this.selectedStatus
+      }).then(res => {
+        this.editStatusDialog = false
+        this.loading = false
+      })
     },
     clickToEditExpiredDate () {
       this.chooseDate = true
     },
     clickToChooseDate () {
-      this.chooseDate = false
-      this.requestService.expiredDate = moment(this.date).format('DD/MM/YYYY')
+      this.loading = true
+      this._updateRequestService({
+        ticketId: this._requestService.ticketId,
+        dueDateTime: this.date
+      }).then(res => {
+        this.chooseDate = false
+        this.loading = false
+      })
+    },
+    changeStaff () {
+      this.loading = true
+      this._updateRequestService({
+        ticketId: this._requestService.ticketId,
+        staffUsername: this.asignee
+      }).then(res => {
+        this.loading = false
+      })
     }
   }
 }

@@ -73,6 +73,9 @@ namespace ssrcore.Services
                             case "FullName":
                                 dictionary.Add("FullName", s.FullName);
                                 break;
+                            case "StudentPhoto":
+                                dictionary.Add("Photo", s.StudentPhoto);
+                                break;
                             case "UserId":
                                 dictionary.Add("UserId", s.UserId);
                                 break;
@@ -82,11 +85,20 @@ namespace ssrcore.Services
                             case "ServiceNm":
                                 dictionary.Add("ServiceNm", s.ServiceNm);
                                 break;
+                            case "DepartmentId":
+                                dictionary.Add("Department", s.DepartmentId);
+                                break;
+                            case "DepartmentNm":
+                                dictionary.Add("Department", s.DepartmentNm);
+                                break;
                             case "StaffId":
                                 dictionary.Add("StaffId", s.StaffId);
                                 break;
                             case "StaffNm":
-                                dictionary.Add("StaffNm", s.Staff);
+                                dictionary.Add("StaffNm", s.StaffNm);
+                                break;
+                            case "StaffUsername":
+                                dictionary.Add("StaffUsername", s.StaffUsername);
                                 break;
                             case "Content":
                                 dictionary.Add("Content", s.Content);
@@ -125,18 +137,15 @@ namespace ssrcore.Services
             return serviceRequest;
         }
 
-        public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
-        {
-            var requests = await _unitOfWork.ServiceRequestRepository.GetByUserId(userId);
-            if(requests == null)
-            {
-                throw new AppException("Cannot find " + userId);
-            }
-            return _mapper.Map<IEnumerable<ServiceRequestModel>>(requests);
-        }
-
+    
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
+            if(serviceRequest.StaffUsername != null)
+            {
+                var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
+                serviceRequest.StaffId = staff.Id;
+                serviceRequest.StaffNm = staff.FullName;
+            }
             var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
             if(string.IsNullOrEmpty(serviceRequest.UserId.ToString()))
             {

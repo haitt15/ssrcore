@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { auth } from './modules/auth'
 import { requestDetails } from './modules/requestDetails'
 import { comment } from './modules/comment'
+import { staff } from './modules/staff'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -35,6 +36,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     requestDetails,
-    comment
+    comment,
+    staff
   }
 })

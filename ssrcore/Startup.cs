@@ -13,9 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ssrcore.AutoMapper;
 using ssrcore.Models;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.UnitOfWork;
 
@@ -89,6 +87,7 @@ namespace ssrcore
             services.AddScoped<IFcmTokenService, FcmTokenService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IStaffService, StaffService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

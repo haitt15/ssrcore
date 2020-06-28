@@ -17,6 +17,7 @@ namespace ssrcore.UnitOfWork
         private IRoleRepository _role;
         private IFcmTokenRepository _fcmToken;
         private ICommentRepository _comment;
+        private IStaffRepository _staff;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -75,6 +76,14 @@ namespace ssrcore.UnitOfWork
             get
             {
                 return _comment = _comment ?? new CommentRepository(_context);
+            }
+        }
+
+        public IStaffRepository StaffRepository
+        {
+            get
+            {
+                return _staff = _staff ?? new StaffRepository(_context);
             }
         }
 

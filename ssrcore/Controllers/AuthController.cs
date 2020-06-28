@@ -24,14 +24,17 @@ namespace ssrcore.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IStaffService _staffService;
         private readonly IFcmTokenService _fcmTokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
 
-        public AuthController(IUserService userService, IRoleService roleService, IFcmTokenService fcmTokenService, IMapper mapper, IConfiguration config)
+        public AuthController(IUserService userService, IRoleService roleService, IStaffService staffService,
+                              IFcmTokenService fcmTokenService, IMapper mapper, IConfiguration config)
         {
             _userService = userService;
             _roleService = roleService;
+            _staffService = staffService;
             _fcmTokenService = fcmTokenService;
             _mapper = mapper;
             _config = config;
@@ -53,11 +56,17 @@ namespace ssrcore.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            UserModel staff = null;
             var user = await _userService.GetByUserName(model.Username);
             var result = await _userService.CheckPassWord(model.Username, model.Password);
             if (user != null && result)
             {
                 var role = _roleService.GetRole(user);
+                if(role == "Staff")
+                {
+                    staff = await _staffService.GetStaff(user.Id);
+                }
+
                 var authClaims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
@@ -67,7 +76,6 @@ namespace ssrcore.Controllers
                 };
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-                var apiUrl = _config.GetSection("AppSettings:Url").Value;
                 var firebaseProject = _config.GetSection("AppSettings:FirebaseProject").Value;
                 var token = new JwtSecurityToken(
                     issuer: "https://securetoken.google.com/" + firebaseProject,
@@ -84,6 +92,8 @@ namespace ssrcore.Controllers
                     email = user.Email,
                     fullName = user.FullName,
                     username = user.Username,
+                    departmentId = staff != null ? staff.DepartmentId : null,
+                    departmentNm = staff != null ? staff.DepartmentNm : null,
                     expiration = token.ValidTo
                 });
             }

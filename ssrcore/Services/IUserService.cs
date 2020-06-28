@@ -14,7 +14,7 @@ namespace ssrcore.Services
         Task<Users> GetByUserName(string username);
         Task<Users> CreateUser(Users user, string password);
         Task<bool> CheckPassWord(string username, string password);
-        Task<UserModel> UpdateUser(string uid, UserModel user);
+        Task<UserModel> UpdateUser(string username, UserModel user);
         Task<bool> DeleteUser(string username);
     }
 }

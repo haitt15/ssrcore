@@ -16,6 +16,7 @@ namespace ssrcore.Repositories
         Task Create(ServiceRequest serviceRequest);
         void Update(ServiceRequest serviceRequest);
         void Delete(ServiceRequest serviceRequest);
+        Task<IEnumerable<ServiceRequest>> GetExpiredRequest();
 
     }
 }

@@ -7,29 +7,28 @@
   <v-content v-if="!['Login', 'Register'].includes($route.name)">
     <!-- Provides the application the proper gutter -->
     <v-container fluid>
-      <breadcrumbs :items="_getBreadcrumbs" ></breadcrumbs>
+      <!-- <breadcrumbs :items="_getBreadcrumbs" ></breadcrumbs> -->
       <!-- If using vue-router -->
       <router-view></router-view>
     </v-container>
   </v-content>
 
-  <v-footer app v-if="!['Login', 'Register'].includes($route.name)">
-    <!-- -->
-  </v-footer>
+    <ssrcore-footer> </ssrcore-footer>
   </v-app>
 </template>
 <script>
 import navigation from './components/Navigation'
-import breadcrumbs from './components/Breadcrumbs'
-
+// import breadcrumbs from './components/Breadcrumbs'
+import Footer from '@/components/Footer'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
-    ...mapGetters(['_getBreadcrumbs'])
+    ...mapGetters([''])
   },
   components: {
     navigation,
-    breadcrumbs
+    'ssrcore-footer': Footer
+    // breadcrumbs
   },
   data () {
     return {

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { auth } from './modules/auth'
+import { dashboard } from './modules/dashboard'
+import { requestlist } from './modules/requestlist'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -31,6 +33,8 @@ export default new Vuex.Store({
   },
   actions: {},
   modules: {
-    auth
+    auth,
+    dashboard,
+    requestlist
   }
 })

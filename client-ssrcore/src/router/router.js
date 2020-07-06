@@ -5,6 +5,8 @@ import Login from '../views/Login.vue'
 import AdminPage from '../views/AdminPage.vue'
 import StaffPage from '../views/StaffPage.vue'
 import StudentPage from '../views/StudentPage.vue'
+import Dashboard from '../views/Dashboard'
+import Requestlist from '@/views/Requestlist'
 
 Vue.use(VueRouter)
 
@@ -42,6 +44,16 @@ const routes = [
     path: '/student',
     name: 'Student',
     component: StudentPage
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
+  },
+  {
+    path: '/requestlist',
+    name: 'Requestlist',
+    component: Requestlist
   }
 ]
 const router = new VueRouter({

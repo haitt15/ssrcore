@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import { auth } from './modules/auth'
 import { dashboard } from './modules/dashboard'
 import { requestlist } from './modules/requestlist'
+// import { requestDetails } from './modules/requestDetails'
+import { service } from './modules/service'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -35,6 +37,8 @@ export default new Vuex.Store({
   modules: {
     auth,
     dashboard,
-    requestlist
+    requestlist,
+    // requestDetails,
+    service
   }
 })

@@ -5,8 +5,8 @@ namespace ssrcore.ViewModels
     public class UserModel : BaseModel
     {
         public int Id { get; set; }
-        public string Uid { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string Email { get; set; }
@@ -16,5 +16,7 @@ namespace ssrcore.ViewModels
         public string Address { get; set; }
         public string Photo { get; set; }
         public string RoleId { get; set; }
+        public string DepartmentId { get; set; }
+        public string DepartmentNm { get; set; }
     }
 }

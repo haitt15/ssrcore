@@ -9,6 +9,8 @@ namespace ssrcore.AutoMapper
         public UserMapper()
         {
             CreateMap<RegisterModel, Users>();
+            CreateMap<UserModel, Users>();
+            CreateMap<Users, UserModel>();
         }
     }
 }

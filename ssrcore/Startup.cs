@@ -13,10 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ssrcore.AutoMapper;
 using ssrcore.Models;
-using ssrcore.Repositories;
 using ssrcore.Services;
+using ssrcore.Services.BackgroundServices;
 using ssrcore.UnitOfWork;
 
 namespace ssrcore
@@ -33,6 +32,8 @@ namespace ssrcore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<StatusManagerService>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOriginsPolicy", // I introduced a string constant just as a label "AllowAllOriginsPolicy"
@@ -89,6 +90,7 @@ namespace ssrcore
             services.AddScoped<IFcmTokenService, FcmTokenService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IStaffService, StaffService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

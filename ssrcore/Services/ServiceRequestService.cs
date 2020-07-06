@@ -26,7 +26,9 @@ namespace ssrcore.Services
             var user = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.Username);
             if (user != null)
             {
+                var service = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceRequest.ServiceId);
                 serviceRequest.UserId = user.Id;
+                serviceRequest.DueDateTime = DateTime.Now.AddDays(service.ProcessMaxDay);
                 var entity = _mapper.Map<ServiceRequest>(serviceRequest);
                 await _unitOfWork.ServiceRequestRepository.Create(entity);
                 await _unitOfWork.Commit();
@@ -152,6 +154,20 @@ namespace ssrcore.Services
             await _unitOfWork.Commit();
             var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(ticketId);
             return modelToReturn;
+        }
+
+        public async Task UpdateStatusExpiredServiceRequest()
+        {
+            var list_serviceRequest = await _unitOfWork.ServiceRequestRepository.GetExpiredRequest();
+            foreach (var item in list_serviceRequest)
+            {
+                if (item.DueDateTime < DateTime.Now)
+                {
+                    item.Status = "Expired";
+                }
+            }
+
+            await _unitOfWork.Commit();
         }
     }
 }

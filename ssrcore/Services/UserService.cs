@@ -82,6 +82,7 @@ namespace ssrcore.Services
                 entity.FullName = user.FullName != null ? user.FullName : entity.FullName;
                 entity.Phonenumber = user.Phonenumber != null ? user.Phonenumber : entity.Phonenumber;
                 entity.Photo = user.Photo != null ? user.Photo : entity.Photo;
+                entity.Email = user.Email != null ? user.Email : entity.Email;
                 entity.DelFlg = true;
                 entity.UpdDatetime = DateTime.Now;
                 return _mapper.Map<UserModel>(entity);

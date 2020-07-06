@@ -23,7 +23,7 @@ namespace ssrcore.Repositories
             department.InsDatetime = DateTime.Now;
             department.UpdBy = Constants.Admin.ADMIN;
             department.UpdDatetime = DateTime.Now;
-            await _context.AddAsync(department);
+            await _context.Department.AddAsync(department);
         }
 
         public async Task<PagedList<DepartmentModel>> Get(SearchDepartmentModel model)

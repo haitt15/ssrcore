@@ -132,5 +132,10 @@ namespace ssrcore.Repositories
             var result = await _context.ServiceRequest.FindAsync(ticketId);
             return result;
         }
+
+        public async Task<IEnumerable<ServiceRequest>> GetExpiredRequest()
+        {
+            return await _context.ServiceRequest.Where(t => t.DelFlg == false).ToListAsync();
+        }
     }
 }

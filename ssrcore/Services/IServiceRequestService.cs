@@ -1,4 +1,5 @@
-﻿using ssrcore.ViewModels;
+﻿using ssrcore.Models;
+using ssrcore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace ssrcore.Services
         Task<ServiceRequestModel> CreateServiceRequest(ServiceRequestModel serviceRequest);
         Task<bool> DeleteServiceRequest(string ticketId);
         Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest);
+        Task UpdateStatusExpiredServiceRequest();
     }
 }

@@ -50,7 +50,7 @@ namespace ssrcore.Controllers
         public async Task<ActionResult> UpdateUser(string username, [FromBody] UserModel model)
         {
             var user = await _userService.GetByUserName(username);
-            if (username == null)
+            if (user == null)
             {
                 return NotFound();
             }

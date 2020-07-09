@@ -62,7 +62,7 @@
 <script>
 import MaterialTableCard from '@/views/MaterialTableCard'
 import MaterialStatsCard from '@/views/MaterialStatsCard'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     'base-material-table-card': MaterialTableCard,
@@ -76,18 +76,24 @@ export default {
     return {
       headers: [
         {
-          text: 'TicketID',
+          text: 'Ticket',
           align: 'start',
           sortable: false,
-          value: 'ticketid'
+          value: 'ticketId'
         },
-        { text: 'ServiceName', value: 'servicename' },
+        { text: 'ServiceName', value: 'serviceNm' },
         { text: 'Content', value: 'content' },
-        { text: 'DueDateTime', value: 'duedatetime' },
+        { text: 'DueDateTime', value: 'dueDateTime' },
         { text: 'Status', value: 'status' },
         { text: 'Edit', value: 'actions', sortable: false }
       ]
     }
+  },
+  mounted () {
+    this._getAllRequestOfDepartment()
+  },
+  methods: {
+    ...mapActions('requestlist', ['_getAllRequestOfDepartment'])
   }
 }
 </script>

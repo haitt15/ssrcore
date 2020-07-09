@@ -26,11 +26,7 @@
 
         <slot v-else-if="$slots.image" name="image" />
 
-        <div
-          v-else-if="title && !icon"
-          class="display-1 font-weight-light"
-          v-text="title"
-        />
+        <div v-else-if="title && !icon" class="display-1 font-weight-light" v-text="title" />
 
         <v-icon v-else-if="icon" size="32" v-text="icon" />
 
@@ -54,21 +50,19 @@
       ></v-text-field>
     </div>
     <v-card>
-      <v-data-table
-        :headers="headerTable"
-        :items="dataTable"
-        :items-per-page="5"
-        :search="search"
-      >
-        <template v-slot:item.status="{ item }">
-          <v-chip :color="getColor(item.status)" dark>{{
-            item.status
-          }}</v-chip>
+      <v-data-table :headers="headerTable" :items="dataTable" :items-per-page="5" :search="search">
+          <template v-slot:item.dueDateTime="{ item }">
+           {{ item.dueDateTime | formatDatetime}}
         </template>
-        <template v-slot:item.actions>
-          <v-icon small class="mr-2">
-            mdi-pencil
-          </v-icon>
+        <template v-slot:item.status="{ item }">
+          <v-chip :color="getColor(item.status)" dark>
+            {{
+            item.status
+            }}
+          </v-chip>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="clickToEditRequest(item)">mdi-pencil</v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -85,6 +79,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: 'MaterialCard',
   data () {
@@ -99,6 +94,14 @@ export default {
       else if (status === 'Expired') return 'orange'
       else if (status === 'Waiting') return '#f39c12'
       else return 'blue'
+    },
+    clickToEditRequest (request) {
+      this.$router.push('/request', { request })
+    }
+  },
+  filters: {
+    formatDatetime (value) {
+      return moment(value).format('DD/MM/YYYY')
     }
   },
   props: {

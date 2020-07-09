@@ -1,11 +1,12 @@
 import axios from 'axios'
+import authHeader from './auth-header'
 // https://webapi20200601090708.azurewebsites.net/api/v1/Auth/Auth
 // const API_URL = 'https://webapi20200601090708.azurewebsites.net'
 const API_URL = 'https://localhost:44312'
 class SSRCore {
   get (url, obj) {
     return axios
-      .get(API_URL + url, obj)
+      .get(API_URL + url, obj, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {
@@ -16,7 +17,7 @@ class SSRCore {
 
   post (url, obj) {
     return axios
-      .post(API_URL + url, obj)
+      .post(API_URL + url, obj, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {
@@ -27,7 +28,7 @@ class SSRCore {
 
   put (url, obj) {
     return axios
-      .put(API_URL + url, obj)
+      .put(API_URL + url, obj, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {
@@ -38,7 +39,7 @@ class SSRCore {
 
   delete (url, obj) {
     return axios
-      .delete(API_URL + url, obj)
+      .delete(API_URL + url, obj, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {

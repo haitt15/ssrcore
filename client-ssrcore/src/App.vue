@@ -13,14 +13,14 @@
     </v-container>
   </v-content>
 
-    <ssrcore-footer> </ssrcore-footer>
+    <!-- <ssrcore-footer> </ssrcore-footer> -->
   </v-app>
 </template>
 <script>
 import navigation from './components/Navigation'
 // import breadcrumbs from './components/Breadcrumbs'
 import Footer from '@/components/Footer'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters([''])
@@ -35,17 +35,17 @@ export default {
     }
   },
   mounted () {
-    this.initApp()
+    // this.initApp()
   },
   methods: {
-    ...mapMutations(['_addBreadcrubs']),
-    initApp () {
-      this._addBreadcrubs({
-        text: 'Dashboard',
-        disabled: false,
-        href: '#/student'
-      })
-    }
+    // ...mapMutations(['_addBreadcrubs']),
+    // initApp () {
+    //   this._addBreadcrubs({
+    //     text: 'Dashboard',
+    //     disabled: false,
+    //     href: '#/student'
+    //   })
+    // }
   }
 }
 </script>

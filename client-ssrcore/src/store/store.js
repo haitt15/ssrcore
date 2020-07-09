@@ -5,6 +5,9 @@ import { dashboard } from './modules/dashboard'
 import { requestlist } from './modules/requestlist'
 // import { requestDetails } from './modules/requestDetails'
 import { service } from './modules/service'
+import { requestDetails } from './modules/requestDetails'
+import { comment } from './modules/comment'
+import { staff } from './modules/staff'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -38,7 +41,9 @@ export default new Vuex.Store({
     auth,
     dashboard,
     requestlist,
-    // requestDetails,
-    service
+    service,
+    requestDetails,
+    comment,
+    staff
   }
 })

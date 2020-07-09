@@ -14,7 +14,7 @@ using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -76,7 +76,7 @@ namespace ssrcore.Controllers
             return BadRequest();
         }
 
-        [HttpPost("Staff")]
+        [HttpPost("Staffs")]
         public async Task<IActionResult> CreateStaff([FromBody] UserModel model)
         {
 
@@ -93,7 +93,7 @@ namespace ssrcore.Controllers
             return BadRequest();
         }
 
-        [HttpGet("Staff")]
+        [HttpGet("Staffs")]
         public async Task<IActionResult> GetAllStaff([FromQuery] SearchStaffModel model)
         {
             var result = await _staffService.GetAllStaffs(model);

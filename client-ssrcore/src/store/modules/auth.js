@@ -45,8 +45,8 @@ export const auth = {
       return SSRCore.post(API_URL, {
         username: user.username,
         password: user.password
-      })
-        .then(response => {
+      }).then(
+        response => {
           if (response.data.token) {
             localStorage.setItem('UserInfo', JSON.stringify(response.data))
             context.commit('_loginSuccess', user)
@@ -57,13 +57,13 @@ export const auth = {
           context.commit('_loginFailure')
           return Promise.reject(error)
         }
-        )
+      )
     },
     _loginWithGoogle (context, idToken) {
       return SSRCore.post(API_URL + '/Google', {
         idToken: idToken
-      })
-        .then(response => {
+      }).then(
+        response => {
           if (response.data.token) {
             localStorage.setItem('UserInfo', JSON.stringify(response.data))
             context.commit('_loginSuccess', user)
@@ -74,7 +74,7 @@ export const auth = {
           context.commit('_loginFailure')
           return Promise.reject(error)
         }
-        )
+      )
     },
     _logout ({ commit }) {
       localStorage.removeItem('UserInfo')

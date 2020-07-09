@@ -41,11 +41,15 @@ namespace ssrcore.Repositories
                                                    UserId = t.UserId,
                                                    Username = t.User.Username,
                                                    FullName = t.User.FullName,
+                                                   StudentPhoto = t.User.Photo,
                                                    Content = t.Content,
                                                    ServiceId = t.ServiceId,
                                                    ServiceNm = t.Service.ServiceNm,
                                                    StaffId = t.StaffId,
-                                                   Staff = t.Staff.StaffNavigation.FullName,
+                                                   StaffNm = t.Staff.StaffNavigation.FullName,
+                                                   StaffUsername = t.Staff.StaffNavigation.Username,
+                                                   DepartmentId = t.Service.Department.DepartmentId,
+                                                   DepartmentNm = t.Service.Department.DepartmentNm,
                                                    Status = t.Status,
                                                    DueDateTime = t.DueDateTime,
                                                    DelFlg = t.DelFlg,
@@ -84,11 +88,15 @@ namespace ssrcore.Repositories
                                                     UserId = t.UserId,
                                                     Username = t.User.Username,
                                                     FullName = t.User.FullName,
+                                                    StudentPhoto = t.User.Photo,
                                                     Content = t.Content,
                                                     ServiceId = t.ServiceId,
                                                     ServiceNm = t.Service.ServiceNm,
                                                     StaffId = t.StaffId,
-                                                    Staff = t.Staff.StaffNavigation.FullName,
+                                                    StaffNm = t.Staff.StaffNavigation.FullName,
+                                                    StaffUsername = t.Staff.StaffNavigation.Username,
+                                                    DepartmentId = t.Service.Department.DepartmentId,
+                                                    DepartmentNm = t.Service.Department.DepartmentNm,
                                                     Status = t.Status,
                                                     DueDateTime = t.DueDateTime,
                                                     DelFlg = t.DelFlg,
@@ -121,12 +129,6 @@ namespace ssrcore.Repositories
             }
             while (sericeRequest != null);
             return ticketId;
-        }
-
-        public async Task<IEnumerable<ServiceRequest>> GetByUserId(int userId)
-        {
-            var serviceRequests = await _context.ServiceRequest.Where(t => t.UserId == userId).ToListAsync();
-            return serviceRequests;
         }
 
         public async Task<ServiceRequest> GetByIdToEntity(string ticketId)

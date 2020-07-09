@@ -27,6 +27,8 @@ namespace ssrcore.Services
             if (user != null)
             {
                 var service = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceRequest.ServiceId);
+                serviceRequest.UserId = user.Id;
+                serviceRequest.Status = "Waiting";
                 serviceRequest.DueDateTime = DateTime.Now.AddDays(service.ProcessMaxDay);
                 var entity = _mapper.Map<ServiceRequest>(serviceRequest);
                 await _unitOfWork.ServiceRequestRepository.Create(entity);

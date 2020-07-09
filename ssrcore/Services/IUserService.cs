@@ -11,7 +11,7 @@ namespace ssrcore.Services
     public interface IUserService
     {
         Task<IEnumerable<Users>> GetAllUsers();
-        Task<Users> GetByUserName(string username);
+        Task<Users> GetByUserName(string username, string action = "");
         Task<Users> CreateUser(Users user, string password);
         Task<bool> CheckPassWord(string username, string password);
         Task<UserModel> UpdateUser(string username, UserModel user);

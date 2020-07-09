@@ -113,7 +113,7 @@ namespace ssrcore.Controllers
                 int indexEmail = user_firebase.Email.LastIndexOf("@fpt.edu.vn");
                 if (indexEmail > 0)
                 {
-                    var currentUser = await _userService.GetByUserName(uid);
+                    var currentUser = await _userService.GetByUserName(uid, "Login");
 
                     if (currentUser == null)
                     {

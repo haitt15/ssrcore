@@ -64,11 +64,15 @@ namespace ssrcore.Services
             return users;
         }
 
-        public async Task<Users> GetByUserName(string username)
+        public async Task<Users> GetByUserName(string username, string? action)
         {
             var entity = await _unitOfWork.UserRepository.GetByUsername(username);
             if (entity == null)
             {
+                if(action == "Login")
+                {
+                    return null;
+                }
                 throw new AppException("Cannot find " + username);
             }
             return entity;

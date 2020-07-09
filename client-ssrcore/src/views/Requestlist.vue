@@ -47,25 +47,25 @@
         />
       </v-col>
     </v-row>
-    <base-material-table-card
+    <request-grid
       icon="mdi-clipboard-text"
       title="LIST REQUEST IN JUNE"
       class="px-5 py-3"
       :headerTable="headers"
       :dataTable="_getListOfRequest"
     >
-    </base-material-table-card>
+    </request-grid>
 
     <div class="py-3" />
   </v-container>
 </template>
 <script>
-import MaterialTableCard from '@/views/MaterialTableCard'
+import RequestGrid from '@/views/RequestGrid'
 import MaterialStatsCard from '@/views/MaterialStatsCard'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
-    'base-material-table-card': MaterialTableCard,
+    'request-grid': RequestGrid,
     'base-material-stats-card': MaterialStatsCard
   },
   computed: {
@@ -76,18 +76,24 @@ export default {
     return {
       headers: [
         {
-          text: 'TicketID',
+          text: 'Ticket',
           align: 'start',
           sortable: false,
-          value: 'ticketid'
+          value: 'ticketId'
         },
-        { text: 'ServiceName', value: 'servicename' },
+        { text: 'ServiceName', value: 'serviceNm' },
         { text: 'Content', value: 'content' },
-        { text: 'DueDateTime', value: 'duedatetime' },
+        { text: 'DueDateTime', value: 'dueDateTime' },
         { text: 'Status', value: 'status' },
         { text: 'Edit', value: 'actions', sortable: false }
       ]
     }
+  },
+  mounted () {
+    this._getAllRequestOfDepartment()
+  },
+  methods: {
+    ...mapActions('requestlist', ['_getAllRequestOfDepartment'])
   }
 }
 </script>

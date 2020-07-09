@@ -43,18 +43,6 @@ namespace ssrcore.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpGet("{userId}", Name = "GetServiceRequestByUserId")]
-        public async Task<IActionResult> GetServiceRequestByUserID(int userId)
-        {
-            var serviceRequests = await _serviceRequestService.GetServiceRequestByUserId(userId);
-            if(serviceRequests == null)
-            {
-                return NotFound();
-            }
-            return Ok(serviceRequests);
-        }
-
-
         [HttpPost]
 
         public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestModel model)

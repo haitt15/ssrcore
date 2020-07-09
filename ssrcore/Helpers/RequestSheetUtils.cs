@@ -75,7 +75,7 @@ namespace ssrcore.Helpers
             // Data for another Student...
 
             var oblist = new List<object>() { requestModel.TicketId,requestModel.FullName, requestModel.ServiceNm, requestModel.Status,
-                requestModel.Staff, requestModel.Department
+                requestModel.StaffNm, requestModel.DepartmentNm
             };
             valueRange.Values = new List<IList<object>> { oblist };
             // Append the above record...
@@ -120,7 +120,7 @@ namespace ssrcore.Helpers
             var range2 = $"{sheet}!A{rowID}:F{rowID}";
             var valueRange = new ValueRange();
             var oblist = new List<object>() { requestModel.TicketId,requestModel.FullName, requestModel.ServiceNm, requestModel.Status,
-                requestModel.Staff, requestModel.Department
+                requestModel.StaffNm, requestModel.DepartmentNm
             };
             valueRange.Values = new List<IList<object>> { oblist };
             // Performing Update Operation...

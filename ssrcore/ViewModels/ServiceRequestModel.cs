@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ssrcore.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,13 +12,18 @@ namespace ssrcore.ViewModels
         public int UserId { get; set; }
         public string Username { get; set; }
         public string FullName { get; set; }
+
+        public string StudentPhoto { get; set; }
         public string ServiceId { get; set; }
         public string ServiceNm { get; set; }
         public int? StaffId { get; set; }
-        public string Staff { get; set; }
-        public string Department { get; set; }
+        public string StaffUsername { get; set; }
+        public string StaffNm { get; set; }
+        public string DepartmentId { get; set; }
+        public string DepartmentNm { get; set; }
         public string Content { get; set; }
         public DateTime DueDateTime { get; set; }
         public string Status { get; set; }
+        public string implementer { get; set; }
     }
 }

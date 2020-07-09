@@ -7,8 +7,8 @@ import StaffPage from '../views/StaffPage.vue'
 import StudentPage from '../views/StudentPage.vue'
 import Dashboard from '../views/Dashboard'
 import Requestlist from '@/views/Requestlist'
-// import RequestDetails from '../views/RequestDetails.vue'
 import Service from '../views/Service.vue'
+import RequestDetails from '../views/RequestDetails.vue'
 
 Vue.use(VueRouter)
 
@@ -66,6 +66,11 @@ const routes = [
     path: '/service',
     name: 'Service',
     component: Service
+  },
+  {
+    path: '/request',
+    name: 'RequestDetails',
+    component: RequestDetails
   }
 ]
 const router = new VueRouter({

@@ -28,6 +28,7 @@ namespace ssrcore.Services
             {
                 var service = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceRequest.ServiceId);
                 serviceRequest.UserId = user.Id;
+                serviceRequest.Status = "Waiting";
                 serviceRequest.DueDateTime = DateTime.Now.AddDays(service.ProcessMaxDay);
                 var entity = _mapper.Map<ServiceRequest>(serviceRequest);
                 await _unitOfWork.ServiceRequestRepository.Create(entity);
@@ -75,6 +76,9 @@ namespace ssrcore.Services
                             case "FullName":
                                 dictionary.Add("FullName", s.FullName);
                                 break;
+                            case "StudentPhoto":
+                                dictionary.Add("Photo", s.StudentPhoto);
+                                break;
                             case "UserId":
                                 dictionary.Add("UserId", s.UserId);
                                 break;
@@ -84,11 +88,20 @@ namespace ssrcore.Services
                             case "ServiceNm":
                                 dictionary.Add("ServiceNm", s.ServiceNm);
                                 break;
+                            case "DepartmentId":
+                                dictionary.Add("Department", s.DepartmentId);
+                                break;
+                            case "DepartmentNm":
+                                dictionary.Add("Department", s.DepartmentNm);
+                                break;
                             case "StaffId":
                                 dictionary.Add("StaffId", s.StaffId);
                                 break;
                             case "StaffNm":
-                                dictionary.Add("StaffNm", s.Staff);
+                                dictionary.Add("StaffNm", s.StaffNm);
+                                break;
+                            case "StaffUsername":
+                                dictionary.Add("StaffUsername", s.StaffUsername);
                                 break;
                             case "Content":
                                 dictionary.Add("Content", s.Content);
@@ -127,29 +140,21 @@ namespace ssrcore.Services
             return serviceRequest;
         }
 
-        public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
-        {
-            var requests = await _unitOfWork.ServiceRequestRepository.GetByUserId(userId);
-            if(requests == null)
-            {
-                throw new AppException("Cannot find " + userId);
-            }
-            return _mapper.Map<IEnumerable<ServiceRequestModel>>(requests);
-        }
-
+    
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
-            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
-            if(string.IsNullOrEmpty(serviceRequest.UserId.ToString()))
+            if(serviceRequest.StaffUsername != null)
             {
-                entity.UserId = serviceRequest.UserId;
+                var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
+                serviceRequest.StaffId = staff.Id;
             }
+            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
             entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
             entity.StaffId = serviceRequest.StaffId != null ? serviceRequest.StaffId : entity.StaffId;
             entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
             entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
             entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
-            entity.DelFlg = false;
+            entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
             var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(ticketId);
@@ -164,6 +169,10 @@ namespace ssrcore.Services
                 if (item.DueDateTime < DateTime.Now)
                 {
                     item.Status = "Expired";
+                }
+                if(item.DueDateTime > DateTime.Now && item.Status == "Expired")
+                {
+                    item.Status = "In Progress";
                 }
             }
 

@@ -7,6 +7,8 @@ namespace ssrcore.ViewModels
 {
     public class SearchServiceRequestModel : ResourceParameters
     {
+        public string DepartmentId { get; set; }
+        public string ServiceId { get; set; }
         public string Student { get; set; }
         public string Status { get; set; }
     }

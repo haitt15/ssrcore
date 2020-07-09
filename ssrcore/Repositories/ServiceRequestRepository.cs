@@ -32,7 +32,9 @@ namespace ssrcore.Repositories
         {
             var query = _context.ServiceRequest.Where(t => (t.DelFlg == false)
                                                             && (model.Student == null || t.User.FullName.Contains(model.Student))
-                                                            && (model.Status == null || t.Status == model.Status))
+                                                            && (model.Status == null || t.Status == model.Status)
+                                                            && (model.DepartmentId == null || t.Service.DepartmentId == model.DepartmentId)
+                                                            && (model.ServiceId == null || t.ServiceId == model.ServiceId))
                                                .Select(t => new ServiceRequestModel
                                                {
                                                    TicketId = t.TicketId,
@@ -53,7 +55,7 @@ namespace ssrcore.Repositories
                                                    UpdDatetime = t.UpdDatetime
                                                });
 
-            var totalCount = await _context.ServiceRequest.CountAsync();
+            //var totalCount = await _context.ServiceRequest.CountAsync();
             List<ServiceRequestModel> result = null;
 
             if (model.SortBy == Constants.SortBy.SORT_NAME_ASC)
@@ -68,7 +70,7 @@ namespace ssrcore.Repositories
             result = await query.Skip(model.Size * (model.Page - 1))
             .Take(model.Size)
             .ToListAsync();
-
+            var totalCount = result.Count;
 
             return PagedList<ServiceRequestModel>.ToPagedList(result, totalCount, model.Page, model.Size);
         }

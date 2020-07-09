@@ -27,10 +27,9 @@ namespace ssrcore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllServiceRequest([FromQuery]SearchServiceRequestModel model)
         {
-            //var result = await _serviceRequestService.GetAllServiceRequest(model);
-            //return Ok(result);
+            var result = await _serviceRequestService.GetAllServiceRequest(model);
             await _serviceRequestService.UpdateStatusExpiredServiceRequest();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("{ticketId}", Name = "GetServiceRequest")]

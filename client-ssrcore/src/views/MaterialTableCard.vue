@@ -94,8 +94,10 @@ export default {
   },
   methods: {
     getColor (status) {
-      if (status === 'Success') return 'green'
-      else if (status === 'Failed') return 'red'
+      if (status === 'Finished') return 'green'
+      else if (status === 'Rejected') return 'red'
+      else if (status === 'Expired') return 'orange'
+      else if (status === 'Waiting') return '#f39c12'
       else return 'blue'
     }
   },

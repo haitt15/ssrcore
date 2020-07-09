@@ -26,70 +26,70 @@ export const requestlist = {
         servicename: 'Muon sach',
         content: 'muonsachswd',
         duedatetime: '30/6/2020',
-        status: 'Success'
+        status: 'Finished'
       },
       {
         ticketid: 'SSR002',
         servicename: 'Muon phong hoc',
         content: 'muon phong hoc swd',
         duedatetime: '30/6/2020',
-        status: 'Success'
+        status: 'Expired'
       },
       {
         ticketid: 'SSR003',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130086',
         duedatetime: '15/7/2020',
-        status: 'Failed'
+        status: 'Rejected'
       },
       {
         ticketid: 'SSR004',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Failed'
+        status: 'In Progress'
       },
       {
         ticketid: 'SSR005',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Success'
+        status: 'Waiting'
       },
       {
         ticketid: 'SSR006',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Failed'
+        status: 'Expired'
       },
       {
         ticketid: 'SSR007',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Failed'
+        status: 'Finished'
       },
       {
         ticketid: 'SSR008',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Failed'
+        status: 'Finished'
       },
       {
         ticketid: 'SSR009',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Pending'
+        status: 'Waiting'
       },
       {
         ticketid: 'SSR010',
         servicename: 'Cap lai the sinh vien',
         content: 'the sinh vien se130088',
         duedatetime: '15/7/2020',
-        status: 'Pending'
+        status: 'Waiting'
       }
     ]
   },

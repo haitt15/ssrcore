@@ -2,7 +2,7 @@
   <div class="request_page">
     <div class="request_main">
       <div class="request_header">
-        Ticket ID:
+        Ticket:
         <router-link :to="{ name: 'Student'}">
           <span style="font-weight: bold">{{ _requestService.ticketId }}</span>
         </router-link>
@@ -21,11 +21,16 @@
             <span class="request_text">{{ _requestService.serviceNm}}</span>
           </v-col>
           <v-col :cols="4" :offset="2">
-            <span
+             <v-chip :color="getColor(_requestService.status)" dark>
+            {{
+            _requestService.status
+            }}
+          </v-chip>
+            <!-- <span
               :class="{  Waiting : _requestService.status === 'Waiting',InProgress : _requestService.status === 'In Progress',
-              Accepted : _requestService.status === 'Accepted',Rejected : _requestService.status === 'Rejected',
+              Finished : _requestService.status === 'Finished',Rejected : _requestService.status === 'Rejected',
               Expired: _requestService.status === 'Expired'}"
-            >{{_requestService.status}}</span>
+            >{{_requestService.status}}</span> -->
             <v-icon @click="clickToEditStatus" class="pen-edit">mdi-pencil-outline</v-icon>
             <v-dialog v-model="editStatusDialog" max-width="500px">
               <v-card>
@@ -247,7 +252,7 @@ export default {
         ticketId: 'SSR-01',
         requestTitle: 'Request Title',
         service: 'Muon sach thu vien',
-        status: 'Accepted',
+        status: 'Finished',
         department: 'Thu vien',
         expiredDate: '28/06/2020',
         description:
@@ -257,7 +262,7 @@ export default {
       statusEnum: [
         { text: 'Waiting' },
         { text: 'In Progress' },
-        { text: 'Accepted' },
+        { text: 'Finished' },
         { text: 'Rejected' },
         { text: 'Expired' }
       ],
@@ -287,7 +292,8 @@ export default {
     }
   },
   mounted () {
-    // this.ticketId = this.$router.params.ticketId
+    console.log(this.ticketId = this.$route)
+    this.ticketId = this.$route.query.ticketId
     this.minDate = moment().format('YYYY-MM-DD')
     this._getRequestService(this.ticketId)
       .then(res => {
@@ -312,6 +318,13 @@ export default {
       '_deleteComment'
     ]),
     ...mapActions('staff', ['_getStaffList']),
+    getColor (status) {
+      if (status === 'Finished') return 'green'
+      else if (status === 'Rejected') return 'red'
+      else if (status === 'Expired') return 'orange'
+      else if (status === 'Waiting') return '#f39c12'
+      else return 'blue'
+    },
     onKeyPress () {
       if (this.asignee !== null && this.asignee !== '') {
         this.temp = this.asignee
@@ -405,22 +418,22 @@ export default {
 }
 .InProgress {
   color: white;
-  background-color: #3498db;
+  background-color: blue;
   padding: 4px;
 }
-.Accepted {
+.Finished {
   color: white;
-  background-color: #2ecc71;
+  background-color: green;
   padding: 4px;
 }
 .Rejected {
   color: white;
-  background-color: #e74c3c;
+  background-color: red;
   padding: 4px;
 }
 .Expired {
   color: white;
-  background-color: #d35400;
+  background-color: orange;
   padding: 4px;
 }
 .row-text {

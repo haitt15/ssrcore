@@ -19,15 +19,15 @@
 <script>
 import navigation from './components/Navigation'
 // import breadcrumbs from './components/Breadcrumbs'
-import Footer from '@/components/Footer'
+// import Footer from '@/components/Footer'
 import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters([''])
   },
   components: {
-    navigation,
-    'ssrcore-footer': Footer
+    navigation
+    // 'ssrcore-footer': Footer
     // breadcrumbs
   },
   data () {

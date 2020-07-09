@@ -34,7 +34,9 @@ namespace ssrcore.Repositories
                                                             && (model.Student == null || t.User.FullName.Contains(model.Student))
                                                             && (model.Status == null || t.Status == model.Status)
                                                             && (model.DepartmentId == null || t.Service.DepartmentId == model.DepartmentId)
-                                                            && (model.ServiceId == null || t.ServiceId == model.ServiceId))
+                                                            && (model.ServiceId == null || t.ServiceId == model.ServiceId)
+                                                            && (model.StaffUsername == null || t.Staff.StaffNavigation.Username == model.StaffUsername)
+                                                            )
                                                .Select(t => new ServiceRequestModel
                                                {
                                                    TicketId = t.TicketId,

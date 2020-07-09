@@ -24,5 +24,6 @@ namespace ssrcore.ViewModels
         public string Content { get; set; }
         public DateTime DueDateTime { get; set; }
         public string Status { get; set; }
+        public string implementer { get; set; }
     }
 }

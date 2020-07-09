@@ -96,7 +96,7 @@ export default {
       else return 'blue'
     },
     clickToEditRequest (request) {
-      this.$router.push('/request', { request })
+      this.$router.push({ path: '/request', query: { ticketId: request.ticketId }, params: { ticketId: request.ticketId } })
     }
   },
   filters: {

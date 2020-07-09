@@ -5,8 +5,11 @@ import authHeader from './auth-header'
 const API_URL = 'https://localhost:44312'
 class SSRCore {
   get (url, obj) {
+    debugger
     return axios
-      .get(API_URL + url, obj, { headers: authHeader() })
+      .get(API_URL + url, {
+        params: obj
+      }, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {
@@ -39,7 +42,9 @@ class SSRCore {
 
   delete (url, obj) {
     return axios
-      .delete(API_URL + url, obj, { headers: authHeader() })
+      .delete(API_URL + url, {
+        params: obj
+      }, { headers: authHeader() })
       .then(response => {
         return response
       }).catch(error => {

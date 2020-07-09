@@ -27,7 +27,6 @@ namespace ssrcore.Services
             if (user != null)
             {
                 var service = await _unitOfWork.ServiceRepository.GetByIdToModel(serviceRequest.ServiceId);
-                serviceRequest.UserId = user.Id;
                 serviceRequest.DueDateTime = DateTime.Now.AddDays(service.ProcessMaxDay);
                 var entity = _mapper.Map<ServiceRequest>(serviceRequest);
                 await _unitOfWork.ServiceRequestRepository.Create(entity);
@@ -146,19 +145,14 @@ namespace ssrcore.Services
             {
                 var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
                 serviceRequest.StaffId = staff.Id;
-                serviceRequest.StaffNm = staff.FullName;
             }
             var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
-            if(string.IsNullOrEmpty(serviceRequest.UserId.ToString()))
-            {
-                entity.UserId = serviceRequest.UserId;
-            }
             entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
             entity.StaffId = serviceRequest.StaffId != null ? serviceRequest.StaffId : entity.StaffId;
             entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
             entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
             entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
-            entity.DelFlg = false;
+            entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
             var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(ticketId);
@@ -173,6 +167,10 @@ namespace ssrcore.Services
                 if (item.DueDateTime < DateTime.Now)
                 {
                     item.Status = "Expired";
+                }
+                if(item.DueDateTime > DateTime.Now && item.Status == "Expired")
+                {
+                    item.Status = "In Progress";
                 }
             }
 

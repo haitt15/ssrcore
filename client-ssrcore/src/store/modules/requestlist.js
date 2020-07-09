@@ -89,9 +89,9 @@ export const requestlist = {
   },
   actions: {
     _getAllRequestOfDepartment (context) {
-      var depId = JSON.parse(localStorage.getItem('UserInfo')).depId
+      var departmentId = JSON.parse(localStorage.getItem('UserInfo')).departmentId
       return SSRCore.get(API_URL, {
-        depId: depId
+        departmentId: departmentId
       }).then(
         response => {
           context.commit('_setRequestListOfDepartment', response.data.data)

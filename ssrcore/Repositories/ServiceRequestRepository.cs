@@ -31,7 +31,7 @@ namespace ssrcore.Repositories
         public async Task<PagedList<ServiceRequestModel>> GetAll(SearchServiceRequestModel model)
         {
             var query = _context.ServiceRequest.Where(t => (t.DelFlg == false)
-                                                            && (model.Student == null || t.User.FullName.Contains(model.Student))
+                                                            && (model.StudentUsername == null || t.User.Username.Contains(model.StudentUsername))
                                                             && (model.Status == null || t.Status == model.Status)
                                                             && (model.DepartmentId == null || t.Service.DepartmentId == model.DepartmentId)
                                                             && (model.ServiceId == null || t.ServiceId == model.ServiceId)

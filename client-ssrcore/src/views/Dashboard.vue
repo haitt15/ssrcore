@@ -87,7 +87,7 @@
         <base-material-stats-card
           color="info"
           icon="mdi-twitter"
-          title="Total On Waiting Request"
+          title="Waiting Request"
           :value="_getListTotalTypeRequest[1]"
           sub-icon="mdi-clock"
           sub-text="Just Updated"
@@ -98,7 +98,7 @@
         <base-material-stats-card
           color="success"
           icon="mdi-store"
-          title="Total Rejected Request"
+          title="Rejected Request"
           :value="_getListTotalTypeRequest[2]"
           sub-icon="mdi-calendar"
           sub-text="Last 24 Hours"
@@ -109,7 +109,7 @@
         <base-material-stats-card
           color="orange"
           icon="mdi-sofa"
-          title="Total In-Progress Request"
+          title=" In-Progress Request"
           :value="_getListTotalTypeRequest[3]"
           sub-icon="mdi-alert"
           sub-icon-color="red"

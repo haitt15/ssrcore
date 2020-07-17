@@ -26,7 +26,11 @@
 
         <slot v-else-if="$slots.image" name="image" />
 
-        <div v-else-if="title && !icon" class="display-1 font-weight-light" v-text="title" />
+        <div
+          v-else-if="title && !icon"
+          class="display-1 font-weight-light"
+          v-text="title"
+        />
 
         <v-icon v-else-if="icon" size="32" v-text="icon" />
 
@@ -50,21 +54,48 @@
       ></v-text-field>
     </div>
     <v-card>
-      <v-data-table :headers="headerTable" :items="dataTable" :items-per-page="5" :search="search">
-          <template v-slot:item.dueDateTime="{ item }">
-           {{ item.dueDateTime | formatDatetime}}
-        </template>
-        <template v-slot:item.status="{ item }">
-          <v-chip :color="getColor(item.status)" dark>
-            {{
-            item.status
-            }}
-          </v-chip>
-        </template>
-        <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="clickToEditRequest(item)">mdi-pencil</v-icon>
-        </template>
-      </v-data-table>
+      <v-tabs
+        v-model="tab"
+        background-color="success accent-4"
+        dark
+        icons-and-text
+        @change="alertMessage()"
+      >
+        <v-tabs-slider></v-tabs-slider>
+        <v-tab v-for="i in tabs" :key="i" :href="`#tab-${i.title}`">
+          {{ i.title }}
+        </v-tab>
+        <v-tab-item v-for="i in tabs" :key="i" :value="'tab-' + i.title">
+          <v-card flat>
+            <v-data-table
+              :headers="headerTable"
+              :items="dataTable"
+              :items-per-page="5"
+              :search="search"
+            >
+              <template v-slot:item.ticketId="{ item }">
+                <router-link to="/request">{{ item.ticketId }}</router-link>
+              </template>
+              <template v-slot:item.beginDateTime="{ item }">
+                {{ item.beginDateTime | formatDatetime }}
+              </template>
+              <template v-slot:item.dueDateTime="{ item }">
+                {{ item.dueDateTime | formatDatetime }}
+              </template>
+              <template v-slot:item.status="{ item }">
+                <v-chip :color="getColor(item.status)" dark>
+                  {{ item.status }}
+                </v-chip>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon small class="mr-2" @click="clickToEditRequest(item)"
+                  >mdi-pencil</v-icon
+                >
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
     </v-card>
     <slot />
 
@@ -84,7 +115,28 @@ export default {
   name: 'MaterialCard',
   data () {
     return {
-      search: ''
+      search: '',
+      tab: 'All',
+      tabs: [
+        {
+          title: 'All'
+        },
+        {
+          title: 'Expired'
+        },
+        {
+          title: 'Waiting'
+        },
+        {
+          title: 'Finished'
+        },
+        {
+          title: 'Rejected'
+        },
+        {
+          title: 'In-progess'
+        }
+      ]
     }
   },
   methods: {
@@ -96,7 +148,15 @@ export default {
       else return 'blue'
     },
     clickToEditRequest (request) {
-      this.$router.push({ path: '/request', query: { ticketId: request.ticketId }, params: { ticketId: request.ticketId } })
+      this.$router.push({
+        path: '/request',
+        query: { ticketId: request.ticketId },
+        params: { ticketId: request.ticketId }
+      })
+    },
+    alertMessage () {
+      console.log('Duong ne')
+      console.log(this.tab)
     }
   },
   filters: {

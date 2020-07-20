@@ -36,7 +36,6 @@ namespace ssrcore.Repositories
                                                {
                                                    Id = t.Id,
                                                    TicketId = t.TicketId,
-                                                   UserId = t.UserId,
                                                    Username = t.User.Username,
                                                    FullName = t.User.FullName,
                                                    Content = t.Content,
@@ -79,7 +78,6 @@ namespace ssrcore.Repositories
                                                {
                                                    Id = t.Id,
                                                    TicketId = t.TicketId,
-                                                   UserId = t.UserId,
                                                    Username = t.User.Username,
                                                    FullName = t.User.FullName,
                                                    Content = t.Content,

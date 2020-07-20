@@ -22,8 +22,8 @@ namespace ssrcore.Services
             var user = await _unitOfWork.UserRepository.GetByUsername(comment.Username);
             if(user != null)
             {
-                comment.UserId = user.Id;
                 var entity = _mapper.Map<Comment>(comment);
+                entity.UserId = user.Id;
                 entity.InsBy = comment.Username;
                 entity.UpdBy = comment.Username;
                 await _unitOfWork.CommentRepository.Create(entity);

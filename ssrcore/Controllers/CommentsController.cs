@@ -9,7 +9,7 @@ using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
     {

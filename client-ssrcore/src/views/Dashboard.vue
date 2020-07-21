@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" lg="4">
         <base-material-chart-card
-          urlChart="https://datastudio.google.com/embed/reporting/85bb2cc3-1f9a-42a7-b303-05920436e3f1/page/HUyVB"
+          urlChart="https://datastudio.google.com/embed/reporting/b78d686b-aa77-4fde-bdcd-150bf622b332/page/SAsYB"
           color="white"
           hover-reveal
           class="subChart"
@@ -26,7 +26,7 @@
       </v-col>
       <v-col cols="12" lg="4">
         <base-material-chart-card
-          urlChart="https://datastudio.google.com/embed/reporting/85bb2cc3-1f9a-42a7-b303-05920436e3f1/page/HUyVB"
+          urlChart="https://datastudio.google.com/embed/reporting/be1e9ddb-ee1e-4532-b3d4-c03e840364eb/page/NEsYB"
           color="white"
           hover-reveal
           class="subChart"
@@ -49,7 +49,7 @@
       </v-col>
       <v-col cols="12" lg="4">
         <base-material-chart-card
-          urlChart="https://datastudio.google.com/embed/reporting/85bb2cc3-1f9a-42a7-b303-05920436e3f1/page/HUyVB"
+          urlChart="https://datastudio.google.com/embed/reporting/b5fc39c4-7dfc-438c-923a-9acf4383ff3a/page/RGsYB"
           color="white"
           hover-reveal
           class="subChart"

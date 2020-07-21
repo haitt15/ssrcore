@@ -83,9 +83,10 @@ export default {
         },
         { text: 'ServiceName', value: 'serviceNm' },
         { text: 'Content', value: 'content' },
+        { text: 'BeginDateTime', value: 'beginDateTime' },
         { text: 'DueDateTime', value: 'dueDateTime' },
-        { text: 'Status', value: 'status' },
-        { text: 'Edit', value: 'actions', sortable: false }
+        { text: 'Status', value: 'status' }
+        // { text: 'Edit', value: 'actions', sortable: false }
       ]
     }
   },

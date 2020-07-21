@@ -15,7 +15,7 @@
         :class="{
           'pa-7': !$slots.image
         }"
-        :color="color"
+        :color="colorTable"
         :max-height="icon ? 90 : undefined"
         :width="icon ? 'auto' : '100%'"
         elevation="6"
@@ -26,7 +26,11 @@
 
         <slot v-else-if="$slots.image" name="image" />
 
-        <div v-else-if="title && !icon" class="display-1 font-weight-light" v-text="title" />
+        <div
+          v-else-if="title && !icon"
+          class="display-1 font-weight-light"
+          v-text="title"
+        />
 
         <v-icon v-else-if="icon" size="32" v-text="icon" />
 
@@ -50,21 +54,51 @@
       ></v-text-field>
     </div>
     <v-card>
-      <v-data-table :headers="headerTable" :items="dataTable" :items-per-page="5" :search="search">
-          <template v-slot:item.dueDateTime="{ item }">
-           {{ item.dueDateTime | formatDatetime}}
-        </template>
-        <template v-slot:item.status="{ item }">
-          <v-chip :color="getColor(item.status)" dark>
-            {{
-            item.status
-            }}
-          </v-chip>
-        </template>
-        <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="clickToEditRequest(item)">mdi-pencil</v-icon>
-        </template>
-      </v-data-table>
+      <v-tabs
+        v-model="tab"
+        :background-color="colorTable"
+        dark
+        icons-and-text
+        @change="changeTab()"
+      >
+        <v-tabs-slider></v-tabs-slider>
+        <v-tab v-for="i in tabs" :key="i" :href="`#tab-${i.title}`">
+          {{ i.title }}
+        </v-tab>
+        <v-tab-item v-for="i in tabs" :key="i" :value="'tab-' + i.title">
+          <v-card flat>
+            <v-data-table
+              :headers="headerTable"
+              :items="dataTable"
+              :items-per-page="5"
+              :search="search"
+            >
+              <template v-slot:item.ticketId="{ item }">
+                <router-link
+                  :to="{ path: 'request', query: { ticketId: item.ticketId } }"
+                  >{{ item.ticketId }}</router-link
+                >
+              </template>
+              <template v-slot:item.beginDateTime="{ item }">
+                {{ item.beginDateTime | formatDatetime }}
+              </template>
+              <template v-slot:item.dueDateTime="{ item }">
+                {{ item.dueDateTime | formatDatetime }}
+              </template>
+              <template v-slot:item.status="{ item }">
+                <v-chip :color="getColor(item.status)" dark>
+                  {{ item.status }}
+                </v-chip>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon small class="mr-2" @click="clickToEditRequest(item)"
+                  >mdi-pencil</v-icon
+                >
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
     </v-card>
     <slot />
 
@@ -80,23 +114,85 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'MaterialCard',
   data () {
     return {
-      search: ''
+      search: '',
+      colorTable: 'black',
+      tab: 'All',
+      tabs: [
+        {
+          title: 'All'
+        },
+        {
+          title: 'Expired'
+        },
+        {
+          title: 'Waiting'
+        },
+        {
+          title: 'Finished'
+        },
+        {
+          title: 'Rejected'
+        },
+        {
+          title: 'In-progess'
+        }
+      ]
     }
   },
   methods: {
+    ...mapActions('requestlist', ['_getAllRequestOfDepartment']),
     getColor (status) {
       if (status === 'Finished') return 'green'
       else if (status === 'Rejected') return 'red'
       else if (status === 'Expired') return 'orange'
-      else if (status === 'Waiting') return '#f39c12'
-      else return 'blue'
+      else if (status === 'Waiting') return 'amber'
+      else if (status === 'In-progess') return 'blue'
+      else if (status === 'In Progress') return 'blue'
+      else return 'black'
     },
     clickToEditRequest (request) {
-      this.$router.push({ path: '/request', query: { ticketId: request.ticketId }, params: { ticketId: request.ticketId } })
+      this.$router.push({
+        path: '/request',
+        query: { ticketId: request.ticketId },
+        params: { ticketId: request.ticketId }
+      })
+    },
+    changeTab () {
+      console.log('Duong ne')
+      console.log(this.tab)
+      console.log(this.tab.split('tab-'))
+      this.colorTable = this.getColor(this.tab.split('tab-')[1])
+      switch (this.tab.split('tab-')[1]) {
+        case 'All': {
+          this._getAllRequestOfDepartment()
+          break
+        }
+        case 'Expired': {
+          this._getAllRequestOfDepartment('Expired')
+          break
+        }
+        case 'In-progess': {
+          this._getAllRequestOfDepartment('InProgress')
+          break
+        }
+        case 'Waiting': {
+          this._getAllRequestOfDepartment('Waiting')
+          break
+        }
+        case 'Finished': {
+          this._getAllRequestOfDepartment('Finished')
+          break
+        }
+        case 'Rejected': {
+          this._getAllRequestOfDepartment('Rejected')
+          break
+        }
+      }
     }
   },
   filters: {
@@ -141,6 +237,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters('requestlist', ['_getListOfRequest']),
     classes () {
       return {
         'v-card--material--has-heading': this.hasHeading

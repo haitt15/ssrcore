@@ -322,7 +322,7 @@ export default {
       if (status === 'Finished') return 'green'
       else if (status === 'Rejected') return 'red'
       else if (status === 'Expired') return 'orange'
-      else if (status === 'Waiting') return '#f39c12'
+      else if (status === 'Waiting') return 'amber'
       else return 'blue'
     },
     onKeyPress () {

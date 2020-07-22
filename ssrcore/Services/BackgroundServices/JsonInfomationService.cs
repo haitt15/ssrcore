@@ -34,16 +34,8 @@ namespace ssrcore.Services.BackgroundServices
                 {
 
                     var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                    var _redisCacheRepository = scope.ServiceProvider.GetRequiredService<IRedisCacheRepository>();
                     var _serviceService = scope.ServiceProvider.GetRequiredService<IServiceService>();
-                    var isCache = _redisCacheRepository.isExist(Constants.KeyRedis.SERVICES);
-                    if (isCache)
-                    {
-                        var listServices = await _serviceService.GetServices();
-                        _redisCacheRepository.Add(Constants.KeyRedis.SERVICES, listServices);
-                    }
-                    var cacheResult =  _redisCacheRepository.Get<IEnumerable<ServiceModel>>(Constants.KeyRedis.SERVICES);
-                    var serviceList =  _unitOfWork.ServiceRepository.GetAll(new SearchServicModel(), cacheResult);
+                    var serviceList = await  _unitOfWork.ServiceRepository.GetServices();
                     foreach (var service in serviceList)
                     {
                         if (!string.IsNullOrEmpty(service.SheetLink) && service.SheetLink.Contains("spreadsheets/d/"))

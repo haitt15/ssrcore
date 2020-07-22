@@ -137,6 +137,9 @@ export default {
           )
         }
         if (confirm) {
+          const user = JSON.parse(localStorage.getItem('UserInfo'))
+          this.service.departmentId = user.departmentId
+          debugger
           if (this.type === 'Update') {
             this.$emit('Update', this.service)
           } else {

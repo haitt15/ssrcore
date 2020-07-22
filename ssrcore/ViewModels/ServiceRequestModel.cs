@@ -16,6 +16,8 @@ namespace ssrcore.ViewModels
         public string StudentPhoto { get; set; }
         public string ServiceId { get; set; }
         public string ServiceNm { get; set; }
+
+        public string JsonInformation { get; set; }
         public int? StaffId { get; set; }
         public string StaffUsername { get; set; }
         public string StaffNm { get; set; }

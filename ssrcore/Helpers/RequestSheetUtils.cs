@@ -40,17 +40,47 @@ namespace ssrcore.Helpers
         public static dynamic ReadSheet()
         {
             // Specifying Column Range for reading...
-            var range = $"{sheet}!A:F";
+            var range = $"{sheet}!A:Z";
             SpreadsheetsResource.ValuesResource.GetRequest request =
                     service.Spreadsheets.Values.Get(SpreadsheetId, range);
             // Ecexuting Read Operation...
             var response = request.Execute();
             // Getting all records from Column A to E...
             IList<IList<object>> values = response.Values;
+            String jsonString = "[";
+            int count = 0;
+            IList<object> rowTitle = null;
             if (values != null && values.Count > 0)
             {
-                return values;
+                foreach (var row in values)
+                {
+
+                    if(count == 0)
+                    {
+                        rowTitle = row;
+                        count++;
+                    }
+                    else
+                    {
+                        jsonString += "{";
+                        for(int i = 0; i<row.Count; i++)
+                        {
+                            jsonString += "\"" + rowTitle[i] + "\":" + "\"" + row[i] + "\",";
+                        }
+                        int lastIndex = jsonString.LastIndexOf(",");
+                        jsonString = jsonString.Substring(0, lastIndex);
+                        jsonString += "},";
+                    }
+                    // Print columns A to F, which correspond to indices 0 and 4.
+                }
+                int last = jsonString.LastIndexOf(",");
+                jsonString = jsonString.Substring(0, last);
+                jsonString += "]";
+                //return values;
+                return jsonString;
+
             }
+
             return null;
         }
 

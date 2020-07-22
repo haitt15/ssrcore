@@ -37,7 +37,9 @@ namespace ssrcore.Controllers
             //{
             //    await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
             //}
-            return Ok(users);
+           string json =  RequestSheetUtils.ReadSheet();
+            return Ok(json);
+            //return Ok(users);
         }
 
         [HttpPut("{username}")]

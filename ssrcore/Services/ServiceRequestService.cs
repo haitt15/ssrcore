@@ -162,6 +162,7 @@ namespace ssrcore.Services
             entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
             entity.StaffId = serviceRequest.StaffId != null ? serviceRequest.StaffId : entity.StaffId;
             entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
+            entity.JsonInformation = serviceRequest.JsonInformation != null ? serviceRequest.JsonInformation : entity.JsonInformation;
             entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
             entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
             entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;

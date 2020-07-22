@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ssrcore.Helpers;
 using ssrcore.Models;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.ViewModels;
 

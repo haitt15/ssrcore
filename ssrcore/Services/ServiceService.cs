@@ -40,9 +40,9 @@ namespace ssrcore.Services
             return false;
         }
 
-        public async Task<object> GetAllService(SearchServicModel model)
+        public object GetAllService(SearchServicModel model, IEnumerable<ServiceModel> list)
         {
-            var services = await _unitOfWork.ServiceRepository.GetAll(model);
+            var services = _unitOfWork.ServiceRepository.GetAll(model, list);
             dynamic result;
 
             List<Dictionary<string, object>> listModel = new List<Dictionary<string, object>>();
@@ -107,6 +107,17 @@ namespace ssrcore.Services
                 throw new AppException("Cannot find " + serviceId);
             }
             return service;
+        }
+
+        public ServiceModel GetServiceByRedis(string serviceId, IEnumerable<ServiceModel> list)
+        {
+            var result = _unitOfWork.ServiceRepository.GetByIdRedis(serviceId, list);
+            return result;
+        }
+
+        public async Task<IEnumerable<ServiceModel>> GetServices()
+        {
+            return await _unitOfWork.ServiceRepository.GetServices();
         }
 
         public async Task<ServiceModel> UpdateService(string serviceId, ServiceModel service)

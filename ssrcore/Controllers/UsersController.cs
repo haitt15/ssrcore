@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
 using ssrcore.Helpers;
 using ssrcore.Models;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.ViewModels;
 

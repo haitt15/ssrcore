@@ -89,6 +89,7 @@ namespace ssrcore.Services
                 entity.Email = user.Email != null ? user.Email : entity.Email;
                 entity.DelFlg = true;
                 entity.UpdDatetime = DateTime.Now;
+                await _unitOfWork.Commit();
                 return _mapper.Map<UserModel>(entity);
             }
             return null;

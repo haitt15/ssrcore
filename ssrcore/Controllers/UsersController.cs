@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Helpers;
@@ -37,9 +38,7 @@ namespace ssrcore.Controllers
             //{
             //    await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
             //}
-           string json =  RequestSheetUtils.ReadSheet();
-            return Ok(json);
-            //return Ok(users);
+            return Ok(users);
         }
 
         [HttpPut("{username}")]
@@ -50,14 +49,13 @@ namespace ssrcore.Controllers
             {
                 return NotFound();
             }
-
+            var result = await _userService.UpdateUser(username, model);
             if (user.RoleId == Constants.Roles.ROLE_STAFF)
             {
                 var newStaff = await _staffService.UpdateStaff(user.Id, model);
-                return Ok(newStaff);
+                result.DepartmentId = newStaff.DepartmentId;
+                result.DepartmentNm = newStaff.DepartmentNm;
             }
-
-            var result = await _userService.UpdateUser(username, model);
             return Ok(result);
         }
 

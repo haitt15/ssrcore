@@ -140,7 +140,17 @@ namespace ssrcore.Services
             return serviceRequest;
         }
 
-    
+
+        public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
+        {
+            var requests = await _unitOfWork.ServiceRequestRepository.GetByUserId(userId);
+            if (requests == null)
+            {
+                throw new AppException("Cannot find " + userId);
+            }
+            return _mapper.Map<IEnumerable<ServiceRequestModel>>(requests);
+        }
+
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
             if(serviceRequest.StaffUsername != null)

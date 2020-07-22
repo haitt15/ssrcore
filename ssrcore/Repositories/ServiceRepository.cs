@@ -28,9 +28,8 @@ namespace ssrcore.Repositories
 
         public PagedList<ServiceModel> GetAll(SearchServicModel model, IEnumerable<ServiceModel> listServices)
         {
-            var query = listServices.Where(t => (t.DelFlg == false)
-                                                   && (model.ServiceNm == null || t.ServiceNm.Contains(model.ServiceNm))
-                                                   && (model.DepartmentNm == null || t.DepartmentNm == model.DepartmentNm))
+            var query = listServices.Where(t => (model.ServiceNm == null || t.ServiceNm.Contains(model.ServiceNm))
+                                                   && (model.DepartmentNm == null || t.DepartmentNm == model.DepartmentNm)
                                                    && (model.DepartmentId == null || t.DepartmentId == model.DepartmentId))
                         .Select(t => new ServiceModel
                         {
@@ -71,8 +70,9 @@ namespace ssrcore.Repositories
 
         public async Task<ServiceModel> GetByIdToModel(string serviceId)
         {
-            var result = await  _context.Service.Where(t => t.ServiceId == serviceId && t.DelFlg == false)
-                                                .Select(t => new ServiceModel {
+            var result = await _context.Service.Where(t => t.ServiceId == serviceId && t.DelFlg == false)
+                                                .Select(t => new ServiceModel
+                                                {
                                                     ServiceId = t.ServiceId,
                                                     ServiceNm = t.ServiceNm,
                                                     DescriptionService = t.DescriptionService,
@@ -97,7 +97,7 @@ namespace ssrcore.Repositories
 
         public void Update(Service service)
         {
- 
+
         }
 
         public async Task<Service> GetByIdToEntity(string serviceId)
@@ -108,22 +108,23 @@ namespace ssrcore.Repositories
 
         public async Task<IEnumerable<ServiceModel>> GetServices()
         {
-            return await _context.Service.Select(t => new ServiceModel
-            {
-                ServiceId = t.ServiceId,
-                ServiceNm = t.ServiceNm,
-                DescriptionService = t.DescriptionService,
-                DepartmentId = t.DepartmentId,
-                DepartmentNm = t.Department.DepartmentNm,
-                FormLink = t.FormLink,
-                SheetLink = t.SheetLink,
-                ProcessMaxDay = t.ProcessMaxDay,
-                DelFlg = t.DelFlg,
-                InsBy = t.InsBy,
-                InsDatetime = t.InsDatetime,
-                UpdBy = t.UpdBy,
-                UpdDatetime = t.UpdDatetime
-            }).ToListAsync();
+            return await _context.Service.Where(t => (t.DelFlg == false)
+                                                   ).Select(t => new ServiceModel
+                                                   {
+                                                       ServiceId = t.ServiceId,
+                                                       ServiceNm = t.ServiceNm,
+                                                       DescriptionService = t.DescriptionService,
+                                                       DepartmentId = t.DepartmentId,
+                                                       DepartmentNm = t.Department.DepartmentNm,
+                                                       FormLink = t.FormLink,
+                                                       SheetLink = t.SheetLink,
+                                                       ProcessMaxDay = t.ProcessMaxDay,
+                                                       DelFlg = t.DelFlg,
+                                                       InsBy = t.InsBy,
+                                                       InsDatetime = t.InsDatetime,
+                                                       UpdBy = t.UpdBy,
+                                                       UpdDatetime = t.UpdDatetime
+                                                   }).ToListAsync();
         }
 
         public ServiceModel GetByIdRedis(string serviceId, IEnumerable<ServiceModel> listServices)

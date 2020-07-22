@@ -28,7 +28,7 @@ export const comment = {
     _getCommentList (context, obj) {
       return SSRCore.get(API_URL, obj).then(
         response => {
-          context.commit('_setRequestService', response.data.data)
+          context.commit('_setCommentList', response.data.data)
           return response.data
         },
         error => {

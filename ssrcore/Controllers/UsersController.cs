@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
 using ssrcore.Helpers;
 using ssrcore.Models;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.ViewModels;
 
@@ -43,7 +37,9 @@ namespace ssrcore.Controllers
             //{
             //    await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
             //}
-            return Ok(users);
+           string json =  RequestSheetUtils.ReadSheet();
+            return Ok(json);
+            //return Ok(users);
         }
 
         [HttpPut("{username}")]

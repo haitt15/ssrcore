@@ -21,16 +21,16 @@
             <span class="request_text">{{ _requestService.serviceNm}}</span>
           </v-col>
           <v-col :cols="4" :offset="2">
-             <v-chip :color="getColor(_requestService.status)" dark>
-            {{
-            _requestService.status
-            }}
-          </v-chip>
+            <v-chip :color="getColor(_requestService.status)" dark>
+              {{
+              _requestService.status
+              }}
+            </v-chip>
             <!-- <span
               :class="{  Waiting : _requestService.status === 'Waiting',InProgress : _requestService.status === 'In Progress',
               Finished : _requestService.status === 'Finished',Rejected : _requestService.status === 'Rejected',
               Expired: _requestService.status === 'Expired'}"
-            >{{_requestService.status}}</span> -->
+            >{{_requestService.status}}</span>-->
             <v-icon @click="clickToEditStatus" class="pen-edit">mdi-pencil-outline</v-icon>
             <v-dialog v-model="editStatusDialog" max-width="500px">
               <v-card>
@@ -80,12 +80,7 @@
                   v-on="on"
                 >mdi-pencil-outline</v-icon>
               </template>
-              <v-date-picker
-                v-if="chooseDate"
-                v-model="date"
-                :show-current="false"
-                :min="minDate"
-              >
+              <v-date-picker v-if="chooseDate" v-model="date" :show-current="false" :min="minDate">
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="chooseDate = false">Cancel</v-btn>
                 <v-btn text color="primary" @click="clickToChooseDate" :loading="loading">Update</v-btn>
@@ -101,14 +96,28 @@
             <span class="request_text">{{_requestService.content}}</span>
           </v-col>
         </v-row>
+        <v-row class="row-text">
+          <v-col :cols="12">
+            <span class="request_title">Table:</span>
+          </v-col>
+          <v-col :cols="12">
+            <v-data-table
+              :headers="headers"
+              :items="getJsonObject"
+              hide-default-header
+              hide-default-footer
+              class="elevation-1"
+            ></v-data-table>
+          </v-col>
+        </v-row>
         <v-divider></v-divider>
         <v-row class="row-text" no-gutters>
           <v-col :cols="12">
             <span class="request_title">Comments:</span>
           </v-col>
         </v-row>
-        <div v-for="item in commentList" :key="item.name">
-          <Comments :user="item.user" :time="item.time" :content="item.content"></Comments>
+        <div v-for="item in _commentList" :key="item.id">
+          <Comments :user="item.fullName" :time="item.insDatetime" :content="item.content"></Comments>
         </div>
         <div id="comment-textarea">
           <v-form ref="form" lazy-validation>
@@ -125,7 +134,7 @@
               required
             ></v-textarea>
           </v-form>
-          <v-btn outlined color="primary" style="float:right" @click="clickToComment">Comment</v-btn>
+          <v-btn outlined color="primary" style="float:right" @click="clickToComment" :loading="loading">Comment</v-btn>
         </div>
       </div>
     </div>
@@ -206,7 +215,19 @@ export default {
   computed: {
     ...mapState('requestDetails', ['_requestService']),
     ...mapState('comment', ['_commentList']),
-    ...mapState('staff', ['_staffList'])
+    ...mapState('staff', ['_staffList']),
+    getJsonObject () {
+      var json = JSON.parse(
+        '{"Ticket Id":"tauqsaij","Student":"Bui Hai Nam (K13_HCM)","Service":"Đăng ký học block 3 tuần","Status":"Waiting","Staff":"","Department":"Phòng Công Tác Sinh Viên 3"}'
+      )
+      var jsonList = []
+      var keys = Object.keys(json)
+      for (var key in keys) {
+        var x = keys[key]
+        jsonList.push({ title: x, value: json[x] })
+      }
+      return jsonList
+    }
   },
   filters: {
     formatDatetime (val) {
@@ -225,6 +246,10 @@ export default {
       5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'
     }
     return {
+      headers: [
+        { text: 'Title', value: 'title' },
+        { text: 'Value', value: 'value' }
+      ],
       loading: false,
       avatarDefault:
         'https://thumbs.dreamstime.com/b/bearded-man-s-face-hipster-character-fashion-silhouette-avata-avatar-emblem-icon-label-vector-illustration-105106714.jpg',
@@ -292,19 +317,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.ticketId = this.$route)
-    this.ticketId = this.$route.query.ticketId
-    this.minDate = moment().format('YYYY-MM-DD')
-    this._getRequestService(this.ticketId)
-      .then(res => {
-        this.date = moment(
-          this._requestService.dueDateTime.substr(0, 10)
-        ).format('YYYY-MM-DD')
-        this.asignee = this._requestService.staffUsername
-      })
-      .then(res => {
-        this._getStaffList({ departmentId: this._requestService.departmentId })
-      })
+    console.log((this.ticketId = this.$route))
+    this.initPage()
   },
   methods: {
     ...mapActions('requestDetails', [
@@ -318,6 +332,22 @@ export default {
       '_deleteComment'
     ]),
     ...mapActions('staff', ['_getStaffList']),
+    initPage () {
+      this.ticketId = this.$route.query.ticketId
+      this.minDate = moment().format('YYYY-MM-DD')
+      this._getRequestService(this.ticketId)
+        .then(res => {
+          this.date = moment(
+            this._requestService.dueDateTime.substr(0, 10)
+          ).format('YYYY-MM-DD')
+          this.asignee = this._requestService.staffUsername
+        })
+        .then(res => {
+          this._getStaffList({ departmentId: this._requestService.departmentId })
+        }).then(res => {
+          this._getCommentList({ ticketId: this._requestService.ticketId })
+        })
+    },
     getColor (status) {
       if (status === 'Finished') return 'green'
       else if (status === 'Rejected') return 'red'
@@ -337,15 +367,25 @@ export default {
       }
     },
     clickToComment () {
+      this.loading = true
       const valid = this.$refs.form.validate()
       if (valid) {
-        this.commentList.push({
-          user: 'Son Map',
-          time: moment().format('MMMM Do YYYY, h:mm:ss A'),
-          content: this.comment
-        })
-        this.comment = ''
+        const user = JSON.parse(localStorage.getItem('UserInfo'))
+        this._addComment({
+          username: user.username,
+          content: this.comment,
+          ticketId: this._requestService.ticketId
+        }).then(
+          res => {
+            this.comment = ''
+            this.initPage()
+            this.loading = false
+            this.$refs.form.reset()
+          }
+        )
       }
+      this.$refs.form.reset()
+      this.loading = false
     },
     clickToEditStatus () {
       this.editStatusDialog = true

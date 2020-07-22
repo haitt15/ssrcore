@@ -2,7 +2,9 @@ import axios from 'axios'
 import authHeader from './auth-header'
 // https://webapi20200601090708.azurewebsites.net/api/v1/Auth/Auth
 // const API_URL = 'https://webapi20200601090708.azurewebsites.net'
-const API_URL = 'https://localhost:44312'
+// const API_URL = 'https://localhost:44312'
+const API_URL = 'https://ssrapiv3.azurewebsites.net'
+
 class SSRCore {
   get (url, obj) {
     debugger

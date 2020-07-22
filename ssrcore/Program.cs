@@ -26,6 +26,7 @@ namespace ssrcore
         {
 
             RequestSheetUtils.Init();
+
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -41,6 +42,7 @@ namespace ssrcore
                 }).ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<StatusManagerService>();
+                    services.AddHostedService<JsonInfomationService>();
                 });
     }
 }

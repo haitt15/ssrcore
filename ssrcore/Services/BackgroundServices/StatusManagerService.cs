@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Google.Apis.Util;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ssrcore.Helpers;
+using ssrcore.Models;
+using ssrcore.UnitOfWork;
+using ssrcore.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,20 +16,23 @@ namespace ssrcore.Services.BackgroundServices
     {
         private readonly ILogger<StatusManagerService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        public StatusManagerService(ILogger<StatusManagerService> logger, 
-                                    IServiceScopeFactory scopeFactory)
+
+        public StatusManagerService(ILogger<StatusManagerService> logger, IServiceScopeFactory scopeFactory)
         {
-            _scopeFactory = scopeFactory;
             _logger = logger;
+            _scopeFactory = scopeFactory;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            ReadGoogleSheet.Init();
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Hosted service executing - {0}", DateTime.Now);
+                _logger.LogInformation("Hosted 1 service executing - {0}", DateTime.Now);
 
                 using (var scope = _scopeFactory.CreateScope())
                 {
+                   
                     var _serviceRequestService = scope.ServiceProvider.GetRequiredService<IServiceRequestService>();
                     await _serviceRequestService.UpdateStatusExpiredServiceRequest();
                 }

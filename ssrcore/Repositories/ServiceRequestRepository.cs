@@ -47,6 +47,7 @@ namespace ssrcore.Repositories
                                                    Content = t.Content,
                                                    ServiceId = t.ServiceId,
                                                    ServiceNm = t.Service.ServiceNm,
+                                                   JsonInformation = t.JsonInformation,
                                                    StaffId = t.StaffId,
                                                    StaffNm = t.Staff.StaffNavigation.FullName,
                                                    StaffUsername = t.Staff.StaffNavigation.Username,
@@ -94,6 +95,7 @@ namespace ssrcore.Repositories
                                                     Content = t.Content,
                                                     ServiceId = t.ServiceId,
                                                     ServiceNm = t.Service.ServiceNm,
+                                                    JsonInformation = t.JsonInformation,
                                                     StaffId = t.StaffId,
                                                     StaffNm = t.Staff.StaffNavigation.FullName,
                                                     StaffUsername = t.Staff.StaffNavigation.Username,
@@ -132,7 +134,11 @@ namespace ssrcore.Repositories
             while (sericeRequest != null);
             return ticketId;
         }
-
+        public async Task<IEnumerable<ServiceRequest>> GetByUserId(int userId)
+        {
+            var serviceRequests = await _context.ServiceRequest.Where(t => t.UserId == userId).ToListAsync();
+            return serviceRequests;
+        }
         public async Task<ServiceRequest> GetByIdToEntity(string ticketId)
         {
             var result = await _context.ServiceRequest.FindAsync(ticketId);

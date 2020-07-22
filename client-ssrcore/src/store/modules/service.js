@@ -40,6 +40,7 @@ export const service = {
       )
     },
     _addService (context, obj) {
+      debugger
       return SSRCore.post(API_URL, obj).then(
         response => {
           context.commit('_addServiceMutation', response.data)

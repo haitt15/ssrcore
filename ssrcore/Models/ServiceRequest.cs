@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -40,6 +39,7 @@ namespace ssrcore.Models
         public string UpdBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime UpdDatetime { get; set; }
+        public string JsonInformation { get; set; }
 
         [ForeignKey(nameof(ServiceId))]
         [InverseProperty("ServiceRequest")]
@@ -54,10 +54,5 @@ namespace ssrcore.Models
         public virtual ICollection<Comment> Comment { get; set; }
         [InverseProperty("Ticket")]
         public virtual ICollection<RequestHistory> RequestHistory { get; set; }
-
-        public static implicit operator ServiceRequest(EntityEntry<ServiceRequest> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

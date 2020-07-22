@@ -151,6 +151,7 @@ export default {
     },
     createService (obj) {
       // this.serviceList.push(obj)
+
       this._addService(obj)
       this.closeDialog()
     }

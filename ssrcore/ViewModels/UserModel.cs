@@ -18,5 +18,6 @@ namespace ssrcore.ViewModels
         public string RoleId { get; set; }
         public string DepartmentId { get; set; }
         public string DepartmentNm { get; set; }
+        public string Implementer { get; set; }
     }
 }

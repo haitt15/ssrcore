@@ -8,8 +8,10 @@ namespace ssrcore.Services
 {
     public interface IServiceService
     {
-        Task<Object> GetAllService(SearchServicModel model);
+        object GetAllService(SearchServicModel model, IEnumerable<ServiceModel> list);
+        Task<IEnumerable<ServiceModel>> GetServices();
         Task<ServiceModel> GetService(string serviceId);
+        ServiceModel GetServiceByRedis(string serviceId, IEnumerable<ServiceModel> list);
         Task<ServiceModel> CreateService(ServiceModel service);
         Task<bool> DeleteService(string serviceId);
         Task<ServiceModel> UpdateService(string serviceId, ServiceModel service);

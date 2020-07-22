@@ -28,5 +28,10 @@ namespace ssrcore.Helpers
             public const int SORT_NAME_ASC = 0;
             public const int SORT_NAME_DES = 1;
         }
+
+        public struct KeyRedis
+        {
+            public const string SERVICES = "Services";
+        }
     }
 }

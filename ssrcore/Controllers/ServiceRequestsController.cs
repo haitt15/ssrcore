@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Helpers;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.ViewModels;
 
 namespace ssrcore.Controllers
-{   
+{
     [Route("api/v1/[controller]")]
     [ApiController]
     public class ServiceRequestsController : ControllerBase
@@ -28,7 +24,6 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetAllServiceRequest([FromQuery]SearchServiceRequestModel model)
         {
             var result = await _serviceRequestService.GetAllServiceRequest(model);
-            await _serviceRequestService.UpdateStatusExpiredServiceRequest();
             return Ok(result);
         }
 
@@ -43,8 +38,19 @@ namespace ssrcore.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpPost]
+        [HttpGet("{userId}", Name = "GetServiceRequestByUserId")]
+        public async Task<IActionResult> GetServiceRequestByUserID(int userId)
+        {
+            var serviceRequests = await _serviceRequestService.GetServiceRequestByUserId(userId);
+            if (serviceRequests == null)
+            {
+                return NotFound();
+            }
+            return Ok(serviceRequests);
+        }
 
+
+        [HttpPost]
         public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestModel model)
         {
             var result = await _serviceRequestService.CreateServiceRequest(model);

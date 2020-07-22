@@ -1,8 +1,5 @@
 ﻿using ssrcore.Models;
 using ssrcore.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ssrcore.UnitOfWork
@@ -18,6 +15,7 @@ namespace ssrcore.UnitOfWork
         private IFcmTokenRepository _fcmToken;
         private ICommentRepository _comment;
         private IStaffRepository _staff;
+        private IRequestHistoryRepository _requestHistory;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -84,6 +82,14 @@ namespace ssrcore.UnitOfWork
             get
             {
                 return _staff = _staff ?? new StaffRepository(_context);
+            }
+        }
+
+        public IRequestHistoryRepository RequestHistoryRepository
+        {
+            get
+            {
+                return _requestHistory = _requestHistory ?? new RequestHistoryRepository(_context);
             }
         }
 

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ssrcore.Models;
+using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.Services.BackgroundServices;
 using ssrcore.UnitOfWork;
@@ -91,8 +92,15 @@ namespace ssrcore
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IStaffService, StaffService>();
-
+            services.AddScoped<IRequestHistoryService, RequestHistoryService>();
+           
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = Configuration.GetConnectionString("RedisCacheConnection");
+            });
+            services.AddScoped<IRedisCacheRepository, RedisCacheRepository>();
 
         }
 

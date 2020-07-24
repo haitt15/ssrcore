@@ -1,5 +1,6 @@
 import SSRCore from '../../service/SSRCore'
 const API_URL = '/api/v1/Users/Staffs'
+const API_URL_1 = '/api/v1/Users/'
 
 export const staff = {
   namespaced: true,
@@ -22,8 +23,9 @@ export const staff = {
       staffObj.departmentId = staff.departmentId
       staffObj.departmentNm = staff.departmentNm
     },
-    async _deleteStaffMutations (state, Id) {
-      await state._staffList.pop(x => x.Id === Id)
+    async _deleteStaffMutations (state, username) {
+      const index = state._staffList.findIndex(x => x.username === username)
+      await state._staffList.splice(index, 1)
     }
   },
   actions: {
@@ -50,7 +52,7 @@ export const staff = {
       )
     },
     _updateStaff (context, obj) {
-      return SSRCore.put(API_URL + obj.Id, obj).then(
+      return SSRCore.put(API_URL_1 + obj.username, obj).then(
         response => {
           context.commit('_updateStaffMutations', response.data)
           return response.data
@@ -61,9 +63,9 @@ export const staff = {
       )
     },
     _deleteStaff (context, obj) {
-      return SSRCore.delete(API_URL + obj.Id).then(
+      return SSRCore.delete(API_URL_1 + obj.username).then(
         response => {
-          context.commit('_deleteStaffMutations', response.data)
+          context.commit('_deleteStaffMutations', obj.username)
           return response.data
         },
         error => {

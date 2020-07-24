@@ -20,9 +20,7 @@ namespace ssrcore.Models
         public string ServiceNm { get; set; }
         [StringLength(500)]
         public string DescriptionService { get; set; }
-        [Required]
         public string FormLink { get; set; }
-        [Required]
         public string SheetLink { get; set; }
         public int ProcessMaxDay { get; set; }
         [Required]

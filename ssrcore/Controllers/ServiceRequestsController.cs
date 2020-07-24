@@ -27,7 +27,7 @@ namespace ssrcore.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{ticketId}", Name = "GetServiceRequest")]
+        [HttpGet("{ticketId}")]
         public async Task<IActionResult> GetServiceRequest(string ticketId)
         {
             var serviceRequest = await _serviceRequestService.GetServiceRequest(ticketId);
@@ -38,7 +38,7 @@ namespace ssrcore.Controllers
             return Ok(serviceRequest);
         }
 
-        [HttpGet("{userId}", Name = "GetServiceRequestByUserId")]
+        [HttpGet("Users/{userId}")]
         public async Task<IActionResult> GetServiceRequestByUserID(int userId)
         {
             var serviceRequests = await _serviceRequestService.GetServiceRequestByUserId(userId);

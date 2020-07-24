@@ -119,11 +119,12 @@ namespace ssrcore
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FPTU - Student Service Request V1");
             });
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseCors("AllowAllOriginsPolicy");
+
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 

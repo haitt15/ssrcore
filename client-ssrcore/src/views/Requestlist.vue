@@ -49,7 +49,7 @@
     </v-row>
     <request-grid
       icon="mdi-clipboard-text"
-      title="LIST REQUEST IN JUNE"
+      title="LIST REQUEST"
       class="px-5 py-3"
       :headerTable="headers"
       :dataTable="_getListOfRequest"

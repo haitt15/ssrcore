@@ -11,15 +11,38 @@
           <v-card-title>
             Service list of student collaboration rooms
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line></v-text-field>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+            ></v-text-field>
             <v-spacer></v-spacer>
-            <v-btn color="primary" outlined @click="clickToCreateService">New Service</v-btn>
+            <v-btn color="primary" outlined @click="clickToCreateService"
+              >New Service</v-btn
+            >
           </v-card-title>
           <v-divider></v-divider>
-          <v-data-table :headers="headers" :items="_serviceList" :search="search">
+          <v-data-table
+            :headers="headers"
+            :items="_serviceList"
+            :search="search"
+          >
+            <template v-slot:item.formLink="{ item }">
+              <a :href="item.formLink" target="_blank">{{
+                item.formLink | subStringValue()
+              }}</a>
+            </template>
+            <template v-slot:item.sheetLink="{ item }">
+              <a :href="item.sheetLink" target="_blank">{{ item.sheetLink| subStringValue() }}</a>
+            </template>
             <template v-slot:item.actions="{ item }">
-              <v-icon small class="mr-2" @click="clickToEditService(item)">mdi-pencil</v-icon>
-              <v-icon small @click="clickToDeleteService(item)">mdi-delete</v-icon>
+              <v-icon small class="mr-2" @click="clickToEditService(item)"
+                >mdi-pencil</v-icon
+              >
+              <v-icon small @click="clickToDeleteService(item)"
+                >mdi-delete</v-icon
+              >
             </template>
           </v-data-table>
         </v-card>
@@ -46,6 +69,14 @@ export default {
   },
   computed: {
     ...mapState('service', ['_serviceList'])
+  },
+  filters: {
+    subStringValue (value) {
+      if (value.length > 30 && value) {
+        value = value.substring(0, 30) + '...'
+      }
+      return value
+    }
   },
   data () {
     return {
@@ -121,7 +152,12 @@ export default {
     this._getAllService()
   },
   methods: {
-    ...mapActions('service', ['_getAllService', '_addService', '_updateService', '_deleteService']),
+    ...mapActions('service', [
+      '_getAllService',
+      '_addService',
+      '_updateService',
+      '_deleteService'
+    ]),
     clickToCreateService () {
       this.type = 'Create'
       this.editedItem = {}
@@ -134,7 +170,8 @@ export default {
     },
     clickToDeleteService (service) {
       // const index = this.serviceList.indexOf(service)
-      confirm('Are you sure you want to delete this item?') && this._deleteService(service)
+      confirm('Are you sure you want to delete this item?') &&
+        this._deleteService(service)
     },
     closeDialog () {
       this.dialog = false

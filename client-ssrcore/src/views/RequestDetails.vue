@@ -96,14 +96,14 @@
             <span class="request_text">{{_requestService.content}}</span>
           </v-col>
         </v-row>
-        <v-row class="row-text">
+        <v-row class="row-text" v-if="jsonList.length > 0">
           <v-col :cols="12">
             <span class="request_title">Table:</span>
           </v-col>
           <v-col :cols="12">
             <v-data-table
               :headers="headers"
-              :items="getJsonObject"
+              :items="jsonList"
               hide-default-header
               hide-default-footer
               class="elevation-1"
@@ -217,16 +217,24 @@ export default {
     ...mapState('comment', ['_commentList']),
     ...mapState('staff', ['_staffList']),
     getJsonObject () {
-      var json = JSON.parse(
-        '{"Ticket Id":"tauqsaij","Student":"Bui Hai Nam (K13_HCM)","Service":"Đăng ký học block 3 tuần","Status":"Waiting","Staff":"","Department":"Phòng Công Tác Sinh Viên 3"}'
-      )
-      var jsonList = []
-      var keys = Object.keys(json)
-      for (var key in keys) {
-        var x = keys[key]
-        jsonList.push({ title: x, value: json[x] })
+      // var json = JSON.parse(
+      //   '{"Ticket Id":"tauqsaij","Student":"Bui Hai Nam (K13_HCM)","Service":"Đăng ký học block 3 tuần","Status":"Waiting","Staff":"","Department":"Phòng Công Tác Sinh Viên 3"}'
+      // )
+      if (this._requestService.jsonInformation !== null) {
+        debugger
+        var json = JSON.parse(
+          this._requestService.jsonInformation
+        )
+        var jsonList = []
+        var keys = Object.keys(json)
+        for (var key in keys) {
+          var x = keys[key]
+          jsonList.push({ title: x, value: json[x] })
+        }
+        return jsonList
+      } else {
+        return []
       }
-      return jsonList
     }
   },
   filters: {
@@ -246,6 +254,7 @@ export default {
       5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'
     }
     return {
+      jsonList: [],
       headers: [
         { text: 'Title', value: 'title' },
         { text: 'Value', value: 'value' }
@@ -343,6 +352,17 @@ export default {
           this.asignee = this._requestService.staffUsername
         })
         .then(res => {
+          this.jsonList = []
+          if (this._requestService.jsonInformation !== null) {
+            var json = JSON.parse(
+              this._requestService.jsonInformation
+            )
+            var keys = Object.keys(json)
+            for (var key in keys) {
+              var x = keys[key]
+              this.jsonList.push({ title: x, value: json[x] })
+            }
+          }
           this._getStaffList({ departmentId: this._requestService.departmentId })
         }).then(res => {
           this._getCommentList({ ticketId: this._requestService.ticketId })
@@ -384,8 +404,6 @@ export default {
           }
         )
       }
-      this.$refs.form.reset()
-      this.loading = false
     },
     clickToEditStatus () {
       this.editStatusDialog = true

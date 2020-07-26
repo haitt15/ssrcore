@@ -39,7 +39,6 @@ export const comment = {
     _addComment (context, obj) {
       return SSRCore.post(API_URL, obj).then(
         response => {
-          context.commit('_addCommentMutations', response.data)
           return response.data
         },
         error => {
@@ -50,7 +49,6 @@ export const comment = {
     _updateComment (context, obj) {
       return SSRCore.put(API_URL + obj.Id, obj).then(
         response => {
-          context.commit('_updateCommentMutations', response.data)
           return response.data
         },
         error => {
@@ -61,7 +59,6 @@ export const comment = {
     _deleteComment (context, obj) {
       return SSRCore.delete(API_URL + obj.Id).then(
         response => {
-          context.commit('_deleteCommentMutations', response.data)
           return response.data
         },
         error => {

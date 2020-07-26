@@ -35,6 +35,7 @@ namespace ssrcore.Services.BackgroundServices
 
                     var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var _serviceService = scope.ServiceProvider.GetRequiredService<IServiceService>();
+                    var _serviceRequestService = scope.ServiceProvider.GetRequiredService<IServiceRequestService>();
                     var serviceList = await  _unitOfWork.ServiceRepository.GetServices();
                     foreach (var service in serviceList)
                     {
@@ -55,6 +56,11 @@ namespace ssrcore.Services.BackgroundServices
                                 result = parts[1];
                             }
                             dynamic jsonList = ReadGoogleSheet.ReadSheet(result);
+                            foreach(var json in jsonList)
+                            {
+                               await _serviceRequestService.UpdateServiceRequest(json.TicketId, new ServiceRequestModel { JsonInformation = json.JsonInformation});
+                            }
+
                         }
                     }
                 }

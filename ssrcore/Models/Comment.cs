@@ -7,11 +7,6 @@ namespace ssrcore.Models
 {
     public partial class Comment
     {
-        public Comment()
-        {
-            RequestHistory = new HashSet<RequestHistory>();
-        }
-
         [Key]
         public int Id { get; set; }
         [StringLength(11)]
@@ -37,7 +32,5 @@ namespace ssrcore.Models
         [ForeignKey(nameof(UserId))]
         [InverseProperty(nameof(Users.Comment))]
         public virtual Users User { get; set; }
-        [InverseProperty("Comment")]
-        public virtual ICollection<RequestHistory> RequestHistory { get; set; }
     }
 }

@@ -10,7 +10,6 @@ namespace ssrcore.Models
         public ServiceRequest()
         {
             Comment = new HashSet<Comment>();
-            RequestHistory = new HashSet<RequestHistory>();
         }
 
         [Key]
@@ -52,7 +51,5 @@ namespace ssrcore.Models
         public virtual Users User { get; set; }
         [InverseProperty("Ticket")]
         public virtual ICollection<Comment> Comment { get; set; }
-        [InverseProperty("Ticket")]
-        public virtual ICollection<RequestHistory> RequestHistory { get; set; }
     }
 }

@@ -124,35 +124,11 @@ namespace ssrcore.Models
 
             modelBuilder.Entity<RequestHistory>(entity =>
             {
-                entity.Property(e => e.FromStatus).IsUnicode(false);
+                entity.Property(e => e.ContentHistory).IsUnicode(false);
 
                 entity.Property(e => e.TicketId).IsUnicode(false);
 
-                entity.Property(e => e.ToStatus).IsUnicode(false);
-
                 entity.Property(e => e.UpdDatetime).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Comment)
-                    .WithMany(p => p.RequestHistory)
-                    .HasForeignKey(d => d.CommentId)
-                    .HasConstraintName("FK_History_Comment");
-
-                entity.HasOne(d => d.FromStaffNavigation)
-                    .WithMany(p => p.RequestHistoryFromStaffNavigation)
-                    .HasForeignKey(d => d.FromStaff)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_History_From_Staff");
-
-                entity.HasOne(d => d.Ticket)
-                    .WithMany(p => p.RequestHistory)
-                    .HasForeignKey(d => d.TicketId)
-                    .HasConstraintName("FK_Request_id");
-
-                entity.HasOne(d => d.ToStaffNavigation)
-                    .WithMany(p => p.RequestHistoryToStaffNavigation)
-                    .HasForeignKey(d => d.ToStaff)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_History_To_Staff");
             });
 
             modelBuilder.Entity<Role>(entity =>

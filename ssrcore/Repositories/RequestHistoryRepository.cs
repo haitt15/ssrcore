@@ -31,12 +31,8 @@ namespace ssrcore.Repositories
 
         public async Task<RequestHistory> GetById(string ticketId)
         {
-            return await _context.RequestHistory.FindAsync(ticketId);
+            return await _context.RequestHistory.Where(t => t.TicketId == ticketId).FirstOrDefaultAsync();
         }
 
-        public void Update(RequestHistory requestHistory)
-        {
-
-        }
     }
 }

@@ -5,7 +5,6 @@ using ssrcore.UnitOfWork;
 using ssrcore.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ssrcore.Services
@@ -32,6 +31,15 @@ namespace ssrcore.Services
                 serviceRequest.DueDateTime = DateTime.Now.AddDays(service.ProcessMaxDay);
                 var entity = _mapper.Map<ServiceRequest>(serviceRequest);
                 await _unitOfWork.ServiceRequestRepository.Create(entity);
+
+                var history = new RequestHistory
+                {
+                    TicketId = entity.TicketId,
+                    ContentHistory = "Insert by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime(),
+                    UpdDatetime = DateTime.Now
+                };
+                _unitOfWork.RequestHistoryRepository.Create(history);
+
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(entity.TicketId);
                 return modelToReturn;
@@ -154,26 +162,52 @@ namespace ssrcore.Services
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
             var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
-            if (serviceRequest.StaffUsername != null)
+            if (entity != null)
             {
-                //old staff lấy fullName
+                if (serviceRequest.StaffUsername != null)
+                {
+                    var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
+                    serviceRequest.StaffId = staff.Id;
 
-                //new staff lấy fullName
-                var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
-               
-                serviceRequest.StaffId = staff.Id;
-            }
-            if(entity != null)
-            {
+                    if (entity.StaffId == null)
+                    {
+                        var history = new RequestHistory
+                        {
+                            TicketId = entity.TicketId,
+                            ContentHistory = "This request has just been assigned to " + staff.FullName + " at " + DateTime.Now.ToLocalTime(),
+                            UpdDatetime = DateTime.Now
+                        };
+                        _unitOfWork.RequestHistoryRepository.Create(history);
+                    }
+                    else
+                    {
+                        var oldStaff = await _unitOfWork.UserRepository.GetByUserId(entity.StaffId);
+                        var history = new RequestHistory
+                        {
+                            TicketId = entity.TicketId,
+                            ContentHistory = "The request has just been transferred from " + oldStaff.FullName + " to " + staff.FullName + " at " + DateTime.Now.ToLocalTime(),
+                            UpdDatetime = DateTime.Now
+                        };
+                        _unitOfWork.RequestHistoryRepository.Create(history);
+                    }
+
+                }
+
                 entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
                 entity.StaffId = serviceRequest.StaffId != null ? serviceRequest.StaffId : entity.StaffId;
                 entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
                 entity.JsonInformation = serviceRequest.JsonInformation != null ? serviceRequest.JsonInformation : entity.JsonInformation;
                 entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
-                if (serviceRequest.Status != null)
+                if (serviceRequest.Status != null && !entity.Status.Equals(serviceRequest.Status))
                 {
+                    var history = new RequestHistory
+                    {
+                        TicketId = entity.TicketId,
+                        ContentHistory = "This request has just been changed from " + entity.Status + " to " + serviceRequest.Status + " at " + DateTime.Now.ToLocalTime(),
+                        UpdDatetime = DateTime.Now
+                    };
+                    _unitOfWork.RequestHistoryRepository.Create(history);
                     entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
-                    // add history
                 }
                 entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;
                 entity.UpdDatetime = DateTime.Now;
@@ -193,9 +227,9 @@ namespace ssrcore.Services
                 {
                     item.Status = "Expired";
                 }
-                if(item.DueDateTime > DateTime.Now && item.Status == "Expired")
+                if (item.DueDateTime > DateTime.Now && item.Status == "Expired")
                 {
-                    item.Status = "In Progress";
+                    item.Status = "In-Progress";
                 }
             }
 

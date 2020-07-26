@@ -20,13 +20,6 @@ namespace ssrcore.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<RequestHistoryModel> CreateRequestHistory(RequestHistoryModel model)
-        {
-            var entity = _mapper.Map<RequestHistory>(model);
-            _unitOfWork.RequestHistoryRepository.Create(entity);
-            await _unitOfWork.Commit();
-            return _mapper.Map<RequestHistoryModel>(entity);
-        }
 
         public async Task<IEnumerable<RequestHistoryModel>> GetAllRequestHistory()
         {

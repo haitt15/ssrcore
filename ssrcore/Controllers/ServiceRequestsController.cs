@@ -56,7 +56,7 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestService.CreateServiceRequest(model);
             if (result != null)
             {
-                RequestSheetUtils.Add(result);
+                RequestSheetUtils.Add(result,Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return Created("", result);
             }
 
@@ -75,7 +75,7 @@ namespace ssrcore.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _serviceRequestService.UpdateServiceRequest(ticketId, model);
-                RequestSheetUtils.Update(result);
+                RequestSheetUtils.Update(result, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return Ok(result);
             }
             return BadRequest();
@@ -87,7 +87,7 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestService.DeleteServiceRequest(ticketId);
             if (result)
             {
-                RequestSheetUtils.Delete(ticketId);
+                RequestSheetUtils.Delete(ticketId, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return NoContent();
             }
             return BadRequest();

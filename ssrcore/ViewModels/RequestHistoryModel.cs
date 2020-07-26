@@ -9,11 +9,7 @@ namespace ssrcore.ViewModels
     {
         public int Id { get; set; }
         public string TicketId { get; set; }
-        public int? CommentId { get; set; }
-        public string FromStatus { get; set; }
-        public string ToStatus { get; set; }
-        public int FromStaff { get; set; }
-        public int ToStaff { get; set; }
+        public string ContentHistory { get; set; }
         public DateTime UpdDatetime { get; set; }
 
     }

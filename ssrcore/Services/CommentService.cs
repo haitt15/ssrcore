@@ -29,6 +29,7 @@ namespace ssrcore.Services
                 await _unitOfWork.CommentRepository.Create(entity);
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.CommentRepository.GetByIdToModel(entity.Id);
+                // add history
                 return modelToReturn;
             }
             return null;

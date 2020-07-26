@@ -153,12 +153,16 @@ namespace ssrcore.Services
 
         public async Task<ServiceRequestModel> UpdateServiceRequest(string ticketId, ServiceRequestModel serviceRequest)
         {
-            if(serviceRequest.StaffUsername != null)
+            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
+            if (serviceRequest.StaffUsername != null)
             {
+                //old staff lấy fullName
+
+                //new staff lấy fullName
                 var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
+               
                 serviceRequest.StaffId = staff.Id;
             }
-            var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
             if(entity != null)
             {
                 entity.ServiceId = serviceRequest.ServiceId != null ? serviceRequest.ServiceId : entity.ServiceId;
@@ -166,7 +170,11 @@ namespace ssrcore.Services
                 entity.Content = serviceRequest.Content != null ? serviceRequest.Content : entity.Content;
                 entity.JsonInformation = serviceRequest.JsonInformation != null ? serviceRequest.JsonInformation : entity.JsonInformation;
                 entity.DueDateTime = serviceRequest.DueDateTime.Year >= 1753 ? serviceRequest.DueDateTime : entity.DueDateTime;
-                entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
+                if (serviceRequest.Status != null)
+                {
+                    entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
+                    // add history
+                }
                 entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;
                 entity.UpdDatetime = DateTime.Now;
                 await _unitOfWork.Commit();

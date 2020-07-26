@@ -134,9 +134,9 @@ namespace ssrcore.Repositories
             while (sericeRequest != null);
             return ticketId;
         }
-        public async Task<IEnumerable<ServiceRequest>> GetByUserId(int userId)
+        public async Task<IEnumerable<ServiceRequest>> GetByUsername(string username)
         {
-            var serviceRequests = await _context.ServiceRequest.Where(t => t.UserId == userId).ToListAsync();
+            var serviceRequests = await _context.ServiceRequest.Where(t => t.User.Username == username).ToListAsync();
             return serviceRequests;
         }
         public async Task<ServiceRequest> GetByIdToEntity(string ticketId)

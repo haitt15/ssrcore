@@ -27,7 +27,7 @@
               }}
             </v-chip>
             <!-- <span
-              :class="{  Waiting : _requestService.status === 'Waiting',InProgress : _requestService.status === 'In Progress',
+              :class="{  Waiting : _requestService.status === 'Waiting',InProgress : _requestService.status === 'In-Progress',
               Finished : _requestService.status === 'Finished',Rejected : _requestService.status === 'Rejected',
               Expired: _requestService.status === 'Expired'}"
             >{{_requestService.status}}</span>-->
@@ -295,7 +295,7 @@ export default {
       editStatusDialog: false,
       statusEnum: [
         { text: 'Waiting' },
-        { text: 'In Progress' },
+        { text: 'In-Progress' },
         { text: 'Finished' },
         { text: 'Rejected' },
         { text: 'Expired' }

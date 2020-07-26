@@ -139,7 +139,7 @@ export default {
           title: 'Rejected'
         },
         {
-          title: 'In-progess'
+          title: 'In-Progress'
         }
       ]
     }
@@ -151,8 +151,7 @@ export default {
       else if (status === 'Rejected') return 'red'
       else if (status === 'Expired') return 'orange'
       else if (status === 'Waiting') return 'amber'
-      else if (status === 'In-progess') return 'blue'
-      else if (status === 'In Progress') return 'blue'
+      else if (status === 'In-Progress') return 'blue'
       else return 'black'
     },
     clickToEditRequest (request) {
@@ -166,7 +165,8 @@ export default {
       console.log('Duong ne')
       console.log(this.tab)
       console.log(this.tab.split('tab-'))
-      this.colorTable = this.getColor(this.tab.split('tab-')[1])
+      var x = this.tab.split('tab-')[1]
+      this.colorTable = this.getColor(x)
       switch (this.tab.split('tab-')[1]) {
         case 'All': {
           this._getAllRequestOfDepartment()
@@ -176,8 +176,8 @@ export default {
           this._getAllRequestOfDepartment('Expired')
           break
         }
-        case 'In-progess': {
-          this._getAllRequestOfDepartment('InProgress')
+        case 'In-Progress': {
+          this._getAllRequestOfDepartment('In-Progress')
           break
         }
         case 'Waiting': {

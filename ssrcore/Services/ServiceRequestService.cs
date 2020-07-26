@@ -141,12 +141,12 @@ namespace ssrcore.Services
         }
 
 
-        public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(int userId)
+        public async Task<IEnumerable<ServiceRequestModel>> GetServiceRequestByUserId(string username)
         {
-            var requests = await _unitOfWork.ServiceRequestRepository.GetByUserId(userId);
+            var requests = await _unitOfWork.ServiceRequestRepository.GetByUsername(username);
             if (requests == null)
             {
-                throw new AppException("Cannot find " + userId);
+                throw new AppException("Cannot find " + username);
             }
             return _mapper.Map<IEnumerable<ServiceRequestModel>>(requests);
         }

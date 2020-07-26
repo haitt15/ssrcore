@@ -73,37 +73,16 @@ namespace ssrcore.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public void Update(Users user)
-        {
-
-        }
-
         public void Delete(Users user)
         {
             user.DelFlg = true;
         }
 
-        //public async Task<UserModel> GetByUsernameToModel(string username)
-        //{
-        //    var user = await _context.Users.Where(t => t.Username == username && t.DelFlg == false)
-        //                                   .Select(t => new UserModel
-        //                                   {
-        //                                       Id = t.Id,
-        //                                       Username = t.Username,
-        //                                       FullName = t.FullName,
-        //                                       Address = t.Address,
-        //                                       Email = t.Email,
-        //                                       Phonenumber = t.Phonenumber,
-        //                                       Photo = t.Photo,
-        //                                       UserNo = t.UserNo,
-        //                                       RoleId = t.RoleId,
-        //                                       DelFlg = t.DelFlg,
-        //                                       InsBy = t.InsBy,
-        //                                       InsDatetime = t.InsDatetime,
-        //                                       UpdBy = t.UpdBy,
-        //                                       UpdDatetime = t.UpdDatetime
-        //                                   }).SingleOrDefaultAsync();
-        //    return user;
-        //}
+        public async Task<Users> GetByUserId(int? userId)
+        {
+            return await _context.Users.Where(x => x.Id == userId)
+                                       .SingleOrDefaultAsync();
+        }
+
     }
 }

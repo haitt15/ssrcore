@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ssrcore.Helpers;
 using ssrcore.Services;
@@ -12,12 +11,10 @@ namespace ssrcore.Controllers
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestService _serviceRequestService;
-        private readonly IMapper _mapper;
 
-        public ServiceRequestsController(IServiceRequestService serviceRequestService, IMapper mapper)
+        public ServiceRequestsController(IServiceRequestService serviceRequestService)
         {
             _serviceRequestService = serviceRequestService;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -56,7 +53,6 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestService.CreateServiceRequest(model);
             if (result != null)
             {
-                RequestSheetUtils.Add(result,Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return Created("", result);
             }
 
@@ -75,7 +71,6 @@ namespace ssrcore.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _serviceRequestService.UpdateServiceRequest(ticketId, model);
-                RequestSheetUtils.Update(result, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return Ok(result);
             }
             return BadRequest();
@@ -87,7 +82,6 @@ namespace ssrcore.Controllers
             var result = await _serviceRequestService.DeleteServiceRequest(ticketId);
             if (result)
             {
-                RequestSheetUtils.Delete(ticketId, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
                 return NoContent();
             }
             return BadRequest();

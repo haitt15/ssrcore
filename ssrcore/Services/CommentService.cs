@@ -27,9 +27,17 @@ namespace ssrcore.Services
                 entity.InsBy = comment.Username;
                 entity.UpdBy = comment.Username;
                 await _unitOfWork.CommentRepository.Create(entity);
+
+                var history = new RequestHistory
+                {
+                    TicketId = entity.TicketId,
+                    ContentHistory = "A new comment is added by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime(),
+                    UpdDatetime = DateTime.Now.ToLocalTime(),
+                };
+                _unitOfWork.RequestHistoryRepository.Create(history);
+
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.CommentRepository.GetByIdToModel(entity.Id);
-                // add history
                 return modelToReturn;
             }
             return null;

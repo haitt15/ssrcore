@@ -1,8 +1,5 @@
-﻿using ssrcore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+
 
 namespace ssrcore.ViewModels
 {
@@ -12,11 +9,9 @@ namespace ssrcore.ViewModels
         public int UserId { get; set; }
         public string Username { get; set; }
         public string FullName { get; set; }
-
         public string StudentPhoto { get; set; }
         public string ServiceId { get; set; }
         public string ServiceNm { get; set; }
-
         public string JsonInformation { get; set; }
         public int? StaffId { get; set; }
         public string StaffUsername { get; set; }

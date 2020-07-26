@@ -25,7 +25,6 @@ namespace ssrcore.Services.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            ReadGoogleSheet.Init();
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Hosted 1 service executing - {0}", DateTime.Now);

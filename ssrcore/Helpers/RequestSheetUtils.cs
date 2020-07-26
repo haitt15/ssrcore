@@ -35,53 +35,19 @@ namespace ssrcore.Helpers
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-            ReadSheet();
         }
-        public static dynamic ReadSheet()
+        public static dynamic ReadSheet(string spreadSheetId)
         {
             // Specifying Column Range for reading...
             var range = $"{sheet}!A:Z";
             SpreadsheetsResource.ValuesResource.GetRequest request =
-                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
+                    service.Spreadsheets.Values.Get(spreadSheetId, range);
             // Ecexuting Read Operation...
-            var response = request.Execute();
+                var response = request.Execute();
             // Getting all records from Column A to E...
             IList<IList<object>> values = response.Values;
-            String jsonString = "[";
-            int count = 0;
-            IList<object> rowTitle = null;
-            if (values != null && values.Count > 0)
-            {
-                foreach (var row in values)
-                {
-
-                    if(count == 0)
-                    {
-                        rowTitle = row;
-                        count++;
-                    }
-                    else
-                    {
-                        jsonString += "{";
-                        for(int i = 0; i<row.Count; i++)
-                        {
-                            jsonString += "\"" + rowTitle[i] + "\":" + "\"" + row[i] + "\",";
-                        }
-                        int lastIndex = jsonString.LastIndexOf(",");
-                        jsonString = jsonString.Substring(0, lastIndex);
-                        jsonString += "},";
-                    }
-                    // Print columns A to F, which correspond to indices 0 and 4.
-                }
-                int last = jsonString.LastIndexOf(",");
-                jsonString = jsonString.Substring(0, last);
-                jsonString += "]";
-                //return values;
-                return jsonString;
-
-            }
-
-            return null;
+         
+            return values;
         }
 
         //private static void AddProperties()
@@ -97,7 +63,7 @@ namespace ssrcore.Helpers
         //    Add(model);
         //}
 
-        public static void Add(ServiceRequestModel requestModel)
+        public static void Add(ServiceRequestModel requestModel,string spreadSheetId)
         {
             // Specifying Column Range for reading...
             var range = $"{sheet}!A:F";
@@ -109,7 +75,7 @@ namespace ssrcore.Helpers
             };
             valueRange.Values = new List<IList<object>> { oblist };
             // Append the above record...
-            var appendRequest = service.Spreadsheets.Values.Append(valueRange, SpreadsheetId, range);
+            var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadSheetId, range);
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var appendReponse = appendRequest.Execute();
             //BatchUpdateValuesRequest requestBody = new BatchUpdateValuesRequest()
@@ -123,13 +89,13 @@ namespace ssrcore.Helpers
 
 
 
-        public static void Update(ServiceRequestModel requestModel)
+        public static void Update(ServiceRequestModel requestModel, string spreadSheetId)
         {
             int rowID = 0;
             var range = $"{sheet}!A:F";
             int j = 0;
             SpreadsheetsResource.ValuesResource.GetRequest request =
-                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
+                    service.Spreadsheets.Values.Get(spreadSheetId, range);
             var response = request.Execute();
             IList<IList<object>> values = response.Values;
             if (values != null && values.Count > 0)
@@ -154,27 +120,39 @@ namespace ssrcore.Helpers
             };
             valueRange.Values = new List<IList<object>> { oblist };
             // Performing Update Operation...
-            var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetId, range2);
+            var updateRequest = service.Spreadsheets.Values.Update(valueRange, spreadSheetId, range2);
             updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
             var appendReponse = updateRequest.Execute();
         }
 
 
-        public static void ClearRow(int rowID)
+        public static void ClearRow(int rowID, string spreadSheetId)
         {
             var range = $"{sheet}!A{rowID}:F{rowID}";
             var requestBody = new ClearValuesRequest();
-            var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, SpreadsheetId, range);
+            var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, spreadSheetId, range);
             var deleteReponse = deleteRequest.Execute();
         }
-        public static void Delete(string ticketId)
+
+        public static void ClearAllRow( string spreadSheetId)
+        {
+            var result = ReadSheet(spreadSheetId);
+            if(result.Count > 1)
+            {
+                var range = $"{sheet}!A2:F{result.Count}";
+                var requestBody = new ClearValuesRequest();
+                var clearRequest = service.Spreadsheets.Values.Clear(requestBody, spreadSheetId, range);
+                var clearReponse = clearRequest.Execute();
+            }
+        }
+        public static void Delete(string ticketId, string spreadSheetId)
         {
 
             int row = 0;
             var range = $"{sheet}!A:F";
             int j = 0;
             SpreadsheetsResource.ValuesResource.GetRequest request =
-                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
+                    service.Spreadsheets.Values.Get(spreadSheetId, range);
             var response = request.Execute();
             IList<IList<object>> values = response.Values;
             if (values != null && values.Count > 0)
@@ -212,7 +190,7 @@ namespace ssrcore.Helpers
             BatchUpdateSpreadsheetRequest DeleteRequest = new BatchUpdateSpreadsheetRequest();
             DeleteRequest.Requests = RequestContainer;
 
-            SpreadsheetsResource.BatchUpdateRequest Deletion = new SpreadsheetsResource.BatchUpdateRequest(service, DeleteRequest, SpreadsheetId);
+            SpreadsheetsResource.BatchUpdateRequest Deletion = new SpreadsheetsResource.BatchUpdateRequest(service, DeleteRequest, spreadSheetId);
             Deletion.Execute();
 
         }

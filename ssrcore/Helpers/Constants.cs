@@ -33,5 +33,12 @@ namespace ssrcore.Helpers
         {
             public const string SERVICES = "Services";
         }
+        public struct GoogleSheet
+        {
+            public const string SHEET_IN_PROGRESS = "1rQDO2xqPhMyyuEh3G6qbdRibbRFGZl5LeE4km94znTU";
+            public const string SHEET_FINISHED = "17p3zi7ha2S0TH7LAn-wtiZCEguY8oUeM5uikdNRGSxI";
+            public const string SHEET_REJECTED = "1MG8ZU9AE4Cu6P85Oc4QS83SKWf5ESq7RwubQnkbSaQo";
+            public const string SHEET_REQUEST_SERVICE = "11G2M1iKzud1fonZjUlfYS8-rE0lXLmQgBP49rQSbi_Y";
+        }
     }
 }

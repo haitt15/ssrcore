@@ -15,10 +15,10 @@ namespace ssrcore.Services.BackgroundServices
 {
     public class JsonInfomationService : BackgroundService
     {
-        private readonly ILogger<StatusManagerService> _logger;
+        private readonly ILogger<JsonInfomationService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public JsonInfomationService(ILogger<StatusManagerService> logger, IServiceScopeFactory scopeFactory)
+        public JsonInfomationService(ILogger<JsonInfomationService> logger, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
@@ -26,13 +26,13 @@ namespace ssrcore.Services.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            ReadGoogleSheet.Init();
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Hosted 2 service executing - {0}", DateTime.Now);
 
                 using (var scope = _scopeFactory.CreateScope())
                 {
-
                     var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var _serviceService = scope.ServiceProvider.GetRequiredService<IServiceService>();
                     var _serviceRequestService = scope.ServiceProvider.GetRequiredService<IServiceRequestService>();

@@ -43,6 +43,7 @@ namespace ssrcore
                 {
                     services.AddHostedService<StatusManagerService>();
                     services.AddHostedService<JsonInfomationService>();
+                    services.AddHostedService<GoogleSheetApiService>();
                 });
     }
 }

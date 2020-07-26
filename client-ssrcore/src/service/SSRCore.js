@@ -7,7 +7,6 @@ const API_URL = 'https://ssrapiv3.azurewebsites.net'
 
 class SSRCore {
   get (url, obj) {
-    debugger
     return axios
       .get(API_URL + url, {
         params: obj

@@ -102,7 +102,6 @@ namespace ssrcore.Repositories
 
         public void Update(Staff staff)
         {
-            throw new NotImplementedException();
         }
     }
 }

@@ -24,15 +24,11 @@ namespace ssrcore.Repositories
             _context.RequestHistory.Remove(requestHistory);
         }
 
-        public async Task<IEnumerable<RequestHistory>> GetAll()
+        public async Task<IEnumerable<RequestHistory>> GetAll(string ticketId)
         {
-            return await _context.RequestHistory.ToListAsync();
+            return await _context.RequestHistory.Where(t => t.TicketId == ticketId).ToListAsync();
         }
 
-        public async Task<RequestHistory> GetById(string ticketId)
-        {
-            return await _context.RequestHistory.Where(t => t.TicketId == ticketId).FirstOrDefaultAsync();
-        }
 
     }
 }

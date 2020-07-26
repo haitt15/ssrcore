@@ -6,7 +6,6 @@ namespace ssrcore.Services
 {
     public interface IRequestHistoryService
     {
-        Task<IEnumerable<RequestHistoryModel>> GetAllRequestHistory();
-        Task<RequestHistoryModel> GetRequestHistory(string ticketId);
+        Task<IEnumerable<RequestHistoryModel>> GetAllRequestHistory(string ticketId);
     }
 }

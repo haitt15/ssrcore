@@ -21,20 +21,11 @@ namespace ssrcore.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<RequestHistoryModel>> GetAllRequestHistory()
+        public async Task<IEnumerable<RequestHistoryModel>> GetAllRequestHistory(string ticketId)
         {
-            var entities = await _unitOfWork.RequestHistoryRepository.GetAll();
+            var entities = await _unitOfWork.RequestHistoryRepository.GetAll(ticketId);
             return _mapper.Map<IEnumerable<RequestHistoryModel>>(entities);
         }
 
-        public async Task<RequestHistoryModel> GetRequestHistory(string ticketId)
-        {
-            var entity = await _unitOfWork.RequestHistoryRepository.GetById(ticketId);
-            if(entity == null)
-            {
-                throw new AppException("Cannot find " + ticketId);
-            }
-            return _mapper.Map<RequestHistoryModel>(entity);
-        }
     }
 }

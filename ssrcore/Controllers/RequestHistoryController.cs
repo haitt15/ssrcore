@@ -18,7 +18,7 @@ namespace ssrcore.Controllers
         [HttpGet("{ticketId}")]
         public async Task<IActionResult> GetRequestHistoryByTicketId(string ticketId)
         {
-            var result = await _requestHistoryService.GetRequestHistory(ticketId);
+            var result = await _requestHistoryService.GetAllRequestHistory(ticketId);
             return Ok(result);
         }
 

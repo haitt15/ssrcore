@@ -6,8 +6,7 @@ namespace ssrcore.Repositories
 {
     public interface IRequestHistoryRepository
     {
-        Task<IEnumerable<RequestHistory>> GetAll();
-        Task<RequestHistory> GetById(string ticketId);
+        Task<IEnumerable<RequestHistory>> GetAll(string ticketId);
         void Create(RequestHistory requestHistory);
         void Delete(RequestHistory requestHistory);
     }

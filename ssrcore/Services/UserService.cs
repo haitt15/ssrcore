@@ -45,6 +45,7 @@ namespace ssrcore.Services
             {
                 user.Photo = "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
             }
+            user.RoleId = Constants.Roles.ROLE_STAFF;
             await _unitOfWork.UserRepository.Create(user, password);
             await _unitOfWork.Commit();
             return user;

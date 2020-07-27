@@ -36,7 +36,7 @@ namespace ssrcore.Services.BackgroundServices
                     await _serviceRequestService.UpdateStatusExpiredServiceRequest();
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
+                await Task.Delay(TimeSpan.FromSeconds(7));
             }
         }
     }

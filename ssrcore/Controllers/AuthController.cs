@@ -90,9 +90,11 @@ namespace ssrcore.Controllers
                     email = user.Email,
                     fullName = user.FullName,
                     username = user.Username,
+                    photo = user.Photo,
                     departmentId = staff != null ? staff.DepartmentId : null,
                     departmentNm = staff != null ? staff.DepartmentNm : null,
                     expiration = token.ValidTo
+
                 });
             }
             return Unauthorized();
@@ -162,6 +164,7 @@ namespace ssrcore.Controllers
                         role = role,
                         email = currentUser.Email,
                         fullName = currentUser.FullName,
+                        photo = currentUser.Photo,
                         username = currentUser.Username,
                         expiration = token.ValidTo
                     });

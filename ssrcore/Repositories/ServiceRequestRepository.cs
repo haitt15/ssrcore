@@ -134,9 +134,32 @@ namespace ssrcore.Repositories
             while (sericeRequest != null);
             return ticketId;
         }
-        public async Task<IEnumerable<ServiceRequest>> GetByUsername(string username)
+        public async Task<IEnumerable<ServiceRequestModel>> GetByUsername(string username)
         {
-            var serviceRequests = await _context.ServiceRequest.Where(t => t.User.Username == username).ToListAsync();
+            var serviceRequests = await _context.ServiceRequest.Where(t => t.User.Username == username && t.DelFlg == false).Select(t => new ServiceRequestModel
+            {
+                TicketId = t.TicketId,
+                UserId = t.UserId,
+                Username = t.User.Username,
+                FullName = t.User.FullName,
+                StudentPhoto = t.User.Photo,
+                Content = t.Content,
+                ServiceId = t.ServiceId,
+                ServiceNm = t.Service.ServiceNm,
+                JsonInformation = t.JsonInformation,
+                StaffId = t.StaffId,
+                StaffNm = t.Staff.StaffNavigation.FullName,
+                StaffUsername = t.Staff.StaffNavigation.Username,
+                DepartmentId = t.Service.Department.DepartmentId,
+                DepartmentNm = t.Service.Department.DepartmentNm,
+                Status = t.Status,
+                DueDateTime = t.DueDateTime,
+                DelFlg = t.DelFlg,
+                InsBy = t.InsBy,
+                InsDatetime = t.InsDatetime,
+                UpdBy = t.UpdBy,
+                UpdDatetime = t.UpdDatetime
+            }).ToListAsync();
             return serviceRequests;
         }
         public async Task<ServiceRequest> GetByIdToEntity(string ticketId)

@@ -11,7 +11,7 @@ namespace ssrcore.Repositories
     {
         Task<PagedList<ServiceRequestModel>> GetAll(SearchServiceRequestModel model);
         Task<ServiceRequestModel> GetByIdToModel(string ticketId);
-        Task<IEnumerable<ServiceRequest>> GetByUsername(string userId);
+        Task<IEnumerable<ServiceRequestModel>> GetByUsername(string userId);
         Task<ServiceRequest> GetByIdToEntity(string ticketId);
         Task Create(ServiceRequest serviceRequest);
         void Update(ServiceRequest serviceRequest);

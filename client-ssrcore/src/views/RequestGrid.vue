@@ -62,10 +62,10 @@
         @change="changeTab()"
       >
         <v-tabs-slider></v-tabs-slider>
-        <v-tab v-for="i in tabs" :key="i" :href="`#tab-${i.title}`">
+        <v-tab v-for="i in tabs" :key="i.title" :href="`#tab-${i.title}`">
           {{ i.title }}
         </v-tab>
-        <v-tab-item v-for="i in tabs" :key="i" :value="'tab-' + i.title">
+        <v-tab-item v-for="i in tabs" :key="i.title" :value="'tab-' + i.title">
           <v-card flat>
             <v-data-table
               :headers="headerTable"

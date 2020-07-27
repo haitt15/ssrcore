@@ -7,7 +7,7 @@ namespace ssrcore.ViewModels
 {
     public class ResourceParameters
     {
-        private const int MaxSize = 20;
+        private const int MaxSize = 9999;
         public int Page { get; set; } = 1;
         private int _size = MaxSize;
         public int Size

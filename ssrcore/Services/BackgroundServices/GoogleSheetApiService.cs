@@ -59,7 +59,7 @@ namespace ssrcore.Services.BackgroundServices
                    
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(60));
+                await Task.Delay(TimeSpan.FromSeconds(3));
             }
         }
     }

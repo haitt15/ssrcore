@@ -4,6 +4,7 @@ using ssrcore.Models;
 using ssrcore.UnitOfWork;
 using ssrcore.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ssrcore.Services
@@ -35,7 +36,12 @@ namespace ssrcore.Services
                     UpdDatetime = DateTime.Now.ToLocalTime(),
                 };
                 _unitOfWork.RequestHistoryRepository.Create(history);
-
+                //////
+                List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
+                foreach (string FcmToken in ListFcmToken)
+                {
+                    await Utils.PushNotificationAsync(FcmToken, "Comment Of Request", "A new comment has been added by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
+                }
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.CommentRepository.GetByIdToModel(entity.Id);
                 return modelToReturn;

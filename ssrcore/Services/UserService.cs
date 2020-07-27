@@ -41,6 +41,10 @@ namespace ssrcore.Services
 
         public async Task<Users> CreateUser(Users user, string password)
         {
+            if(user.Photo != null)
+            {
+                user.Photo = "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png";
+            }
             await _unitOfWork.UserRepository.Create(user, password);
             await _unitOfWork.Commit();
             return user;

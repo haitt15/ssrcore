@@ -40,6 +40,14 @@ namespace ssrcore.Services
                 };
                 _unitOfWork.RequestHistoryRepository.Create(history);
 
+                ///////////
+                List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(user.Id);
+                foreach (string FcmToken in ListFcmToken)
+                {
+                    await Utils.PushNotificationAsync(FcmToken, "Create Request", "A request with ticket ID " + entity.TicketId + " has been inserted by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
+                }
+                ///////////
+
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(entity.TicketId);
                 return modelToReturn;
@@ -178,6 +186,12 @@ namespace ssrcore.Services
                             UpdDatetime = DateTime.Now
                         };
                         _unitOfWork.RequestHistoryRepository.Create(history);
+                        //////
+                        List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
+                        foreach (string FcmToken in ListFcmToken)
+                        {
+                            await Utils.PushNotificationAsync(FcmToken, "Update Staff Of Request", "This request with ticket ID  " + entity.TicketId + " has just been assigned to " + staff.FullName + " at " + DateTime.Now.ToLocalTime());
+                        }
                     }
                     else
                     {
@@ -189,6 +203,12 @@ namespace ssrcore.Services
                             UpdDatetime = DateTime.Now
                         };
                         _unitOfWork.RequestHistoryRepository.Create(history);
+                        //////
+                        List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
+                        foreach (string FcmToken in ListFcmToken)
+                        {
+                            await Utils.PushNotificationAsync(FcmToken, "Update Staff Of Request", "The request with ticket ID " + entity.TicketId + " has just been transferred from " + oldStaff.FullName + " to " + staff.FullName + " at " + DateTime.Now.ToLocalTime());
+                        }
                     }
 
                 }
@@ -207,6 +227,12 @@ namespace ssrcore.Services
                         UpdDatetime = DateTime.Now
                     };
                     _unitOfWork.RequestHistoryRepository.Create(history);
+                    //////
+                    List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
+                    foreach (string FcmToken in ListFcmToken)
+                    {
+                        await Utils.PushNotificationAsync(FcmToken, "Update Status Of Request", "This request with ticket ID " + entity.TicketId + "has just been changed from " + entity.Status + " to " + serviceRequest.Status + " at " + DateTime.Now.ToLocalTime());
+                    }
                     entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
                 }
                 entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;

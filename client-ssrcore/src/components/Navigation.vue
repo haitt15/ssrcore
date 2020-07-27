@@ -62,14 +62,9 @@
           <v-card class="mx-auto" max-width="400" tile>
             <v-list dense shaped flat rounded>
               <v-list-item-group color="primary">
-                <v-list-item>
-                  <v-list-item-title>Profile
-                    <v-icon>mdi-account-circle</v-icon>
-                  </v-list-item-title>
-                </v-list-item>
-                <v-divider></v-divider>
-                <v-list-item>
-                  <v-list-item-title>Logout
+                <v-list-item @click="logout">
+                  <v-list-item-title>
+                    Logout
                     <v-icon>mdi-logout</v-icon>
                   </v-list-item-title>
                 </v-list-item>
@@ -98,38 +93,28 @@
           <template v-slot:activator>
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
-              </v-list-item-icon>
-            <v-list-item-title>Dashboard</v-list-item-title>
+            </v-list-item-icon>
+            <v-list-item-title>
+              <router-link :to="{ path: 'dashboard'}">Dashboard</router-link>
+            </v-list-item-title>
           </template>
 
-          <v-list-group no-action sub-group value="true">
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title>Request</v-list-item-title>
-              </v-list-item-content>
-            </template>
-
-            <v-list-item v-for="(item, i) in requests" :key="i" link>
-              <v-list-item-title v-text="item[0]"></v-list-item-title>
-              <v-list-item-icon>
-                <v-icon>{{item[1]}}</v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
-
-          <v-list-group sub-group no-action>
-            <template v-slot:activator>
-               <v-list-item-content>
-                <v-list-item-title>Service</v-list-item-title>
-              </v-list-item-content>
-            </template>
-            <v-list-item v-for="(item, i) in services" :key="i">
-              <v-list-item-title v-text="item[0]"></v-list-item-title>
-              <v-list-item-icon>
-                <v-icon>{{item[1]}}</v-icon>
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
+          <v-list-item>
+            <v-list-item-title>
+              <router-link :to="{ path: 'requestList'}">Request</router-link>
+            </v-list-item-title>
+               <v-list-item-icon>
+              <v-icon>mdi-account-question</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <router-link :to="{ path: 'service'}">Service</router-link>
+            </v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-book</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
@@ -137,6 +122,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   mounted () {
     this.numberNoti = this.notifications.length
@@ -184,7 +170,12 @@ export default {
     }
   },
   methods: {
-    onSidebarChanged () {}
+    ...mapActions('auth', ['_logout']),
+    onSidebarChanged () {},
+    logout () {
+      this._logout()
+      this.$router.push('/login')
+    }
   }
 }
 </script>

@@ -40,21 +40,21 @@ namespace ssrcore.Services
                 };
                 _unitOfWork.RequestHistoryRepository.Create(history);
 
-                List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(user.Id);
-                foreach (string FcmToken in ListFcmToken)
-                {
-                    await Utils.PushNotificationAsync(FcmToken, "Create Request", "A request with ticket ID " + entity.TicketId + " has been inserted by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
-                }
+                //List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(user.Id);
+                //foreach (string FcmToken in ListFcmToken)
+                //{
+                //    await Utils.PushNotificationAsync(FcmToken, "Create Request", "A request with ticket ID " + entity.TicketId + " has been inserted by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
+                //}
 
-                var noti = new Notification
-                {
-                    Title = "Create Request",
-                    Content = "Create successful request with ticket ID " + entity.TicketId,
-                    UserId = user.Id,
-                    InsBy = user.Username,
-                    UpdBy = user.Username
-                };
-                await _unitOfWork.NotificationRepository.Create(noti);
+                //var noti = new Notification
+                //{
+                //    Title = "Create Request",
+                //    Content = "Create successful request with ticket ID " + entity.TicketId,
+                //    UserId = user.Id,
+                //    InsBy = user.Username,
+                //    UpdBy = user.Username
+                //};
+                //await _unitOfWork.NotificationRepository.Create(noti);
 
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(entity.TicketId);

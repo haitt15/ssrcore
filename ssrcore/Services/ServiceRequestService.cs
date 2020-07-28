@@ -40,13 +40,21 @@ namespace ssrcore.Services
                 };
                 _unitOfWork.RequestHistoryRepository.Create(history);
 
-                ///////////
                 List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(user.Id);
                 foreach (string FcmToken in ListFcmToken)
                 {
                     await Utils.PushNotificationAsync(FcmToken, "Create Request", "A request with ticket ID " + entity.TicketId + " has been inserted by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
                 }
-                ///////////
+
+                var noti = new Notification
+                {
+                    Title = "Create Request",
+                    Content = "Create successful request with ticket ID " + entity.TicketId,
+                    UserId = user.Id,
+                    InsBy = user.Username,
+                    UpdBy = user.Username
+                };
+                await _unitOfWork.NotificationRepository.Create(noti);
 
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.ServiceRequestRepository.GetByIdToModel(entity.TicketId);
@@ -172,6 +180,7 @@ namespace ssrcore.Services
             var entity = await _unitOfWork.ServiceRequestRepository.GetByIdToEntity(ticketId);
             if (entity != null)
             {
+                var user = await _unitOfWork.UserRepository.GetByUserId(entity.UserId);
                 if (serviceRequest.StaffUsername != null)
                 {
                     var staff = await _unitOfWork.UserRepository.GetByUsername(serviceRequest.StaffUsername);
@@ -186,12 +195,22 @@ namespace ssrcore.Services
                             UpdDatetime = DateTime.Now
                         };
                         _unitOfWork.RequestHistoryRepository.Create(history);
-                        //////
+
                         List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
                         foreach (string FcmToken in ListFcmToken)
                         {
                             await Utils.PushNotificationAsync(FcmToken, "Update Staff Of Request", "This request with ticket ID  " + entity.TicketId + " has just been assigned to " + staff.FullName + " at " + DateTime.Now.ToLocalTime());
                         }
+
+                        var noti = new Notification
+                        {
+                            Title = "Update Staff Of Request",
+                            Content = "This request with ticket ID  " + entity.TicketId + " has just been assigned to " + staff.FullName,
+                            UserId = entity.UserId,
+                            InsBy = user.Username,
+                            UpdBy = user.Username
+                        };
+                        await _unitOfWork.NotificationRepository.Create(noti);
                     }
                     else
                     {
@@ -203,12 +222,23 @@ namespace ssrcore.Services
                             UpdDatetime = DateTime.Now
                         };
                         _unitOfWork.RequestHistoryRepository.Create(history);
-                        //////
+                 
                         List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
                         foreach (string FcmToken in ListFcmToken)
                         {
                             await Utils.PushNotificationAsync(FcmToken, "Update Staff Of Request", "The request with ticket ID " + entity.TicketId + " has just been transferred from " + oldStaff.FullName + " to " + staff.FullName + " at " + DateTime.Now.ToLocalTime());
                         }
+
+                        var noti = new Notification
+                        {
+                            Title = "Update Staff Of Request",
+                            Content = "The request with ticket ID " + entity.TicketId + " has just been transferred from " + oldStaff.FullName + " to " + staff.FullName,
+                            UserId = entity.UserId,
+                            InsBy = user.Username,
+                            UpdBy = user.Username
+                        };
+                        await _unitOfWork.NotificationRepository.Create(noti);
+                      
                     }
 
                 }
@@ -227,12 +257,23 @@ namespace ssrcore.Services
                         UpdDatetime = DateTime.Now
                     };
                     _unitOfWork.RequestHistoryRepository.Create(history);
-                    //////
+              
                     List<string> ListFcmToken = await _unitOfWork.FcmTokenRepository.Get(entity.UserId);
                     foreach (string FcmToken in ListFcmToken)
                     {
                         await Utils.PushNotificationAsync(FcmToken, "Update Status Of Request", "This request with ticket ID " + entity.TicketId + "has just been changed from " + entity.Status + " to " + serviceRequest.Status + " at " + DateTime.Now.ToLocalTime());
                     }
+
+                    var noti = new Notification
+                    {
+                        Title = "Update Status Of Request",
+                        Content = "This request with ticket ID " + entity.TicketId + " has just been changed from " + entity.Status + " to " + serviceRequest.Status,
+                        UserId = entity.UserId,
+                        InsBy = user.Username,
+                        UpdBy = user.Username
+                    };
+                    await _unitOfWork.NotificationRepository.Create(noti);
+
                     entity.Status = serviceRequest.Status != null ? serviceRequest.Status : entity.Status;
                 }
                 entity.UpdBy = serviceRequest.implementer != null ? serviceRequest.implementer : entity.UpdBy;

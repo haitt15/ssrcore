@@ -13,8 +13,6 @@ namespace ssrcore.Models
         public string Title { get; set; }
         [StringLength(500)]
         public string Content { get; set; }
-        public int FromUser { get; set; }
-        public int ToUser { get; set; }
         [Column("isRead")]
         public bool? IsRead { get; set; }
         public bool DelFlg { get; set; }
@@ -28,12 +26,10 @@ namespace ssrcore.Models
         public string UpdBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime UpdDatetime { get; set; }
+        public int UserId { get; set; }
 
-        [ForeignKey(nameof(FromUser))]
-        [InverseProperty(nameof(Users.NotificationFromUserNavigation))]
-        public virtual Users FromUserNavigation { get; set; }
-        [ForeignKey(nameof(ToUser))]
-        [InverseProperty(nameof(Users.NotificationToUserNavigation))]
-        public virtual Users ToUserNavigation { get; set; }
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty(nameof(Users.Notification))]
+        public virtual Users User { get; set; }
     }
 }

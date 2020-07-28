@@ -14,6 +14,7 @@ namespace ssrcore.UnitOfWork
         ICommentRepository CommentRepository { get; }
         IStaffRepository StaffRepository { get; }
         IRequestHistoryRepository RequestHistoryRepository { get; }
+        INotificationRepository NotificationRepository { get; }
         Task Commit();
     }
 }

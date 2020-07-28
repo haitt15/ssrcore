@@ -30,7 +30,9 @@ namespace ssrcore.Repositories
 
         public async Task<IEnumerable<Notification>> GetAllByUserId(int userId)
         {
-            return await _context.Notification.Where(t => t.DelFlg == false && t.UserId == userId).ToListAsync();
+            return await _context.Notification.Where(t => t.DelFlg == false && t.UserId == userId)
+                                              .OrderByDescending(t => t.InsDatetime)
+                                              .ToListAsync();
         }
 
         public async Task<Notification> GetByIdToEntity(int id)

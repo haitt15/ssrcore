@@ -15,13 +15,11 @@ namespace ssrcore.Controllers
     {
         private readonly IServiceService _serviceService;
         private readonly IRedisCacheRepository _redisCacheRepository;
-        private readonly IMapper _mapper;
 
-        public ServicesController(IServiceService serviceService, IMapper mapper, IRedisCacheRepository redisCacheRepository)
+        public ServicesController(IServiceService serviceService, IRedisCacheRepository redisCacheRepository)
         {
             _serviceService = serviceService;
             _redisCacheRepository = redisCacheRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]

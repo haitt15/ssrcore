@@ -1,5 +1,4 @@
-﻿
-using ssrcore.Helpers;
+﻿using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.ViewModels;
 using System.Collections.Generic;

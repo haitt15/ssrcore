@@ -39,27 +39,41 @@ namespace ssrcore.Services.BackgroundServices
                         RequestSheetUtils.ClearAllRow(Constants.GoogleSheet.SHEET_FINISHED);
                         RequestSheetUtils.ClearAllRow(Constants.GoogleSheet.SHEET_IN_PROGRESS);
                         RequestSheetUtils.ClearAllRow(Constants.GoogleSheet.SHEET_REJECTED);
+                        List<ServiceRequestModel> listRequest = new List<ServiceRequestModel>();
+                        List<ServiceRequestModel> listRequestInProgress = new List<ServiceRequestModel>();
+                        List<ServiceRequestModel> listRequestRejected = new List<ServiceRequestModel>();
+                        List<ServiceRequestModel> listRequestFinished = new List<ServiceRequestModel>();
                         foreach (var request in serviceRequests)
                         {
-                            RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
+                            //RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
+                            listRequest.Add(request);
                             if (request.Status == "In-Progress")
                             {
-                                RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_IN_PROGRESS);
+                                listRequestInProgress.Add(request);
+                                //RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_IN_PROGRESS);
                             }
                             else if (request.Status == "Rejected")
                             {
-                                RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_REJECTED);
+                                listRequestRejected.Add(request);
+                                //RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_REJECTED);
                             }
                             else if (request.Status == "Finished")
                             {
-                                RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_FINISHED);
+                                listRequestFinished.Add(request);
+                                //RequestSheetUtils.Add(request, Constants.GoogleSheet.SHEET_FINISHED);
                             }
                         }
+                        RequestSheetUtils.AddList(listRequest, Constants.GoogleSheet.SHEET_REQUEST_SERVICE);
+                        RequestSheetUtils.AddList(listRequestInProgress, Constants.GoogleSheet.SHEET_IN_PROGRESS);
+                        RequestSheetUtils.AddList(listRequestRejected, Constants.GoogleSheet.SHEET_REJECTED);
+                        RequestSheetUtils.AddList(listRequestFinished, Constants.GoogleSheet.SHEET_FINISHED);
+
+
                     }
-                   
+
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(60));
+                await Task.Delay(TimeSpan.FromSeconds(30));
             }
         }
     }

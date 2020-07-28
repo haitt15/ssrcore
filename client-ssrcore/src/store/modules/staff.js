@@ -29,8 +29,12 @@ export const staff = {
     }
   },
   actions: {
-    _getStaffList (context, obj) {
-      return SSRCore.get(API_URL, obj).then(
+    _getStaffList (context) {
+      var departmentId = JSON.parse(localStorage.getItem('UserInfo'))
+        .departmentId
+      return SSRCore.get(API_URL, {
+        DepartmentId: departmentId
+      }).then(
         response => {
           context.commit('_setStaffList', response.data.data)
           return response.data
@@ -41,9 +45,13 @@ export const staff = {
       )
     },
     _addStaff (context, obj) {
+      var departmentId = JSON.parse(localStorage.getItem('UserInfo'))
+        .departmentId
+      obj.departmentId = departmentId
+      obj.password = '1'
       return SSRCore.post(API_URL, obj).then(
         response => {
-          context.commit('_addStaffMutations', response.data)
+          context.commit('_addStaffMutations', obj)
           return response.data
         },
         error => {

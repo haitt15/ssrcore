@@ -49,7 +49,7 @@
       </v-col>
       <v-col cols="12" lg="4">
         <base-material-chart-card
-          urlChart="https://datastudio.google.com/embed/reporting/b5fc39c4-7dfc-438c-923a-9acf4383ff3a/page/RGsYB"
+          urlChart="https://datastudio.google.com/embed/reporting/b78d686b-aa77-4fde-bdcd-150bf622b332/page/SAsYB"
           color="white"
           hover-reveal
           class="subChart"
@@ -76,8 +76,8 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-poll"
-          title="Total Request"
-          :value="_getListTotalTypeRequest[0]"
+          title="Total Finished Request"
+          :value="_getFinishedRequest"
           sub-icon="mdi-tag"
           sub-text="Tracked from Google Analytics"
           class="subCard"
@@ -88,7 +88,7 @@
           color="info"
           icon="mdi-twitter"
           title="Waiting Request"
-          :value="_getListTotalTypeRequest[1]"
+          :value="_getTotalWaitingRequest"
           sub-icon="mdi-clock"
           sub-text="Just Updated"
           class="subCard"
@@ -99,7 +99,7 @@
           color="success"
           icon="mdi-store"
           title="Rejected Request"
-          :value="_getListTotalTypeRequest[2]"
+          :value="_getTotalRejectedRequest"
           sub-icon="mdi-calendar"
           sub-text="Last 24 Hours"
           class="subCard"
@@ -110,7 +110,7 @@
           color="orange"
           icon="mdi-sofa"
           title=" In-Progress Request"
-          :value="_getListTotalTypeRequest[3]"
+          :value="_getTotalInProgressRequest"
           sub-icon="mdi-alert"
           sub-icon-color="red"
           sub-text="Get More Space..."
@@ -148,7 +148,7 @@
 import MaterialStatsCard from '@/views/MaterialStatsCard'
 import MaterialCard from '@/views/MaterialCard'
 import MaterialChartCard from '@/views/MaterialChartCard'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   components: {
     'base-material-stats-card': MaterialStatsCard,
@@ -285,16 +285,20 @@ export default {
     }
   },
   mounted () {
-    this.alertMessage()
+    this._getAllRequestOfDepartmentDashboard()
   },
   computed: {
-    ...mapGetters('dashboard', ['_getListTotalTypeRequest'])
+    ...mapGetters('dashboard', [
+      '_getListTotalTypeRequest',
+      '_getFinishedRequest',
+      '_getTotalWaitingRequest',
+      '_getTotalRejectedRequest',
+      '_getTotalInProgressRequest'
+    ]),
+    ...mapState('dashboard', ['_totalRequest'])
   },
   methods: {
-    alertMessage () {
-      console.log('Duong ne')
-      console.log(this._getListTotalTypeRequest)
-    }
+    ...mapActions('dashboard', ['_getAllRequestOfDepartmentDashboard'])
   }
 }
 </script>

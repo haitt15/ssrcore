@@ -72,6 +72,10 @@ namespace ssrcore.Repositories
             {
                 query = query.OrderByDescending(t => t.ServiceNm);
             }
+            else
+            {
+                query = query.OrderByDescending(t => t.InsDatetime);
+            }
 
             result = await query.Skip(model.Size * (model.Page - 1))
             .Take(model.Size)

@@ -18,6 +18,7 @@ namespace ssrcore.Repositories
 
         public async Task Create(Service service)
         {
+            service.ServiceId = GenerateServiceId();
             service.DelFlg = false;
             service.InsBy = Constants.Admin.ADMIN;
             service.InsDatetime = DateTime.Now;
@@ -148,5 +149,19 @@ namespace ssrcore.Repositories
                                     }).SingleOrDefault();
             return result;
         }
+
+        public string GenerateServiceId()
+        {
+            Service serice;
+            string serviceId;
+            do
+            {
+                serviceId = Utils.RandomString(8, true);
+                serice = _context.Service.Find(serviceId);
+            }
+            while (serice != null);
+            return serviceId;
+        }
+
     }
 }

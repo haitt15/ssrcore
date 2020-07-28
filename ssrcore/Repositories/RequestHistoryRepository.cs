@@ -26,7 +26,9 @@ namespace ssrcore.Repositories
 
         public async Task<IEnumerable<RequestHistory>> GetAll(string ticketId)
         {
-            return await _context.RequestHistory.Where(t => t.TicketId == ticketId).ToListAsync();
+            return await _context.RequestHistory.Where(t => t.TicketId == ticketId)
+                                                .OrderByDescending(t => t.UpdDatetime)
+                                                .ToListAsync();
         }
 
 

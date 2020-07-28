@@ -76,7 +76,7 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-poll"
-          title="Total Finished Request"
+          title=" Finished Request"
           :value="_getFinishedRequest"
           sub-icon="mdi-tag"
           sub-text="Tracked from Google Analytics"
@@ -124,9 +124,6 @@
           <template v-slot:heading>
             <div class="display-1 font-weight-light">
               Request Chart of Our Department
-            </div>
-            <div class="subtitle-1 font-weight-light">
-              Total request of June
             </div>
           </template>
           <v-card-text class="cardChartRequest">

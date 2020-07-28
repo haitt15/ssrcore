@@ -83,7 +83,6 @@ router.beforeEach((to, from, next) => {
   const StaffPages = ['Requestlist', 'Dashboard', 'RequestDetails']
   const authRequired = !publicPages.includes(to.name)
   const user = JSON.parse(localStorage.getItem('UserInfo'))
-  console.log('this.user', user)
   // trying to access a restricted page + not logged in
   // redirect to login page
   if (user === null) {

@@ -11,9 +11,6 @@
           <h4 class="card-title font-weight-light mt-2 ml-2">
             LIST OF ACCEPTED REQUESTS
           </h4>
-          <p class="d-inline-flex font-weight-light ml-2 mt-1">
-            In June
-          </p>
           <template v-slot:actions>
             <v-icon class="mr-1" small>
               mdi-clock-outline
@@ -34,9 +31,6 @@
           <h4 class="card-title font-weight-light mt-2 ml-2">
             LIST OF IN-PROGRESSING REQUESTS
           </h4>
-          <p class="d-inline-flex font-weight-light ml-2 mt-1">
-            In June
-          </p>
           <template v-slot:actions>
             <v-icon class="mr-1" small>
               mdi-clock-outline
@@ -57,9 +51,6 @@
           <h4 class="card-title font-weight-light mt-2 ml-2">
             LIST OF REJECTED REQUESTS
           </h4>
-          <p class="d-inline-flex font-weight-light ml-2 mt-1">
-            In June
-          </p>
           <template v-slot:actions>
             <v-icon class="mr-1" small>
               mdi-clock-outline
@@ -78,8 +69,8 @@
           icon="mdi-poll"
           title=" Finished Request"
           :value="_getFinishedRequest"
-          sub-icon="mdi-tag"
-          sub-text="Tracked from Google Analytics"
+                sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>
@@ -100,8 +91,8 @@
           icon="mdi-store"
           title="Rejected Request"
           :value="_getTotalRejectedRequest"
-          sub-icon="mdi-calendar"
-          sub-text="Last 24 Hours"
+            sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>
@@ -111,9 +102,8 @@
           icon="mdi-sofa"
           title=" In-Progress Request"
           :value="_getTotalInProgressRequest"
-          sub-icon="mdi-alert"
-          sub-icon-color="red"
-          sub-text="Get More Space..."
+               sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>

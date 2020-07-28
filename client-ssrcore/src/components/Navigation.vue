@@ -49,12 +49,12 @@
           <v-list>
             <v-list-item>
               <v-list-item-avatar>
-                <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                <img src="https://cdn.vuetifyjs.com/images/john.jpg" :alt="currentUser.fullName" />
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>John Leider</v-list-item-title>
-                <v-list-item-subtitle>Founder of Vuetify.js</v-list-item-subtitle>
+                <v-list-item-title>{{currentUser.fullName}}</v-list-item-title>
+                <v-list-item-subtitle>{{currentUser.departmentNm}}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -82,8 +82,8 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>John Leider</v-list-item-title>
-            <v-list-item-subtitle>Founder of Vuetify.js</v-list-item-subtitle>
+            <v-list-item-title>{{currentUser.fullName}}</v-list-item-title>
+            <v-list-item-subtitle>{{currentUser.departmentNm}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
@@ -115,6 +115,14 @@
               <v-icon>mdi-book</v-icon>
             </v-list-item-icon>
           </v-list-item>
+          <v-list-item v-if="currentUser.role === 'Manager'">
+            <v-list-item-title>
+              <router-link :to="{ path: 'staff'}">Staff</router-link>
+            </v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-account-group</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
@@ -124,11 +132,9 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
-  mounted () {
-    this.numberNoti = this.notifications.length
-  },
   data () {
     return {
+      currentUser: {},
       bars: { dark: true },
       notifications: [
         {
@@ -168,6 +174,10 @@ export default {
         ['Delete', 'mdi-delete']
       ]
     }
+  },
+  mounted () {
+    this.numberNoti = this.notifications.length
+    this.currentUser = JSON.parse(localStorage.getItem('UserInfo'))
   },
   methods: {
     ...mapActions('auth', ['_logout']),

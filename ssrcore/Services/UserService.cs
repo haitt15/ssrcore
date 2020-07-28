@@ -56,12 +56,12 @@ namespace ssrcore.Services
             var entity = await _unitOfWork.UserRepository.GetByUsername(username);
             if (entity != null)
             {
-                _unitOfWork.UserRepository.Delete(entity);
-                if(entity.RoleId == Constants.Roles.ROLE_STAFF)
+                if (entity.RoleId == Constants.Roles.ROLE_STAFF)
                 {
                     var staff = await _unitOfWork.StaffRepository.GetByIdToEntity(entity.Id);
                     _unitOfWork.StaffRepository.Delete(staff);
                 }
+                _unitOfWork.UserRepository.Delete(entity);
                 await _unitOfWork.Commit();
                 return true;
             }

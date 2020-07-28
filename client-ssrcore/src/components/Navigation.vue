@@ -7,7 +7,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-menu
+      <!-- <v-menu
         :open-on-click="openOnClick"
         :close-on-content-click="closeOnContentClick"
         :offset-y="offsetY"
@@ -33,7 +33,7 @@
             </v-list-item-group>
           </v-list>
         </v-card>
-      </v-menu>
+      </v-menu> -->
       <v-menu
         :open-on-click="openOnClick"
         :close-on-content-click="closeOnContentClick"

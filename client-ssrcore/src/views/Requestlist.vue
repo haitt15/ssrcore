@@ -5,7 +5,7 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-poll"
-          title="Total Finished Request"
+          title="Finished Request"
           :value="_getFinishedRequest"
           sub-icon="mdi-tag"
           sub-text="Tracked from Google Analytics"

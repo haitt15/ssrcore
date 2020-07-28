@@ -95,9 +95,9 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     // đã đăng nhập
-    if (user.roles === 'Manager' && ManagerPages.includes(to.name)) {
+    if (user.role === 'Manager' && ManagerPages.includes(to.name)) {
       next()
-    } else if (user.roles === 'Staff' && StaffPages.includes(to.name)) {
+    } else if (user.role === 'Staff' && StaffPages.includes(to.name)) {
       next()
     } else {
       next('/dashboard')

@@ -87,7 +87,37 @@ namespace ssrcore.Helpers
             //BatchUpdateValuesResponse response = request.Execute();
         }
 
+        public static void AddList(List<ServiceRequestModel> requestModelList, string spreadSheetId)
+        {
+            // Specifying Column Range for reading...
+            var range = $"{sheet}!A:F";
+            List<ValueRange> valueRangesList = new List<ValueRange>();
+            // Data for another Student...
+            for(int i = 2; i < requestModelList.Count + 2; i++)
+            {
 
+            }
+            int index = 2;
+            foreach(var requestModel in requestModelList)
+            {
+                var valueRange = new ValueRange();
+                var oblist = new List<object>() { requestModel.TicketId,requestModel.FullName, requestModel.ServiceNm, requestModel.Status,
+                requestModel.StaffNm, requestModel.DepartmentNm
+            };
+                valueRange.Range = $"{sheet}!A{index}:F";
+                valueRange.Values = new List<IList<object>> { oblist };
+                valueRangesList.Add(valueRange);
+                index++;
+            }
+            BatchUpdateValuesRequest requestBody = new BatchUpdateValuesRequest()
+            {
+                ValueInputOption = "USER_ENTERED",
+                Data = valueRangesList
+            };
+            SpreadsheetsResource.ValuesResource.BatchUpdateRequest request = service.Spreadsheets.Values.BatchUpdate(requestBody, spreadSheetId);
+            BatchUpdateValuesResponse response = request.Execute();
+
+        }
 
         public static void Update(ServiceRequestModel requestModel, string spreadSheetId)
         {

@@ -60,7 +60,7 @@ namespace ssrcore.Controllers
             if (user != null && result)
             {
                 var role = _roleService.GetRole(user);
-                if(role == "Staff")
+                if(role == "Staff" || role == "Manager")
                 {
                     staff = await _staffService.GetStaff(user.Id);
                 }

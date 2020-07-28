@@ -9,18 +9,7 @@
           <v-container>
             <v-form ref="form" lazy-validation>
               <v-row>
-                <v-col cols="4">
-                  <v-text-field
-                    label="Service ID"
-                    v-model="service.serviceId"
-                    :rules="serviceIdRules"
-                    :counter="10"
-                    :disabled="type === 'Update' ? true : false "
-                    clearable
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="8">
+                <v-col cols="12">
                   <v-text-field
                     label="Service Name"
                     v-model="service.serviceNm"
@@ -85,11 +74,6 @@ export default {
   },
   data: () => ({
     dialog: true,
-    serviceIdRules: [
-      v => !!v || 'Service ID is required',
-      v =>
-        (v && v.length < 10) || 'Service ID must be less than 500 characters'
-    ],
     serviceNmRules: [
       v => !!v || 'Service Name is required',
       v =>

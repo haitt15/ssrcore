@@ -21,6 +21,7 @@ namespace ssrcore.Services
         public async Task CreateFcmToken(int userId, string fcmToken)
         {
             await _unitOfWork.FcmTokenRepository.Create(userId, fcmToken);
+            await _unitOfWork.Commit();
         }
 
         public Task<List<string>> GetAllFcmToken(int userId)

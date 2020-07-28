@@ -454,6 +454,7 @@ export default {
   height: 500;
   width: 80%;
   float: left;
+  margin-bottom: 3%;
 }
 .request_nav {
   margin-top: 60.5px;

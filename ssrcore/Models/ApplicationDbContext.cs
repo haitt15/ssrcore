@@ -233,10 +233,6 @@ namespace ssrcore.Models
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.HasIndex(e => e.UserNo)
-                    .HasName("UQ__Users__1788955E7601B125")
-                    .IsUnique();
-
                 entity.HasIndex(e => e.Username)
                     .HasName("UQ__Users__536C85E489A6E405")
                     .IsUnique();

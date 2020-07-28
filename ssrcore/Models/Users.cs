@@ -29,9 +29,6 @@ namespace ssrcore.Models
         [StringLength(450)]
         public string Email { get; set; }
         [Required]
-        [StringLength(11)]
-        public string UserNo { get; set; }
-        [Required]
         [StringLength(100)]
         public string FullName { get; set; }
         [StringLength(11)]
@@ -53,6 +50,8 @@ namespace ssrcore.Models
         public string UpdBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime UpdDatetime { get; set; }
+        [StringLength(11)]
+        public string UserNo { get; set; }
 
         [ForeignKey(nameof(RoleId))]
         [InverseProperty("Users")]

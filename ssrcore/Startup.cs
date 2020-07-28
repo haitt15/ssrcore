@@ -93,6 +93,7 @@ namespace ssrcore
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IRequestHistoryService, RequestHistoryService>();
+            services.AddScoped<INotificationService, NotificationService>();
            
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 

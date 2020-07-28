@@ -16,6 +16,7 @@ namespace ssrcore.UnitOfWork
         private ICommentRepository _comment;
         private IStaffRepository _staff;
         private IRequestHistoryRepository _requestHistory;
+        private INotificationRepository _notification;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -90,6 +91,14 @@ namespace ssrcore.UnitOfWork
             get
             {
                 return _requestHistory = _requestHistory ?? new RequestHistoryRepository(_context);
+            }
+        }
+
+        public INotificationRepository NotificationRepository
+        {
+            get
+            {
+                return _notification = _notification ?? new NotificationRepository(_context);
             }
         }
 

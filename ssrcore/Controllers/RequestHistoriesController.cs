@@ -6,11 +6,11 @@ namespace ssrcore.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class RequestHistoryController : ControllerBase
+    public class RequestHistoriesController : ControllerBase
     {
         private readonly IRequestHistoryService _requestHistoryService;
 
-        public RequestHistoryController(IRequestHistoryService requestHistoryService)
+        public RequestHistoriesController(IRequestHistoryService requestHistoryService)
         {
             _requestHistoryService = requestHistoryService;
         }

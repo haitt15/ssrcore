@@ -1,14 +1,14 @@
 <template>
   <v-container id="regular-tables" fluid tag="section">
-    <v-row>
+      <v-row>
       <v-col cols="12" md="3">
         <base-material-stats-card
           color="primary"
           icon="mdi-poll"
-          title="Finished Request"
+          title=" Finished Request"
           :value="_getFinishedRequest"
-          sub-icon="mdi-tag"
-          sub-text="Tracked from Google Analytics"
+                sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>
@@ -29,8 +29,8 @@
           icon="mdi-store"
           title="Rejected Request"
           :value="_getTotalRejectedRequest"
-          sub-icon="mdi-calendar"
-          sub-text="Last 24 Hours"
+            sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>
@@ -40,9 +40,8 @@
           icon="mdi-sofa"
           title=" In-Progress Request"
           :value="_getTotalInProgressRequest"
-          sub-icon="mdi-alert"
-          sub-icon-color="red"
-          sub-text="Get More Space..."
+               sub-icon="mdi-clock"
+          sub-text="Just Updated"
           class="subCard"
         />
       </v-col>

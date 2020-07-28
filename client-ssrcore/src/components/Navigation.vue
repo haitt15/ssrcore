@@ -107,7 +107,7 @@
               <v-icon>mdi-account-question</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="currentUser.role === 'Manager'"> >
             <v-list-item-title>
               <router-link :to="{ path: 'service'}">Service</router-link>
             </v-list-item-title>

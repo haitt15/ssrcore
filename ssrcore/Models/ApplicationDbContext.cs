@@ -30,6 +30,7 @@ namespace ssrcore.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=tcp:tranthanhhai.database.windows.net,1433;Initial Catalog=StudentServiceRequest_Database;Persist Security Info=False;User ID=thanhhai;Password=Matkhau12999;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
@@ -109,17 +110,11 @@ namespace ssrcore.Models
 
                 entity.Property(e => e.UpdDatetime).HasDefaultValueSql("(getdate())");
 
-                entity.HasOne(d => d.FromUserNavigation)
-                    .WithMany(p => p.NotificationFromUserNavigation)
-                    .HasForeignKey(d => d.FromUser)
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Notification)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Noti_User");
-
-                entity.HasOne(d => d.ToUserNavigation)
-                    .WithMany(p => p.NotificationToUserNavigation)
-                    .HasForeignKey(d => d.ToUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Noti2_User");
             });
 
             modelBuilder.Entity<RequestHistory>(entity =>

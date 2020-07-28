@@ -1,5 +1,4 @@
-﻿
-namespace ssrcore.ViewModels
+﻿namespace ssrcore.ViewModels
 {
     public class LoginRequest
     {

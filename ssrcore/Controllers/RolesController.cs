@@ -1,8 +1,5 @@
-﻿
-using System.Threading.Tasks;
-
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ssrcore.Repositories;
 using ssrcore.Services;
 using ssrcore.ViewModels;
 

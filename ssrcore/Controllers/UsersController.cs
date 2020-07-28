@@ -16,14 +16,12 @@ namespace ssrcore.Controllers
         private readonly IUserService _userService;
         private readonly IStaffService _staffService;
         private readonly IMapper _mapper;
-        private readonly IFcmTokenService _fcmTokenService;
+  
 
-        public UsersController(IUserService userService, IStaffService staffService,
-                               IFcmTokenService fcmTokenService, IMapper mapper)
+        public UsersController(IUserService userService, IStaffService staffService, IMapper mapper)
         {
             _userService = userService;
             _staffService = staffService;
-            _fcmTokenService = fcmTokenService;
             _mapper = mapper;
         }
 
@@ -31,13 +29,6 @@ namespace ssrcore.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetAllUsers();
-            //var currentUser = await _userService.GetByUserName("JcNIdM8KXYglFppYcWnIIXTbyqg2");
-            //int UserId = currentUser.Id;
-            //List<string> ListFcmToken = await _fcmTokenService.GetAllFcmToken(UserId);
-            //foreach (string FcmToken in ListFcmToken)
-            //{
-            //    await Helpers.Utils.PushNotificationAsync(FcmToken, "Title", "Message");
-            //}
             return Ok(users);
         }
 

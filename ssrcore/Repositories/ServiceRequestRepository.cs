@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ssrcore.Helpers;
 using ssrcore.Models;
 using ssrcore.ViewModels;

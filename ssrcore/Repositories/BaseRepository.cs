@@ -1,6 +1,4 @@
-﻿
-
-using ssrcore.Models;
+﻿using ssrcore.Models;
 
 namespace ssrcore.Repositories
 {

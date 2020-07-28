@@ -1,11 +1,6 @@
-﻿using Google.Apis.Util;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ssrcore.Helpers;
-using ssrcore.Models;
-using ssrcore.UnitOfWork;
-using ssrcore.ViewModels;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

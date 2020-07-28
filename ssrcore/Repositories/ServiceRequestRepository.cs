@@ -160,7 +160,7 @@ namespace ssrcore.Repositories
                 InsDatetime = t.InsDatetime,
                 UpdBy = t.UpdBy,
                 UpdDatetime = t.UpdDatetime
-            }).ToListAsync();
+            }).OrderByDescending(t => t.InsDatetime).ToListAsync();
             return serviceRequests;
         }
         public async Task<ServiceRequest> GetByIdToEntity(string ticketId)

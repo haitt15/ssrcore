@@ -1,113 +1,90 @@
-import axios from 'axios'
-const API_URL = 'https://localhost:44312/api/v1/Dashboard'
+import SSRCore from '../../service/SSRCore'
+const API_URL = '/api/v1/ServiceRequests'
 
-const user = JSON.parse(localStorage.getItem('UserInfo'))
-const initialState = user
-  ? {
-    status: {
-      loggedIn: true
-    },
-    user
-  }
-  : {
-    status: {
-      loggedIn: false
-    },
-    user: null
-  }
+// const user = JSON.parse(localStorage.getItem('UserInfo'))
 
 export const dashboard = {
   namespaced: true,
   state: {
-    initialState,
-    listTotalTypeRequest: ['123', '123', '385', '333']
+    _totalFinishedRequest: 0,
+    _totalWaitingRequest: 0,
+    _totalRejectedRequest: 0,
+    _totalInProgressRequest: 0
   },
   getters: {
     _getListTotalTypeRequest (state) {
       return state.listTotalTypeRequest
+    },
+    _getFinishedRequest (state) {
+      return state._totalFinishedRequest
+    },
+    _getTotalWaitingRequest (state) {
+      return state._totalWaitingRequest
+    },
+    _getTotalRejectedRequest (state) {
+      return state._totalRejectedRequest
+    },
+    _getTotalInProgressRequest (state) {
+      return state._totalInProgressRequest
     }
   },
   mutations: {
-    _loginSuccess (state, user) {
-      state.status.loggedIn = true
-      state.user = user
+    _setFinishedRequest (state, _totalFinishedRequest) {
+      state._totalFinishedRequest = _totalFinishedRequest
     },
-    _loginFailure (state) {
-      state.status.loggedIn = false
-      state.user = null
+    _setTotalWaitingRequest (state, _totalWaitingRequest) {
+      state._totalWaitingRequest = _totalWaitingRequest
     },
-    _logout (state) {
-      state.status.loggedIn = false
-      state.user = null
+    _setTotalRejectedRequest (state, _totalRejectedRequest) {
+      state._totalRejectedRequest = _totalRejectedRequest
     },
-    _registerSuccess (state) {
-      state.status.loggedIn = false
-    },
-    _registerFailure (state) {
-      state.status.loggedIn = false
+    _setTotalInProgressRequest (state, _totalInProgressRequest) {
+      state._totalInProgressRequest = _totalInProgressRequest
     }
   },
   actions: {
-    _login (context, user) {
-      return axios
-        .post(API_URL, {
-          username: user.username,
-          password: user.password
-        })
-        .then(
-          response => {
-            if (response.data.token) {
-              localStorage.setItem('UserInfo', JSON.stringify(response.data))
-              context.commit('_loginSuccess', user)
+    _getAllRequestOfDepartmentDashboard (context) {
+      var departmentId = JSON.parse(localStorage.getItem('UserInfo'))
+        .departmentId
+      return SSRCore.get(API_URL, {
+        departmentId: departmentId
+      }).then(
+        response => {
+          let totalInprogress = 0
+          let totalWaiting = 0
+          let totalRejected = 0
+          let totalFinished = 0
+          for (let index = 0; index < response.data.data.length; index++) {
+            const element = response.data.data[index]
+            switch (element.status) {
+              case 'In-Progress': {
+                totalInprogress = totalInprogress + 1
+                break
+              }
+              case 'Waiting': {
+                totalWaiting = totalWaiting + 1
+                break
+              }
+              case 'Rejected': {
+                totalRejected = totalRejected + 1
+                break
+              }
+              case 'Finished': {
+                totalFinished = totalFinished + 1
+                break
+              }
             }
-            return response.data
-          },
-          error => {
-            context.commit('_loginFailure')
-            return Promise.reject(error)
+            context.commit('_setTotalWaitingRequest', totalWaiting)
+            context.commit('_setTotalRejectedRequest', totalRejected)
+            context.commit('_setTotalInProgressRequest', totalInprogress)
+            context.commit('_setFinishedRequest', totalFinished)
           }
-        )
-    },
-    _loginWithGoogle (context, idToken) {
-      return axios
-        .post(API_URL + '/Google', {
-          IdToken: idToken
-        })
-        .then(
-          response => {
-            if (response.data.token) {
-              localStorage.setItem('UserInfo', JSON.stringify(response.data))
-              context.commit('_loginSuccess', user)
-            }
-            return response.data
-          },
-          error => {
-            context.commit('_loginFailure')
-            return Promise.reject(error)
-          }
-        )
-    },
-    _logout ({ commit }) {
-      localStorage.removeItem('UserInfo')
-      commit('_logout')
-    },
-    _register (context, user) {
-      return axios
-        .post(API_URL + '/Register', {
-          username: user.username,
-          email: user.email,
-          password: user.password
-        })
-        .then(
-          response => {
-            context.commit('_registerSuccess')
-            return Promise.resolve(response.data)
-          },
-          error => {
-            context.commit('_registerFailure')
-            return Promise.reject(error)
-          }
-        )
+          return response.data.data
+        },
+        error => {
+          return Promise.reject(error)
+        }
+      )
     }
   }
 }

@@ -5,8 +5,8 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-poll"
-          title="Total Request"
-          :value="_getListTotalTypeRequest[0]"
+          title="Total Finished Request"
+          :value="_getFinishedRequest"
           sub-icon="mdi-tag"
           sub-text="Tracked from Google Analytics"
           class="subCard"
@@ -16,8 +16,8 @@
         <base-material-stats-card
           color="info"
           icon="mdi-twitter"
-          title="Total On Waiting Request"
-          :value="_getListTotalTypeRequest[1]"
+          title="Waiting Request"
+          :value="_getTotalWaitingRequest"
           sub-icon="mdi-clock"
           sub-text="Just Updated"
           class="subCard"
@@ -27,8 +27,8 @@
         <base-material-stats-card
           color="success"
           icon="mdi-store"
-          title="Total Rejected Request"
-          :value="_getListTotalTypeRequest[2]"
+          title="Rejected Request"
+          :value="_getTotalRejectedRequest"
           sub-icon="mdi-calendar"
           sub-text="Last 24 Hours"
           class="subCard"
@@ -38,8 +38,8 @@
         <base-material-stats-card
           color="orange"
           icon="mdi-sofa"
-          title="Total In-Progress Request"
-          :value="_getListTotalTypeRequest[3]"
+          title=" In-Progress Request"
+          :value="_getTotalInProgressRequest"
           sub-icon="mdi-alert"
           sub-icon-color="red"
           sub-text="Get More Space..."
@@ -70,7 +70,13 @@ export default {
   },
   computed: {
     ...mapGetters('requestlist', ['_getListOfRequest']),
-    ...mapGetters('dashboard', ['_getListTotalTypeRequest'])
+    ...mapGetters('dashboard', [
+      '_getListTotalTypeRequest',
+      '_getFinishedRequest',
+      '_getTotalWaitingRequest',
+      '_getTotalRejectedRequest',
+      '_getTotalInProgressRequest'
+    ])
   },
   data () {
     return {
@@ -92,9 +98,11 @@ export default {
   },
   mounted () {
     this._getAllRequestOfDepartment()
+    this._getAllRequestOfDepartmentDashboard()
   },
   methods: {
-    ...mapActions('requestlist', ['_getAllRequestOfDepartment'])
+    ...mapActions('requestlist', ['_getAllRequestOfDepartment']),
+    ...mapActions('dashboard', ['_getAllRequestOfDepartmentDashboard'])
   }
 }
 </script>

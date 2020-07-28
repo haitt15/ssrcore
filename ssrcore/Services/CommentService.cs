@@ -42,6 +42,15 @@ namespace ssrcore.Services
                 {
                     await Utils.PushNotificationAsync(FcmToken, "Comment Of Request", "A new comment has been added by: " + user.FullName + " - Insert Datetime: " + DateTime.Now.ToLocalTime());
                 }
+                var noti = new Notification
+                {
+                    Title = "Comment Of Request",
+                    Content = "A comment is added by: " + user.FullName + " at " + DateTime.Now.ToLocalTime(),
+                    UserId = entity.UserId,
+                    InsBy = user.Username,
+                    UpdBy = user.Username
+                };
+                await _unitOfWork.NotificationRepository.Create(noti);
                 await _unitOfWork.Commit();
                 var modelToReturn = await _unitOfWork.CommentRepository.GetByIdToModel(entity.Id);
                 return modelToReturn;

@@ -28,7 +28,10 @@ export const service = {
   },
   actions: {
     _getAllService (context) {
+      var departmentId = JSON.parse(localStorage.getItem('UserInfo'))
+        .departmentId
       return SSRCore.get(API_URL, {
+        DepartmentId: departmentId
       }).then(
         response => {
           context.commit('_setServiceList', response.data.data)
@@ -40,6 +43,8 @@ export const service = {
       )
     },
     _addService (context, obj) {
+      obj.departmentId = JSON.parse(localStorage.getItem('UserInfo'))
+        .departmentId
       return SSRCore.post(API_URL, obj).then(
         response => {
           context.commit('_addServiceMutation', response.data)

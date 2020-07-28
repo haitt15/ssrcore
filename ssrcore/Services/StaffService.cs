@@ -61,8 +61,7 @@ namespace ssrcore.Services
         public async Task<UserModel> UpdateStaff(int staffId, UserModel staff)
         {
             var entity = await _unitOfWork.StaffRepository.GetByIdToEntity(staffId);
-            entity.DepartmentId = staff.DepartmentId != null ? staff.DepartmentNm : entity.DepartmentId;
-            entity.DelFlg = false;
+            entity.DepartmentId = staff.DepartmentId != null ? staff.DepartmentId : entity.DepartmentId;
             entity.UpdDatetime = DateTime.Now;
             await _unitOfWork.Commit();
             var modelToReturn = await _unitOfWork.StaffRepository.GetByIdToModel(staffId);

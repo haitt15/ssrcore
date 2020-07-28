@@ -64,6 +64,8 @@ namespace ssrcore.Repositories
             //var totalCount = await _context.ServiceRequest.CountAsync();
             List<ServiceRequestModel> result = null;
 
+            query = query.OrderByDescending(t => t.InsDatetime);
+
             if (model.SortBy == Constants.SortBy.SORT_NAME_ASC)
             {
                 query = query.OrderBy(t => t.ServiceNm);
@@ -71,10 +73,6 @@ namespace ssrcore.Repositories
             else if (model.SortBy == Constants.SortBy.SORT_NAME_DES)
             {
                 query = query.OrderByDescending(t => t.ServiceNm);
-            }
-            else
-            {
-                query = query.OrderByDescending(t => t.InsDatetime);
             }
 
             result = await query.Skip(model.Size * (model.Page - 1))

@@ -25,8 +25,8 @@ namespace ssrcore.Helpers
 
         public struct SortBy
         {
-            public const int SORT_NAME_ASC = 0;
-            public const int SORT_NAME_DES = 1;
+            public const int SORT_NAME_ASC = 1;
+            public const int SORT_NAME_DES = 2;
         }
 
         public struct KeyRedis
